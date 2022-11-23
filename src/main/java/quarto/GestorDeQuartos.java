@@ -1,15 +1,16 @@
 package quarto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GestorDeQuartos {
-    private ArrayList<Empregado> empregados;
+    private HashMap<Integer, Quarto> quartos;
 
     public GestorDeQuartos(){   }
 
-    protected Empregado procurarEmpregadoPorNIF(){return null;}
+    protected Quarto procurarQuartoPorID(){return null;}
 
-    protected Empregado procurarEmpregadoPorID(){return null;}
+    protected ArrayList<Quarto> procurarQuartoPorLayout(){return null;}
 
-    protected boolean adicionarEmpregado(){return false;}
+    protected ArrayList<Quarto> procurarQuartosDisponiveis(){return null;}
 }
