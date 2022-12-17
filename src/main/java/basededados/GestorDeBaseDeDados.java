@@ -54,4 +54,11 @@ public class GestorDeBaseDeDados {
         return resultRows;
     }
 
+    public void tryUpdateDatabase(String query){
+        try (Statement statement = connection.createStatement()){
+            statement.executeUpdate(query);
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
