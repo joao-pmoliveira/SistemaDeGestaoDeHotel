@@ -5,5 +5,13 @@ public class Cliente {
     private String nome;
     private int telefone;
 
-    public Cliente(){}
+    public Cliente(int nif, String nome, int telefone){
+        this.nif = nif;
+        this.nome = nome;
+        this.telefone = telefone;
+    }
+
+    public int getNif(){return nif;}
+    public String getNome(){return nome;}
+    public int getTelefone(){return telefone;}
 }
