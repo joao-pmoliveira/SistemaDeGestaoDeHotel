@@ -8,7 +8,7 @@ public class GestorDeClientes {
     public GestorDeClientes(){}
 
     protected boolean adicionarCliente(int nif, String nome, int telefone, GestorDeBaseDeDados gestorBD){
-        String query = String.format("REPLACE INTO Clientes VALUES ('%d', '%s', '%d')", nif, nome, telefone);
+        String query = String.format("REPLACE INTO cliente VALUES ('%d', '%s', '%d')", nif, nome, telefone);
 
         try {
             gestorBD.tryUpdateDatabase(query);
@@ -25,10 +25,7 @@ public class GestorDeClientes {
     }
 
     private void adicionarClienteCache(Cliente cliente){
-        if(cliente == null){
-            return;
-        }else {
-            clientes.put(cliente.getNif(), cliente);
-        }
+        if(cliente == null)return;
+        clientes.put(cliente.getNif(), cliente);
     }
 }
