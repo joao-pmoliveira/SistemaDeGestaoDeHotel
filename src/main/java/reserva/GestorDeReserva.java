@@ -2,9 +2,8 @@ package reserva;
 
 import basededados.GestorDeBaseDeDados;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 public class GestorDeReserva {
 
@@ -39,13 +38,40 @@ public class GestorDeReserva {
             }
             Reserva reserva = new Reserva(reservaId, clienteNIF, empregadoId, estadoPagamento, fatura);
             reservasEncontradas.add(reserva);
-
         }
 
         return reservasEncontradas;
     }
 
-    protected boolean adicionarReserva(){ return false; }
+    public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, String[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+        String baseQueryInsertReserva = "INSERT INTO reserva(cliente_nif, empregado_id, estado_pagamento, fatura_id) VALUES ";
+        String baseQueryInsertDiasReserva = "INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES ";
+        StringBuilder stringBuilderInsertReserva = new StringBuilder();
+        StringBuilder stringBuilderInsertDiasReserva = new StringBuilder(baseQueryInsertDiasReserva);
+
+        String dadosReserva = String.format("('%d', '%d', '0', NULL)", clienteNIF, empregadoID);
+        stringBuilderInsertReserva.append(baseQueryInsertReserva);
+        stringBuilderInsertReserva.append(dadosReserva);
+
+        String finalInsertReservaQuery = stringBuilderInsertReserva.toString();
+        gestorDeBaseDeDados.tryUpdateDatabase(finalInsertReservaQuery);
+
+        List<String> resultados = gestorDeBaseDeDados.tryQueryDatabase("select last_insert_id()");
+        int reservaID = Integer.parseInt(resultados.get(0));
+
+        for(int i = 0; i < quartos.length; i++){
+            for (int j = 0; j < datas.size(); j++) {
+                String linhaDeValores = String.format("('%s', %s, %s)", datas.get(j), quartos[i], reservaID);
+                stringBuilderInsertDiasReserva.append(linhaDeValores);
+
+                if ( i == quartos.length -1 && j == datas.size()-1 ) continue;
+                stringBuilderInsertDiasReserva.append(",");
+            }
+        }
+        String finalInsertDiaReservaQuery = stringBuilderInsertDiasReserva.toString();
+        gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
+    }
+
 
     protected float calculaPrecoReserva(){ return 0.0f; }
 
