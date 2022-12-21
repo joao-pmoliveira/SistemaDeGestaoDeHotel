@@ -10,8 +10,7 @@ public class Cliente {
         this.nome = nome;
         this.telefone = telefone;
     }
-
-    public int getNif(){return nif;}
+    public int getNIF(){return nif;}
     public String getNome(){return nome;}
     public int getTelefone(){return telefone;}
 }
