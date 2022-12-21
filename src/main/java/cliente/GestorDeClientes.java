@@ -17,7 +17,7 @@ public class GestorDeClientes {
         String query = String.format( "SELECT * FROM cliente WHERE nif =  %d", nif);
         List<String> dadosCliente = gestorBD.tryQueryDatabase(query);
 
-        If( dadosCliente.isEmpty() ) return null;
+        if( dadosCliente.isEmpty() ) return null;
 
         String [] dados = dadosCliente.get(0).split(",");
         Cliente cliente = new Cliente(Integer.parseInt(dados[0]), dados[1], Integer.parseInt(dados[2]));
@@ -44,6 +44,6 @@ public class GestorDeClientes {
 
     private void adicionarClienteCache(Cliente cliente){
         if(cliente == null)return;
-        clientes.put(cliente.getNif(), cliente);
+        clientes.put(cliente.getNIF(), cliente);
     }
 }
