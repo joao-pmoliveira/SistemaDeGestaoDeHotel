@@ -11,7 +11,7 @@ public class GestorDeClientes {
         this.clientes = new HashMap<Integer, Cliente>();
     }
 
-    protected Cliente procurarClientePorNIF(int nif, GestorDeBaseDeDados gestorBD){
+    public Cliente procurarClientePorNIF(int nif, GestorDeBaseDeDados gestorBD){
         if( clientes.containsKey(nif) ) return clientes.get(nif);
 
         String query = String.format( "SELECT * FROM cliente WHERE nif =  %d", nif);
@@ -25,7 +25,7 @@ public class GestorDeClientes {
         return cliente;
     }
 
-    protected boolean adicionarCliente(int nif, String nome, int telefone, GestorDeBaseDeDados gestorBD){
+    public boolean adicionarCliente(int nif, String nome, int telefone, GestorDeBaseDeDados gestorBD){
         String query = String.format("REPLACE INTO cliente VALUES ('%d', '%s', '%d')", nif, nome, telefone);
 
         try {
