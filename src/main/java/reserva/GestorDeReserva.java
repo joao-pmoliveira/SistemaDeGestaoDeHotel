@@ -45,24 +45,40 @@ public class GestorDeReserva {
 
     public List<Reserva> getReservasPorFaturarPorClienteNif(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados){
         if(gestorDeBaseDeDados == null) return null;
-        ArrayList<Reserva> reservasEncontradas = new ArrayList<>();
+        HashMap<Integer, Reserva> reservasEncontradas = new HashMap<>();
 
-        String query = String.format("SELECT * FROM reserva WHERE reserva.cliente_nif = %d and reserva.fatura_id IS NULL", nifCliente);
-        List<String> linhasRelacaoReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
-        if(linhasRelacaoReserva.isEmpty()) return null;
+        String query = String.format("SELECT reserva.id, reserva.cliente_nif, reserva.empregado_id," +
+                " dia_reserva.quarto_id, layout.preco_base" +
+                " from reserva left join fatura on fatura.id = reserva.id" +
+                " left join dia_reserva on dia_reserva.reserva_id = reserva.id" +
+                " left join quarto on quarto.id = dia_reserva.quarto_id" +
+                " left join layout on layout.id = quarto.layout_id" +
+                " where reserva.cliente_nif = %d and reserva.fatura_id is null", nifCliente);
 
-        for (String linha : linhasRelacaoReserva){
-            String[] dadosLinhas = linha.split(",");
-            int reservaID = Integer.parseInt(dadosLinhas[0]);
-            int clienteNIF = Integer.parseInt(dadosLinhas[1]);
-            int empregadoID = Integer.parseInt(dadosLinhas[2]);
-            boolean estadoPagamento = !dadosLinhas[3].equals("0");
-            Fatura fatura = null;
+        System.out.println(query);
 
-            Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, estadoPagamento, fatura);
-            reservasEncontradas.add(reserva);
+        List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
+        if(linhasReserva.isEmpty()) return null;
+
+
+        for( String linha : linhasReserva){
+            String[] colunas = linha.split(",");
+            int reservaID = Integer.parseInt(colunas[0]);
+            int clienteNIF = Integer.parseInt(colunas[1]);
+            int empregadoID = Integer.parseInt(colunas[2]);
+            int quartoID = Integer.parseInt(colunas[3]);
+            float quartoLayoutPrecoBase = Float.parseFloat(colunas[4]);
+
+            if(!reservasEncontradas.containsKey(reservaID)){
+                Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, quartoLayoutPrecoBase,false, null);
+                reservasEncontradas.put(reservaID, reserva);
+            }
+
+            reservasEncontradas.get(reservaID).adicionarQuarto(quartoID);
+            reservasEncontradas.get(reservaID).somarAoPrecoAtual(quartoLayoutPrecoBase);
         }
-        return reservasEncontradas;
+
+        return new ArrayList<>(reservasEncontradas.values());
     }
 
     public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, String[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
