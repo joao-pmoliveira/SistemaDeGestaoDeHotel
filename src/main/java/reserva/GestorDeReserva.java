@@ -43,6 +43,28 @@ public class GestorDeReserva {
         return reservasEncontradas;
     }
 
+    public List<Reserva> getReservasPorFaturarPorClienteNif(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if(gestorDeBaseDeDados == null) return null;
+        ArrayList<Reserva> reservasEncontradas = new ArrayList<>();
+
+        String query = String.format("SELECT * FROM reserva WHERE reserva.cliente_nif = %d and reserva.fatura_id IS NULL", nifCliente);
+        List<String> linhasRelacaoReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
+        if(linhasRelacaoReserva.isEmpty()) return null;
+
+        for (String linha : linhasRelacaoReserva){
+            String[] dadosLinhas = linha.split(",");
+            int reservaID = Integer.parseInt(dadosLinhas[0]);
+            int clienteNIF = Integer.parseInt(dadosLinhas[1]);
+            int empregadoID = Integer.parseInt(dadosLinhas[2]);
+            boolean estadoPagamento = !dadosLinhas[3].equals("0");
+            Fatura fatura = null;
+
+            Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, estadoPagamento, fatura);
+            reservasEncontradas.add(reserva);
+        }
+        return reservasEncontradas;
+    }
+
     public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, String[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
         String baseQueryInsertReserva = "INSERT INTO reserva(cliente_nif, empregado_id, estado_pagamento, fatura_id) VALUES ";
         String baseQueryInsertDiasReserva = "INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES ";
@@ -71,7 +93,6 @@ public class GestorDeReserva {
         String finalInsertDiaReservaQuery = stringBuilderInsertDiasReserva.toString();
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
     }
-
 
     protected float calculaPrecoReserva(){ return 0.0f; }
 
