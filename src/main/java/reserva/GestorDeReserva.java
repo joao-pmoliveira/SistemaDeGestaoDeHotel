@@ -110,7 +110,22 @@ public class GestorDeReserva {
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
     }
 
-    protected float calculaPrecoReserva(){ return 0.0f; }
+    public void gerarFaturaParaReserva(Reserva reserva, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if (reserva == null) return;
 
+        float faturaMontante = reserva.getPrecoAtual();
+        String sqlAdicionarFatura = "insert into fatura(montante_total) values (" + faturaMontante + ")";
 
+        gestorDeBaseDeDados.tryUpdateDatabase(sqlAdicionarFatura);
+        List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase("select last_insert_id()");
+
+        int faturaID = Integer.parseInt(resultado.get(0));
+
+        String sqlAtualizarFaturaIDEmReserva = String.format("UPDATE reserva SET reserva.fatura_id = %d, reserva.estado_pagamento='1' WHERE reserva.id = %d", faturaID, reserva.getReservaID());
+        gestorDeBaseDeDados.tryUpdateDatabase(sqlAtualizarFaturaIDEmReserva);
+
+        Fatura fatura = new Fatura(faturaID, faturaMontante);
+        reserva.setFatura(fatura);
+        reserva.setReservaPaga(true);
+    }
 }
