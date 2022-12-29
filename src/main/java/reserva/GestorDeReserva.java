@@ -10,37 +10,92 @@ public class GestorDeReserva {
     public GestorDeReserva(){
     }
 
-    public List<Reserva> getReservasPorClienteNIF(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados) {
+    public List<Reserva> getTodasReservasPorClienteNIF(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados) {
         if(gestorDeBaseDeDados == null) return null;
-        List<Reserva> reservasEncontradas = new ArrayList<>();
+        HashMap<Integer, Reserva> reservasEncontradas = new HashMap<>();
 
-        String query = String.format("SELECT * FROM reserva WHERE cliente_nif = %d", nifCliente);
-        List<String> linhasRelacaoReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
-        if (linhasRelacaoReserva.isEmpty()) return null;
+        String query = String.format("SELECT reserva.id, reserva.cliente_nif, reserva.empregado_id, reserva.estado_pagamento, " +
+                " reserva.fatura_id, fatura.montante_total, " +
+                " dia_reserva.quarto_id, quarto.layout_id, layout.preco_base" +
+                " from reserva left join fatura on fatura.id = reserva.id" +
+                " left join dia_reserva on dia_reserva.reserva_id = reserva.id" +
+                " left join quarto on quarto.id = dia_reserva.quarto_id" +
+                " left join layout on layout.id = quarto.layout_id" +
+                " where reserva.cliente_nif = %d ", nifCliente);
 
-        for(String linha : linhasRelacaoReserva){
-            String[] dadosLinha = linha.split(",");
-            int reservaId = Integer.parseInt(dadosLinha[0]);
-            int clienteNIF = Integer.parseInt(dadosLinha[1]);
-            int empregadoId = Integer.parseInt(dadosLinha[2]);
-            boolean estadoPagamento = !dadosLinha[3].equals("0");
+        List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
+        if(linhasReserva.isEmpty()) return null;
+
+
+        for( String linha : linhasReserva){
+            String[] colunas = linha.split(",");
+            int reservaID = Integer.parseInt(colunas[0]);
+            int clienteNIF = Integer.parseInt(colunas[1]);
+            int empregadoID = Integer.parseInt(colunas[2]);
+            boolean estadoPagamento = colunas[3].equals("1");
+            int faturaID;
+            float faturaMontante;
+            int quartoID = Integer.parseInt(colunas[6]);
+            int quartoLayoutID = Integer.parseInt(colunas[7]);
+            float quartoLayoutPrecoBase = Float.parseFloat(colunas[8]);
             Fatura fatura = null;
-            if(estadoPagamento){
-                int faturaId = Integer.parseInt(dadosLinha[4]);
-                String faturaQuery = String.format("SELECT * FROM fatura WHERE id = %d", faturaId);
-                List<String> faturaResultado = gestorDeBaseDeDados.tryQueryDatabase(faturaQuery);
-                if (!faturaResultado.isEmpty()) {
-                    String[] faturaLinha = faturaResultado.get(0).split(",");
 
-                    float faturaMontanteFinal = Float.parseFloat(faturaLinha[1]);
-                    fatura = new Fatura(faturaId, faturaMontanteFinal);
-                }
+            if (estadoPagamento){
+                faturaID = Integer.parseInt(colunas[4]);
+                faturaMontante = Float.parseFloat(colunas[5]);
+
+                fatura = new Fatura(faturaID, faturaMontante);
             }
-            Reserva reserva = new Reserva(reservaId, clienteNIF, empregadoId, estadoPagamento, fatura);
-            reservasEncontradas.add(reserva);
+
+            if(!reservasEncontradas.containsKey(reservaID)){
+                Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, quartoLayoutPrecoBase,estadoPagamento, fatura);
+                reservasEncontradas.put(reservaID, reserva);
+            }
+
+            reservasEncontradas.get(reservaID).adicionarQuarto(quartoID);
+            reservasEncontradas.get(reservaID).somarAoPrecoAtual(quartoLayoutPrecoBase);
         }
 
-        return reservasEncontradas;
+        return new ArrayList<>(reservasEncontradas.values());
+
+    }
+
+    public List<Reserva> getReservasPorFaturarPorClienteNif(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if(gestorDeBaseDeDados == null) return null;
+        HashMap<Integer, Reserva> reservasEncontradas = new HashMap<>();
+
+        String query = String.format("SELECT reserva.id, reserva.cliente_nif, reserva.empregado_id," +
+                " dia_reserva.quarto_id, layout.preco_base" +
+                " from reserva left join fatura on fatura.id = reserva.id" +
+                " left join dia_reserva on dia_reserva.reserva_id = reserva.id" +
+                " left join quarto on quarto.id = dia_reserva.quarto_id" +
+                " left join layout on layout.id = quarto.layout_id" +
+                " where reserva.cliente_nif = %d and reserva.fatura_id is null", nifCliente);
+
+        System.out.println(query);
+
+        List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
+        if(linhasReserva.isEmpty()) return null;
+
+
+        for( String linha : linhasReserva){
+            String[] colunas = linha.split(",");
+            int reservaID = Integer.parseInt(colunas[0]);
+            int clienteNIF = Integer.parseInt(colunas[1]);
+            int empregadoID = Integer.parseInt(colunas[2]);
+            int quartoID = Integer.parseInt(colunas[3]);
+            float quartoLayoutPrecoBase = Float.parseFloat(colunas[4]);
+
+            if(!reservasEncontradas.containsKey(reservaID)){
+                Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, quartoLayoutPrecoBase,false, null);
+                reservasEncontradas.put(reservaID, reserva);
+            }
+
+            reservasEncontradas.get(reservaID).adicionarQuarto(quartoID);
+            reservasEncontradas.get(reservaID).somarAoPrecoAtual(quartoLayoutPrecoBase);
+        }
+
+        return new ArrayList<>(reservasEncontradas.values());
     }
 
     public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, String[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
@@ -72,8 +127,22 @@ public class GestorDeReserva {
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
     }
 
+    public void gerarFaturaParaReserva(Reserva reserva, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if (reserva == null) return;
 
-    protected float calculaPrecoReserva(){ return 0.0f; }
+        float faturaMontante = reserva.getPrecoAtual();
+        String sqlAdicionarFatura = "insert into fatura(montante_total) values (" + faturaMontante + ")";
 
+        gestorDeBaseDeDados.tryUpdateDatabase(sqlAdicionarFatura);
+        List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase("select last_insert_id()");
 
+        int faturaID = Integer.parseInt(resultado.get(0));
+
+        String sqlAtualizarFaturaIDEmReserva = String.format("UPDATE reserva SET reserva.fatura_id = %d, reserva.estado_pagamento='1' WHERE reserva.id = %d", faturaID, reserva.getReservaID());
+        gestorDeBaseDeDados.tryUpdateDatabase(sqlAtualizarFaturaIDEmReserva);
+
+        Fatura fatura = new Fatura(faturaID, faturaMontante);
+        reserva.setFatura(fatura);
+        reserva.setReservaPaga(true);
+    }
 }
