@@ -16,13 +16,15 @@ public class GestorDeEmpregados {
     public Empregado procurarEmpregadoPorNIF(int nif, GestorDeBaseDeDados gestorDeBaseDeDados){
         if (empregados.containsKey(nif))return empregados.get(nif);
 
-        String pesquisa = String.format("SELECT * FROM empregado WHERE nif = %d",nif);
+        String pesquisa = String.format("SELECT (id, nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida) FROM empregado WHERE nif = %d",nif);
         List<String> dadosEmpregado = gestorDeBaseDeDados.tryQueryDatabase(pesquisa);
 
         if(dadosEmpregado.isEmpty())return null;
 
         String [] dados = dadosEmpregado.get(0).split(",");
-        return new Empregado(Integer.parseInt(dados[0]), dados[1], Integer.parseInt(dados[2]), dados[3], Integer.parseInt(dados[4]), Integer.parseInt(dados[5]), Float.parseFloat(dados[6]), dados[7], dados[8]);
+        Empregado empregado= new Empregado(Integer.parseInt(dados[0]), dados[1], Integer.parseInt(dados[2]), dados[3], Integer.parseInt(dados[4]), Integer.parseInt(dados[5]), Float.parseFloat(dados[6]), dados[7], dados[8]);
+        adicionarEmpregadoCache(empregado);
+        return empregado;
     }
 
 
@@ -35,7 +37,7 @@ public class GestorDeEmpregados {
             }
         }
 
-        String pesquisa = String.format("SELECT * FROM empregado WHERE id = %d", id);
+        String pesquisa = String.format("SELECT (id, nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida) FROM empregado WHERE id = %d", id);
         List<String> dadosEmpregado = gestorDeBaseDeDados.tryQueryDatabase(pesquisa);
 
         if(dadosEmpregado.isEmpty())return null;
@@ -55,8 +57,8 @@ public class GestorDeEmpregados {
            gestorDeBaseDeDados.tryUpdateDatabase(query);
            List<String> resultados = gestorDeBaseDeDados.tryQueryDatabase("select last_insert_id()");
 
-           int clienteID = Integer.parseInt(resultados.get(0));
-           adicionarEmpregadoCache(clienteID, nome, cargo, morada, telefone, nif, salario, horaEntrada,horaSaida);
+           int empregadoID = Integer.parseInt(resultados.get(0));
+           adicionarEmpregadoCache(empregadoID, nome, cargo, morada, telefone, nif, salario, horaEntrada,horaSaida);
            return true;
        } catch (Exception e) {
            throw new RuntimeException(e);
