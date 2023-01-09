@@ -1,28 +1,20 @@
 package quarto;
 
 import basededados.GestorDeBaseDeDados;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class GestorDeQuartos {
-    private HashMap<Integer, Quarto> quartos;
-
-    public GestorDeQuartos(){this.quartos = new HashMap<>();}
+    public GestorDeQuartos(){}
 
     public Quarto procurarQuartoPorID(int quartoId, GestorDeBaseDeDados gestorBD){
-        if(quartos.containsKey(quartoId) ) return quartos.get(quartoId);
-
         String query = String.format( "SELECT * FROM quarto, layout WHERE quarto.id = %d AND layout.id = quarto.layout_id", quartoId);
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
 
         String [] dados = dadosQuarto.get(0).split(",");
         Quarto quarto = new Quarto(quartoId, Integer.parseInt(dados[2]), Float.parseFloat(dados[5]), dados[3], dados[4]);
-        adicionarQuartoCache(quartoId, quarto);
         return quarto;
     }
 
@@ -40,7 +32,7 @@ public class GestorDeQuartos {
         return quartosLayout;
     }
 
-    public ArrayList<Quarto> procurarQuartosDisponiveis(String dataInicial, String dataFinal, GestorDeBaseDeDados gestorBD) {
+    public ArrayList<Quarto> procurarQuartosDisponiveis(Date dataInicial, Date dataFinal, GestorDeBaseDeDados gestorBD) {
         ArrayList<Quarto> quartosLayout = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -50,8 +42,10 @@ public class GestorDeQuartos {
                         + "AND dia_reserva.data_reserva BETWEEN '%s' AND '%s' "
                         + "LEFT JOIN layout ON quarto.layout_id = layout.id "
                         + "WHERE dia_reserva.data_reserva is null",
-                simpleDateFormat.format(validarData(dataInicial)),
-                simpleDateFormat.format(validarData(dataFinal)));
+                simpleDateFormat.format(dataInicial),
+                simpleDateFormat.format(dataFinal));
+
+        System.out.println(query);
 
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
         for (String q : dadosQuarto) {
@@ -59,7 +53,6 @@ public class GestorDeQuartos {
             Quarto quarto = new Quarto(Integer.parseInt(dados[0]), Integer.parseInt(dados[1]), Float.parseFloat(dados[4]), dados[2], dados[3]);
             quartosLayout.add(quarto);
         }
-
         return quartosLayout;
     }
 
@@ -71,23 +64,6 @@ public class GestorDeQuartos {
             return true;
         }catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void adicionarQuartoCache(int quartoId, Quarto quarto){
-        if(quarto == null)return;
-        quartos.put(quartoId, quarto);
-    }
-
-    private static Date validarData(String dataInput){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        if(dataInput.isBlank()) return null;
-        try {
-            Date data = simpleDateFormat.parse(dataInput);
-            return data;
-        } catch (ParseException e) {
-            System.out.println("Data Inválida. Formato: aaaa-mm-dd");
-            return null;
         }
     }
 }
