@@ -1,28 +1,20 @@
 package quarto;
 
 import basededados.GestorDeBaseDeDados;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class GestorDeQuartos {
-    private HashMap<Integer, Quarto> quartos;
-
-    public GestorDeQuartos(){this.quartos = new HashMap<>();}
+    public GestorDeQuartos(){}
 
     public Quarto procurarQuartoPorID(int quartoId, GestorDeBaseDeDados gestorBD){
-        if(quartos.containsKey(quartoId) ) return quartos.get(quartoId);
-
         String query = String.format( "SELECT * FROM quarto, layout WHERE quarto.id = %d AND layout.id = quarto.layout_id", quartoId);
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
 
         String [] dados = dadosQuarto.get(0).split(",");
         Quarto quarto = new Quarto(quartoId, Integer.parseInt(dados[2]), Float.parseFloat(dados[5]), dados[3], dados[4]);
-        adicionarQuartoCache(quartoId, quarto);
         return quarto;
     }
 
@@ -61,7 +53,6 @@ public class GestorDeQuartos {
             Quarto quarto = new Quarto(Integer.parseInt(dados[0]), Integer.parseInt(dados[1]), Float.parseFloat(dados[4]), dados[2], dados[3]);
             quartosLayout.add(quarto);
         }
-
         return quartosLayout;
     }
 
