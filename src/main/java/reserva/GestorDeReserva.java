@@ -11,6 +11,7 @@ public class GestorDeReserva {
     }
 
     public List<Reserva> getTodasReservasPorClienteNIF(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados) {
+        if(nifCliente < 1 ) return null;
         if(gestorDeBaseDeDados == null) return null;
         HashMap<Integer, Reserva> reservasEncontradas = new HashMap<>();
 
@@ -98,7 +99,13 @@ public class GestorDeReserva {
         return new ArrayList<>(reservasEncontradas.values());
     }
 
-    public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, String[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+    public boolean adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, int[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if(clienteNIF < 1) return false;
+        if(empregadoID < 1) return false;
+        if(datas == null || datas.isEmpty()) return false;
+        if(quartos == null || quartos.length == 0) return false;
+        if(gestorDeBaseDeDados == null) return false;
+
         String baseQueryInsertReserva = "INSERT INTO reserva(cliente_nif, empregado_id, estado_pagamento, fatura_id) VALUES ";
         String baseQueryInsertDiasReserva = "INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES ";
         StringBuilder stringBuilderInsertReserva = new StringBuilder();
@@ -116,7 +123,7 @@ public class GestorDeReserva {
 
         for(int i = 0; i < quartos.length; i++){
             for (int j = 0; j < datas.size(); j++) {
-                String linhaDeValores = String.format("('%s', %s, %s)", datas.get(j), quartos[i], reservaID);
+                String linhaDeValores = String.format("('%s', %d, %s)", datas.get(j), quartos[i], reservaID);
                 stringBuilderInsertDiasReserva.append(linhaDeValores);
 
                 if ( i == quartos.length -1 && j == datas.size()-1 ) continue;
@@ -125,6 +132,7 @@ public class GestorDeReserva {
         }
         String finalInsertDiaReservaQuery = stringBuilderInsertDiasReserva.toString();
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
+        return true;
     }
 
     public void gerarFaturaParaReserva(Reserva reserva, GestorDeBaseDeDados gestorDeBaseDeDados){
