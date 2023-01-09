@@ -40,7 +40,7 @@ public class GestorDeQuartos {
         return quartosLayout;
     }
 
-    public ArrayList<Quarto> procurarQuartosDisponiveis(String dataInicial, String dataFinal, GestorDeBaseDeDados gestorBD) {
+    public ArrayList<Quarto> procurarQuartosDisponiveis(Date dataInicial, Date dataFinal, GestorDeBaseDeDados gestorBD) {
         ArrayList<Quarto> quartosLayout = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -50,8 +50,10 @@ public class GestorDeQuartos {
                         + "AND dia_reserva.data_reserva BETWEEN '%s' AND '%s' "
                         + "LEFT JOIN layout ON quarto.layout_id = layout.id "
                         + "WHERE dia_reserva.data_reserva is null",
-                simpleDateFormat.format(validarData(dataInicial)),
-                simpleDateFormat.format(validarData(dataFinal)));
+                simpleDateFormat.format(dataInicial),
+                simpleDateFormat.format(dataFinal));
+
+        System.out.println(query);
 
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
         for (String q : dadosQuarto) {
@@ -71,23 +73,6 @@ public class GestorDeQuartos {
             return true;
         }catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void adicionarQuartoCache(int quartoId, Quarto quarto){
-        if(quarto == null)return;
-        quartos.put(quartoId, quarto);
-    }
-
-    private static Date validarData(String dataInput){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        if(dataInput.isBlank()) return null;
-        try {
-            Date data = simpleDateFormat.parse(dataInput);
-            return data;
-        } catch (ParseException e) {
-            System.out.println("Data Inválida. Formato: aaaa-mm-dd");
-            return null;
         }
     }
 }
