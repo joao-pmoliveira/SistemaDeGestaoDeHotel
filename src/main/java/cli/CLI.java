@@ -16,6 +16,8 @@ import utils.GestorDeDatas;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CLI {
 
@@ -64,7 +66,33 @@ public class CLI {
                     System.out.println(cliente.getNome() + " | " + cliente.getNIF() + " | " + cliente.getTelefone());
                 }
                 case 2 -> {
-                    //Adicionar novo cliente
+                    int clienteNIF;
+                    do{
+                        System.out.println("NIF do cliente:");
+                        clienteNIF = scanner.nextInt();
+                        if(clienteNIF < 1) System.out.println("NIF inválido.");
+                    }while(clienteNIF < 1);
+
+                    String clienteNome;
+                    int minTamanhoNome = 3;
+                    do {
+                        System.out.println("Nome do Cliente:");
+                        clienteNome = scanner.nextLine();
+                        clienteNome = clienteNome.trim();
+                        clienteNome = clienteNome.replaceAll("[^A-Za-z\\s]", "");
+                        if (clienteNome.length() < minTamanhoNome) System.out.println("Nome Inválido.");
+                    } while (clienteNome.length() < minTamanhoNome);
+
+                    String telefone;
+                    do {
+                        System.out.println("Telefone: ");
+                        telefone = scanner.nextLine();
+                    } while (!telefone.matches("\\d{9}"));
+                    int clienteTefelone = Integer.parseInt(telefone);
+
+                    boolean resultado = gestorDeClientes.adicionarCliente(clienteNIF, clienteNome, clienteTefelone, gestorDeBaseDeDados);
+
+                    System.out.println("Adição bem sucedida?: " + resultado);
                 }
                 case 3 -> {
                     int empregadoNIF;
@@ -99,7 +127,83 @@ public class CLI {
                     System.out.println(empregado.getNome());
                 }
                 case 5 -> {
-                    //Adicionar Empregado
+                    String empregadoNome;
+                    int minTamanhoNome = 3;
+                    do {
+                        System.out.println("Nome do empregado:");
+                        empregadoNome = scanner.nextLine();
+                        empregadoNome = empregadoNome.trim();
+                        empregadoNome = empregadoNome.replaceAll("[^A-Za-z\\s]", "");
+                        if (empregadoNome.length() < minTamanhoNome) System.out.println("Nome Inválido.");
+                    } while (empregadoNome.length() < minTamanhoNome);
+
+                    int empregadoCargoID;
+                    do{
+                        System.out.println("Cargo do Empregado: [1-Rececionista,2-Limpeza,3-RecursosHumanos");
+                        empregadoCargoID = scanner.nextInt();
+                        scanner.nextLine();
+                    }while(empregadoCargoID < 1 || empregadoCargoID > 3);
+
+                    String empregadoMorada;
+                    do{
+                        System.out.println("Morada: (sem vírgulas)");
+                        empregadoMorada = scanner.nextLine();
+                        empregadoMorada = empregadoMorada.replaceAll(",(?=\\s|$)", "");
+                    }while(empregadoMorada.isEmpty());
+
+                    String telefone;
+                    do {
+                        System.out.println("Telefone: ");
+                        telefone = scanner.nextLine();
+                    } while (!telefone.matches("\\d{9}"));
+                    int empregadoTelefone = Integer.parseInt(telefone);
+
+                    int empregadoNIF;
+                    do{
+                        System.out.println("NIF do empregado:");
+                        empregadoNIF = scanner.nextInt();
+                        if(empregadoNIF < 1) System.out.println("NIF inválido.");
+                    }while(empregadoNIF < 1);
+
+                    float empregadoSalario;
+                    do{
+                        System.out.println("Salario do empregado");
+                        empregadoSalario = scanner.nextFloat();
+                        scanner.nextLine();
+                    }while(empregadoSalario <= 0f);
+
+                    boolean horaValida;
+                    String empregadoHoraEntrada;
+                    do{
+                        System.out.println("Introduza a hora de entrada HH:mm:ss");
+                        empregadoHoraEntrada = scanner.nextLine();
+                        Pattern pattern = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+                        Matcher matcher = pattern.matcher(empregadoHoraEntrada);
+                        horaValida = matcher.matches();
+                    }while(!horaValida);
+
+                    String empregadoHoraSaida;
+                    do{
+                        System.out.println("Introduza a hora de saida HH:mm:ss");
+                        empregadoHoraSaida = scanner.nextLine();
+                        Pattern pattern = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
+                        Matcher matcher = pattern.matcher(empregadoHoraSaida);
+                        horaValida = matcher.matches();
+                    }while(!horaValida);
+
+                    String empregadoPasse;
+                    boolean passwordValida;
+                    do{
+                        System.out.println("Introduza a hora de entrada HH:mm:ss");
+                        empregadoPasse = scanner.nextLine();
+                        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{4,}$\n");
+                        Matcher matcher = pattern.matcher(empregadoPasse);
+                        passwordValida = matcher.matches();
+                    }while(!passwordValida);
+
+                    gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargoID, empregadoMorada,
+                            empregadoTelefone, empregadoNIF, empregadoSalario, empregadoHoraEntrada,
+                            empregadoHoraSaida, empregadoPasse, gestorDeBaseDeDados);
                 }
                 case 6 -> {
                     //procurar registos de limpeza dado quarto ID
@@ -154,7 +258,6 @@ public class CLI {
                     //registar novo quarto
                 }
                 case 13 -> {
-                    //Consultar Reserva do Cliente
                     int clienteNIF;
                     do {
                         System.out.println("Cliente NIF:");
