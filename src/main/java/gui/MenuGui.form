@@ -21,7 +21,7 @@
           <background color="-4473925"/>
           <foreground color="-16514885"/>
           <preferredSize width="10" height="10"/>
-          <visible value="false"/>
+          <visible value="true"/>
         </properties>
         <border type="none"/>
         <children>
@@ -35,7 +35,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="3b093" class="javax.swing.JButton" binding="clientesButton">
+          <component id="3b093" class="javax.swing.JButton" binding="clienteButton">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -43,7 +43,7 @@
               <text value="Clientes"/>
             </properties>
           </component>
-          <component id="193f2" class="javax.swing.JButton" binding="limpezasButton" default-binding="true">
+          <component id="193f2" class="javax.swing.JButton" binding="limpezaButton">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -51,7 +51,7 @@
               <text value="Limpezas"/>
             </properties>
           </component>
-          <component id="6fbba" class="javax.swing.JButton" binding="empregadosButton" default-binding="true">
+          <component id="6fbba" class="javax.swing.JButton" binding="empregadoButton">
             <constraints>
               <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -67,7 +67,7 @@
               <text value="Faturação"/>
             </properties>
           </component>
-          <component id="1eda3" class="javax.swing.JButton" binding="reservasButton" default-binding="true">
+          <component id="1eda3" class="javax.swing.JButton" binding="reservaButton">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -602,7 +602,7 @@
               <text value="Editar"/>
             </properties>
           </component>
-          <component id="cb05b" class="javax.swing.JButton" binding="recuarButtonEmprgado">
+          <component id="cb05b" class="javax.swing.JButton" binding="recuarButtonEmpregado">
             <constraints>
               <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

@@ -8,16 +8,16 @@ public class MenuGui extends JFrame{
     private JPanel mainPanel;
     private JPanel menuPanel;
     private JTable table1;
-    private JButton clientesButton;
-    private JButton limpezasButton;
-    private JButton empregadosButton;
+    private JButton clienteButton;
+    private JButton limpezaButton;
+    private JButton empregadoButton;
     private JButton faturacaoButton;
     private JPanel reservaPanel;
     private JPanel clientePanel;
     private JPanel limpezaPanel;
     private JPanel empregadoPanel;
     private JPanel faturacaoPanel;
-    private JButton reservasButton;
+    private JButton reservaButton;
     private JTable table2;
     private JTextField nomeField;
     private JLabel nomeLabel;
@@ -56,7 +56,7 @@ public class MenuGui extends JFrame{
     private JPasswordField passwordField;
     private JButton salvarButtonEmpregado;
     private JButton editarButtonEmpregado;
-    private JButton recuarButtonEmprgado;
+    private JButton recuarButtonEmpregado;
     private JLabel cargoField;
     private JLabel moradaLabel;
     private JLabel telefoneLabel1;
@@ -97,7 +97,7 @@ public class MenuGui extends JFrame{
         this.setSize(1000,600);
 
 
-        clientesButton.addMouseListener(new MouseAdapter() {
+        clienteButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -113,7 +113,7 @@ public class MenuGui extends JFrame{
                 menuPanel.setVisible(true);
             }
         });
-        reservasButton.addMouseListener(new MouseAdapter() {
+        reservaButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -145,7 +145,7 @@ public class MenuGui extends JFrame{
                 menuPanel.setVisible(true);
             }
         });
-        recuarButtonEmprgado.addMouseListener(new MouseAdapter() {
+        recuarButtonEmpregado.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -153,7 +153,7 @@ public class MenuGui extends JFrame{
                 menuPanel.setVisible(true);
             }
         });
-        empregadosButton.addMouseListener(new MouseAdapter() {
+        empregadoButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -161,7 +161,7 @@ public class MenuGui extends JFrame{
                 empregadoPanel.setVisible(true);
             }
         });
-        limpezasButton.addMouseListener(new MouseAdapter() {
+        limpezaButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
