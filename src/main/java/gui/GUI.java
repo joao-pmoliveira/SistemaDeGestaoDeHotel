@@ -58,7 +58,7 @@ public class GUI extends JFrame{
 
 
 
-                if(userField.getText().isEmpty()||passwordField.getText().isEmpty()){
+                if(userField.getText().isEmpty()||passwordField.getPassword().length==0){
                     System.out.println("campos vazios");
                     return;
                 }
