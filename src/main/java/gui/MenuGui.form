@@ -35,7 +35,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="3b093" class="javax.swing.JButton" binding="hospedesButton">
+          <component id="3b093" class="javax.swing.JButton" binding="clientesButton">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -93,7 +93,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="9e96b" class="javax.swing.JButton" binding="salvarButton1" default-binding="true">
+          <component id="9e96b" class="javax.swing.JButton" binding="salvarButtonReserva">
             <constraints>
               <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -101,7 +101,7 @@
               <text value="Salvar"/>
             </properties>
           </component>
-          <component id="83b1" class="javax.swing.JButton" binding="recuarButton1" default-binding="true">
+          <component id="83b1" class="javax.swing.JButton" binding="recuarButtonReserva">
             <constraints>
               <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -273,7 +273,7 @@
               <text value="Nome"/>
             </properties>
           </component>
-          <component id="a06e9" class="javax.swing.JButton" binding="recuarButton" default-binding="true">
+          <component id="a06e9" class="javax.swing.JButton" binding="recuarButtonCliente">
             <constraints>
               <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -281,7 +281,7 @@
               <text value="Recuar"/>
             </properties>
           </component>
-          <component id="6eb99" class="javax.swing.JButton" binding="editarButton">
+          <component id="6eb99" class="javax.swing.JButton" binding="editarButtonCliente">
             <constraints>
               <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -290,7 +290,7 @@
               <text value="Editar"/>
             </properties>
           </component>
-          <component id="21776" class="javax.swing.JButton" binding="salvarButton">
+          <component id="21776" class="javax.swing.JButton" binding="salvarButtonCliente">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -418,7 +418,7 @@
               <text value=""/>
             </properties>
           </component>
-          <component id="fb639" class="javax.swing.JButton" binding="salvarButton3" default-binding="true">
+          <component id="fb639" class="javax.swing.JButton" binding="salvarButtonLimpeza">
             <constraints>
               <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -426,7 +426,7 @@
               <text value="Salvar"/>
             </properties>
           </component>
-          <component id="e9d15" class="javax.swing.JButton" binding="editarButton2" default-binding="true">
+          <component id="e9d15" class="javax.swing.JButton" binding="editarButtonLimpeza">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -434,7 +434,7 @@
               <text value="Editar"/>
             </properties>
           </component>
-          <component id="bab75" class="javax.swing.JButton" binding="recuarButton4" default-binding="true">
+          <component id="bab75" class="javax.swing.JButton" binding="recuarButtonLimpeza">
             <constraints>
               <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -586,7 +586,7 @@
               <text value="Password"/>
             </properties>
           </component>
-          <component id="ead24" class="javax.swing.JButton" binding="salvarButton2">
+          <component id="ead24" class="javax.swing.JButton" binding="salvarButtonEmpregado">
             <constraints>
               <grid row="16" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -594,7 +594,7 @@
               <text value="Salvar"/>
             </properties>
           </component>
-          <component id="5c9ee" class="javax.swing.JButton" binding="editarButton1">
+          <component id="5c9ee" class="javax.swing.JButton" binding="editarButtonEmpregado">
             <constraints>
               <grid row="17" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -602,7 +602,7 @@
               <text value="Editar"/>
             </properties>
           </component>
-          <component id="cb05b" class="javax.swing.JButton" binding="recuarButton3">
+          <component id="cb05b" class="javax.swing.JButton" binding="recuarButtonEmprgado">
             <constraints>
               <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -654,7 +654,7 @@
               <text value="Pesquisar NIF : "/>
             </properties>
           </component>
-          <component id="ce188" class="javax.swing.JButton" binding="recuarButton2" default-binding="true">
+          <component id="ce188" class="javax.swing.JButton" binding="recuarButtonFaturacao">
             <constraints>
               <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

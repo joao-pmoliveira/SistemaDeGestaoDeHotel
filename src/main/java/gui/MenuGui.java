@@ -8,7 +8,7 @@ public class MenuGui extends JFrame{
     private JPanel mainPanel;
     private JPanel menuPanel;
     private JTable table1;
-    private JButton hospedesButton;
+    private JButton clientesButton;
     private JButton limpezasButton;
     private JButton empregadosButton;
     private JButton faturacaoButton;
@@ -25,17 +25,17 @@ public class MenuGui extends JFrame{
     private JLabel telefoneLabel;
     private JTextField nifField;
     private JLabel nifLabel;
-    private JButton salvarButton;
-    private JButton editarButton;
-    private JButton recuarButton;
+    private JButton salvarButtonCliente;
+    private JButton editarButtonCliente;
+    private JButton recuarButtonCliente;
     private JTextField pesquisarClienteNifField;
     private JLabel pesquisarClienteNifLabel;
     private JTable table3;
     private JTextField nifField1;
     private JTextField idEmpregadoField;
     private JLabel nifLabel2;
-    private JButton salvarButton1;
-    private JButton recuarButton1;
+    private JButton salvarButtonReserva;
+    private JButton recuarButtonReserva;
     private JTextField pesquisarReservaNifField;
     private JTextField numeroQuartoField;
     private JLabel numeroQuartoLabel;
@@ -44,7 +44,7 @@ public class MenuGui extends JFrame{
     private JTable table4;
     private JTextField textField3;
     private JLabel pesquisarFaturaNIF;
-    private JButton recuarButton2;
+    private JButton recuarButtonFaturacao;
     private JTable table5;
     private JTextField nomeField1;
     private JTextField moradaField;
@@ -54,9 +54,9 @@ public class MenuGui extends JFrame{
     private JTextField horaEntradaField;
     private JTextField horasaidaField;
     private JPasswordField passwordField;
-    private JButton salvarButton2;
-    private JButton editarButton1;
-    private JButton recuarButton3;
+    private JButton salvarButtonEmpregado;
+    private JButton editarButtonEmpregado;
+    private JButton recuarButtonEmprgado;
     private JLabel cargoField;
     private JLabel moradaLabel;
     private JLabel telefoneLabel1;
@@ -71,9 +71,9 @@ public class MenuGui extends JFrame{
     private JTextField pesquisarEmpregadoField;
     private JTextField pesquisarQuartoField;
     private JTextField pesquisarDataField;
-    private JButton salvarButton3;
-    private JButton editarButton2;
-    private JButton recuarButton4;
+    private JButton salvarButtonLimpeza;
+    private JButton editarButtonLimpeza;
+    private JButton recuarButtonLimpeza;
     private JLabel pesquisarDataLabel;
     private JLabel pesquisarQuartoLabel;
     private JLabel pesquisarEmpregadoLabel;
@@ -97,7 +97,7 @@ public class MenuGui extends JFrame{
         this.setSize(1000,600);
 
 
-        hospedesButton.addMouseListener(new MouseAdapter() {
+        clientesButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -105,7 +105,7 @@ public class MenuGui extends JFrame{
                 clientePanel.setVisible(true);
             }
         });
-        recuarButton.addMouseListener(new MouseAdapter() {
+        recuarButtonCliente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -121,7 +121,7 @@ public class MenuGui extends JFrame{
                 reservaPanel.setVisible(true);
             }
         });
-        recuarButton1.addMouseListener(new MouseAdapter() {
+        recuarButtonReserva.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -137,7 +137,7 @@ public class MenuGui extends JFrame{
                 faturacaoPanel.setVisible(true);
             }
         });
-        recuarButton2.addMouseListener(new MouseAdapter() {
+        recuarButtonFaturacao.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -145,7 +145,7 @@ public class MenuGui extends JFrame{
                 menuPanel.setVisible(true);
             }
         });
-        recuarButton3.addMouseListener(new MouseAdapter() {
+        recuarButtonEmprgado.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -169,7 +169,7 @@ public class MenuGui extends JFrame{
                 limpezaPanel.setVisible(true);
             }
         });
-        recuarButton4.addMouseListener(new MouseAdapter() {
+        recuarButtonLimpeza.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
