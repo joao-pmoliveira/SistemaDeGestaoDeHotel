@@ -17,7 +17,7 @@ public class GestorDeReserva {
         String query = String.format("SELECT reserva.id, reserva.cliente_nif, reserva.empregado_id, reserva.estado_pagamento, " +
                 " reserva.fatura_id, fatura.montante_total, " +
                 " dia_reserva.quarto_id, quarto.layout_id, layout.preco_base" +
-                " from reserva left join fatura on fatura.id = reserva.id" +
+                " from reserva left join fatura on fatura.id = reserva.fatura_id" +
                 " left join dia_reserva on dia_reserva.reserva_id = reserva.id" +
                 " left join quarto on quarto.id = dia_reserva.quarto_id" +
                 " left join layout on layout.id = quarto.layout_id" +
@@ -98,7 +98,7 @@ public class GestorDeReserva {
         return new ArrayList<>(reservasEncontradas.values());
     }
 
-    public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, String[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+    public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, int[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
         String baseQueryInsertReserva = "INSERT INTO reserva(cliente_nif, empregado_id, estado_pagamento, fatura_id) VALUES ";
         String baseQueryInsertDiasReserva = "INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES ";
         StringBuilder stringBuilderInsertReserva = new StringBuilder();
