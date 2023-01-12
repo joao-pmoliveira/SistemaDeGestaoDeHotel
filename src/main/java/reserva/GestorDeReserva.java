@@ -98,7 +98,11 @@ public class GestorDeReserva {
         return new ArrayList<>(reservasEncontradas.values());
     }
 
-    public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, int[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+    public boolean adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, int[] quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if(clienteNIF<1) return false;
+        if(empregadoID<1) return false;
+        if(datas.isEmpty())return false;
+        if(gestorDeBaseDeDados == null) return false;
         String baseQueryInsertReserva = "INSERT INTO reserva(cliente_nif, empregado_id, estado_pagamento, fatura_id) VALUES ";
         String baseQueryInsertDiasReserva = "INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES ";
         StringBuilder stringBuilderInsertReserva = new StringBuilder();
@@ -125,6 +129,7 @@ public class GestorDeReserva {
         }
         String finalInsertDiaReservaQuery = stringBuilderInsertDiasReserva.toString();
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
+        return true;
     }
 
     public void gerarFaturaParaReserva(Reserva reserva, GestorDeBaseDeDados gestorDeBaseDeDados){
