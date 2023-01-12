@@ -2,18 +2,18 @@ package limpeza;
 
 public class RegistoDeLimpeza {
     private String data;
-    private int numeroQuarto;
-    private int idEmpregado;
+    private int quartoId;
+    private int empregadoId;
 
-    public RegistoDeLimpeza( String data, int numeroQuarto, int idEmpregado){
+    public RegistoDeLimpeza( String data, int quartoId, int empregadoId){
         this.data=data;
-        this.numeroQuarto=numeroQuarto;
-        this.idEmpregado=idEmpregado;
+        this.quartoId=quartoId;
+        this.empregadoId =empregadoId;
     }
 
     public String getData(){return data;}
 
-    public int getNumeroQuarto(){return numeroQuarto;}
+    public int getQuartoId(){return quartoId;}
 
-    public int getIdEmpregado(){return idEmpregado;}
+    public int getEmpregadoId(){return empregadoId;}
 }
