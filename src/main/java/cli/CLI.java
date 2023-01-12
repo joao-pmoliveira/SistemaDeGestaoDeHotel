@@ -194,7 +194,7 @@ public class CLI {
                     String empregadoPasse;
                     boolean passwordValida;
                     do{
-                        System.out.println("Introduza a hora de entrada HH:mm:ss");
+                        System.out.println("Introduza a password:");
                         empregadoPasse = scanner.nextLine();
                         Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{4,}$\n");
                         Matcher matcher = pattern.matcher(empregadoPasse);
@@ -206,16 +206,107 @@ public class CLI {
                             empregadoHoraSaida, empregadoPasse, gestorDeBaseDeDados);
                 }
                 case 6 -> {
-                    //procurar registos de limpeza dado quarto ID
+                    String dataRegistoInput;
+                    Date dataRegisto;
+                    int quartoId;
+                    int empregadoId;
+
+                    do {
+                        System.out.println("Insira a data do registo:");
+                        dataRegistoInput = scanner.nextLine();
+                        dataRegisto = GestorDeDatas.validarData(dataRegistoInput);
+                    } while (dataRegisto == null);
+
+                    Empregado empregado = null;
+                    do{
+                        System.out.println("Empregado ID:");
+                        empregadoId = scanner.nextInt();
+                        scanner.nextLine();
+                        if(empregadoId < 1) {
+                            System.out.println("Empregado ID inválido.");
+                            continue;
+                        }
+                        empregado = gestorDeEmpregados.procurarEmpregadoPorID(empregadoId, gestorDeBaseDeDados);
+                    }while(empregado == null);
+
+                    Quarto quarto;
+                    do{
+                        System.out.println("Quarto ID:");
+                        quartoId = scanner.nextInt();
+                        scanner.nextLine();
+                        if(quartoId < 1) System.out.println("Quarto ID inválido.");
+                        quarto = gestorDeQuartos.procurarQuartoPorID(quartoId, gestorDeBaseDeDados);
+                    }while(quarto == null);
+
+                    gestorDeLimpeza.adicionarRegisto(String.valueOf(dataRegisto), quartoId, empregadoId, gestorDeBaseDeDados);
                 }
                 case 7 -> {
-                    //procurar registos de limpeza dado empregado ID
+                    int empregadoId;
+                    do{
+                        System.out.println("Empregado ID:");
+                        empregadoId = scanner.nextInt();
+                        scanner.nextLine();
+                        if(empregadoId < 1) System.out.println("Empregado ID inválido.");
+                    }while(empregadoId < 1);
+
+                    List<RegistoDeLimpeza> registoDeLimpezas = gestorDeLimpeza.procurarRegistosPorEmpregadoId(empregadoId, gestorDeBaseDeDados);
+
+                    if(registoDeLimpezas == null || registoDeLimpezas.isEmpty()){
+                        System.out.println("Não foram encontrados registos associados a esse empregado");
+                        break;
+                    }
+
+                    for(RegistoDeLimpeza registoDeLimpeza : registoDeLimpezas){
+                        System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
+                            +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                    }
                 }
                 case 8 -> {
-                    //procurar registos de limpeza dado data
+                    String dataRegistoInput;
+                    Date dataRegisto;
+
+                    do {
+                        System.out.println("Insira a data do registo:");
+                        dataRegistoInput = scanner.nextLine();
+                        dataRegisto = GestorDeDatas.validarData(dataRegistoInput);
+                    } while (dataRegisto == null);
+                    System.out.println(dataRegisto);
+
+                    List<RegistoDeLimpeza> registoDeLimpezas = gestorDeLimpeza.procurarRegistosPorData(String.valueOf(dataRegisto), gestorDeBaseDeDados);
+
+                    if(registoDeLimpezas == null || registoDeLimpezas.isEmpty()){
+                        System.out.println("Não foram encontrados registos associados a essa data");
+                        break;
+                    }
+
+                    for(RegistoDeLimpeza registoDeLimpeza : registoDeLimpezas){
+                        System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
+                                +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                    }
                 }
                 case 9 -> {
-                    //adicionar novo registo de limpeza
+                    int quartoId;
+                    do{
+                        System.out.println("Quarto ID:");
+                        quartoId = scanner.nextInt();
+                        scanner.nextLine();
+                        if(quartoId < 1) System.out.println("Quarto ID inválido.");
+                    }while(quartoId < 1);
+
+
+
+                    List<RegistoDeLimpeza> registoDeLimpezas = gestorDeLimpeza.procurarRegistosPorQuarto(quartoId, gestorDeBaseDeDados);
+
+                    if(registoDeLimpezas == null || registoDeLimpezas.isEmpty()){
+                        System.out.println("Não foram encontrados registos associados a esse quarto");
+                        break;
+                    }
+
+                    for(RegistoDeLimpeza registoDeLimpeza : registoDeLimpezas){
+                        System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
+                                +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                    }
+
                 }
                 case 10 -> {
                     int quartoID;
@@ -255,7 +346,14 @@ public class CLI {
                     }
                 }
                 case 12 -> {
-                    //registar novo quarto
+                    int quartoLayoutID;
+                    do{
+                        System.out.println("Layout ID do quarto: ");
+                        quartoLayoutID = scanner.nextInt();
+                        if (quartoLayoutID < 1) System.out.println("Layout ID Inválido.");
+                    }while(quartoLayoutID < 1);
+
+                    gestorDeQuartos.adicionarQuarto(quartoLayoutID, gestorDeBaseDeDados);
                 }
                 case 13 -> {
                     int clienteNIF;
