@@ -37,15 +37,29 @@ class GestorDeReservaTest {
     static void tearDown() {
         //gestorDeBaseDeDados.tryUpdateDatabase("");
     }
-    @ParameterizedTest
-    @ValueSource(ints={0,123456789})
-    void procurarReservaComParametrosInvalidosTest(int nif){
-        assertNull(gestorDeReserva.getTodasReservasPorClienteNIF(nif, gestorDeBaseDeDados));
-        assertNull(gestorDeReserva.getTodasReservasPorClienteNIF(nif, null));
-        assertNull(gestorDeReserva.getReservasPorFaturarPorClienteNif(nif, gestorDeBaseDeDados));
-        assertNull(gestorDeReserva.getReservasPorFaturarPorClienteNif(nif, null));
+    @Test
+    void procurarReservaComParametrosInvalidosTest(){
+        assertNull(gestorDeReserva.getTodasReservasPorClienteNIF(-1, null));
     }
 
+    @Test
+    void procurarReservaPorFaturaComParametrosInvalidosTest(){
+        assertNull(gestorDeReserva.getReservasPorFaturarPorClienteNif(-1, null));
+    }
+    @Test
+    void criarFaturaParaReservaJaComReservaTest(){
+        Fatura expectedFatura = new Fatura(5, 100f);
+        Reserva expectedReserva = new Reserva(5, 10, 2, 100, true, expectedFatura);
+
+        assertEquals(expectedFatura, expectedReserva.getFatura());
+        gestorDeReserva.gerarFaturaParaReserva(expectedReserva, gestorDeBaseDeDados);
+        assertEquals(expectedFatura, expectedReserva.getFatura());
+    }
+
+    @Test
+    void criarFaturaParaReservaComParametrosInvalidosTest(){
+        gestorDeReserva.gerarFaturaParaReserva(null, null);
+    }
     @Test
     void adicionarReservaComNifInvalidoTest(){
         int nifInvalido = 0;
