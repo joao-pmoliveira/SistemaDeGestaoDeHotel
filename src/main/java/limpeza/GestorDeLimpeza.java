@@ -15,7 +15,7 @@ public class GestorDeLimpeza {
 
 
     public ArrayList<RegistoDeLimpeza> procurarRegistosPorQuarto(int quartoId, GestorDeBaseDeDados gestorBD){
-        ArrayList<RegistoDeLimpeza> retornarlimpezas = new ArrayList<RegistoDeLimpeza>();
+        ArrayList<RegistoDeLimpeza> limpezas = new ArrayList<RegistoDeLimpeza>();
 
         String query= String.format("SELECT * FROM registo_limpeza WHERE quarto_id = %d ",quartoId );
         List<String> registoslimpeza = gestorBD.tryQueryDatabase(query);
@@ -23,14 +23,14 @@ public class GestorDeLimpeza {
        for (String q:registoslimpeza) {
            String[] registos = q.split(",");
            RegistoDeLimpeza registo = new RegistoDeLimpeza((registos[0]), Integer.parseInt(registos[1]), Integer.parseInt(registos[2]));
-           retornarlimpezas.add(registo);
+           limpezas.add(registo);
        }
-        return retornarlimpezas;
+        return limpezas;
 
     }
 
     public ArrayList<RegistoDeLimpeza> procurarRegistosPorEmpregadoId( int empregadoId, GestorDeBaseDeDados gestorBD) {
-        ArrayList<RegistoDeLimpeza> retornarlimpezas = new ArrayList<RegistoDeLimpeza>();
+        ArrayList<RegistoDeLimpeza> limpezas = new ArrayList<RegistoDeLimpeza>();
 
         String query = String.format("SELECT * FROM registo_limpeza WHERE empregado_id = %d ", empregadoId);
         List<String> registoslimpeza = gestorBD.tryQueryDatabase(query);
@@ -38,14 +38,14 @@ public class GestorDeLimpeza {
         for (String q : registoslimpeza){
             String[] registos = q.split(",");
         RegistoDeLimpeza registo = new RegistoDeLimpeza((registos[0]), Integer.parseInt(registos[1]), Integer.parseInt(registos[2]));
-        retornarlimpezas.add(registo);
+        limpezas.add(registo);
     }
-        return retornarlimpezas;
+        return limpezas;
 
     }
 
     public ArrayList<RegistoDeLimpeza> procurarRegistosPorData(String data, GestorDeBaseDeDados gestorBD){
-        ArrayList<RegistoDeLimpeza> retornarlimpezas = new ArrayList<RegistoDeLimpeza>();
+        ArrayList<RegistoDeLimpeza> limpezas = new ArrayList<RegistoDeLimpeza>();
 
         String query= String.format("SELECT * FROM registo_limpeza WHERE data_hora = %d ",data );
         List<String> registoslimpeza = gestorBD.tryQueryDatabase(query);
@@ -54,14 +54,14 @@ public class GestorDeLimpeza {
         for (String q:registoslimpeza) {
             String[] registos = q.split(",");
             RegistoDeLimpeza registo = new RegistoDeLimpeza((registos[0]), Integer.parseInt(registos[1]), Integer.parseInt(registos[2]));
-            retornarlimpezas.add(registo);
+            limpezas.add(registo);
         }
-            return retornarlimpezas;
+            return limpezas;
 
 
         }
 
-    protected boolean adicionarRegisto(String data, int quartoId, int empregadoId, GestorDeBaseDeDados gestorBD){
+    public boolean adicionarRegisto(String data, int quartoId, int empregadoId, GestorDeBaseDeDados gestorBD){
         String query = String.format
                 ("INSERT INTO registo_limpeza (`data_hora`, `quarto_id`, `empregado_id`)  VALUES ('%d', '%s', '%d')", data, quartoId, empregadoId);
 
