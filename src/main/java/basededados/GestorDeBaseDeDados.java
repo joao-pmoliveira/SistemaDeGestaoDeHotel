@@ -19,6 +19,14 @@ public class GestorDeBaseDeDados {
         props.put("password", password);
     }
 
+    public boolean temConexao(){
+        try {
+            return connection.isValid(0);
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     public void tryConnectionToDataBase(){
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");

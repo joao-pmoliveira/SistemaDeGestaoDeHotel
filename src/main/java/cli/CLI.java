@@ -70,6 +70,7 @@ public class CLI {
                     do{
                         System.out.println("NIF do cliente:");
                         clienteNIF = scanner.nextInt();
+                        scanner.nextLine();
                         if(clienteNIF < 1) System.out.println("NIF inválido.");
                     }while(clienteNIF < 1);
 
@@ -196,9 +197,7 @@ public class CLI {
                     do{
                         System.out.println("Introduza a password:");
                         empregadoPasse = scanner.nextLine();
-                        Pattern pattern = Pattern.compile("^[a-zA-Z0-9]{4,}$\n");
-                        Matcher matcher = pattern.matcher(empregadoPasse);
-                        passwordValida = matcher.matches();
+                        passwordValida = !empregadoPasse.isEmpty();
                     }while(!passwordValida);
 
                     gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargoID, empregadoMorada,
@@ -430,8 +429,6 @@ public class CLI {
                         }
                     }
 
-                    int[] quartosIDs = quartosAReservar.stream().mapToInt(i -> i).toArray();
-
                     float precoBaseDaReserva = 0;
                     for (Quarto quarto : quartosDisponiveis) {
                         if (quartosAReservar.contains(quarto.getQuartoId())) {
@@ -481,7 +478,7 @@ public class CLI {
                             GestorDeDatas.converterDateParaLocalDate(dataInicial),
                             GestorDeDatas.converterDateParaLocalDate(dataFinal));
 
-                    gestorDeReserva.adicionarReserva(nif, 3, datas, quartosIDs, gestorDeBaseDeDados);
+                    gestorDeReserva.adicionarReserva(nif, 3, datas, quartosAReservar, gestorDeBaseDeDados);
                 }
             }
 

@@ -50,7 +50,6 @@ public class Reserva {
 
     protected Fatura gerarFatura(){ return null; }
 
-
     @Override
     public String toString() {
         String estadoFatura;
