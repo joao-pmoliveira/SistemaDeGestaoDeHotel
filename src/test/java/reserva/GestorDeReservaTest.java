@@ -148,6 +148,21 @@ class GestorDeReservaTest {
         assertEquals(expectedMesssage, exception.getMessage());
     }
     @Test
+    void gerarFaturaParaReservaFaturadaTest(){
+        Fatura fatura = new Fatura(99, 90.0f);
+        Reserva reserva = new Reserva(999, 111111111, 90, 90.0f, true, fatura);
+
+        String mensagemEsperada = "Não é possível gerar um fatura para a reserva fornecido, reserva já se encontra faturada";
+
+        assertTrue(gestorDeBaseDeDados.temConexao());
+
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeReserva.gerarFaturaParaReserva(reserva, gestorDeBaseDeDados));
+
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+
+    @Test
     void adicionarReservaComListaDeDatasVaziaOuNulaTest(){
         int clienteNIF = 253265859;
         int empregadoId = 3;
@@ -286,15 +301,6 @@ class GestorDeReservaTest {
         Exception exceptionGerarFatura = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeReserva.gerarFaturaParaReserva(reservaPorFaturar, null) );
         assertEquals(expectedMessage, exceptionGerarFatura.getMessage());
-    }
-
-    void criarFaturaParaReservaJaComReservaTest(){
-        Fatura expectedFatura = new Fatura(5, 100f);
-        Reserva expectedReserva = new Reserva(5, 10, 2, 100, true, expectedFatura);
-
-        assertEquals(expectedFatura, expectedReserva.getFatura());
-        gestorDeReserva.gerarFaturaParaReserva(expectedReserva, gestorDeBaseDeDados);
-        assertEquals(expectedFatura, expectedReserva.getFatura());
     }
 
 }
