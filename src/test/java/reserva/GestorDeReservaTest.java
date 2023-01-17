@@ -105,22 +105,39 @@ class GestorDeReservaTest {
 
     //getReservasPorFaturarPorClienteNif()
     @Test
-    void procurarReservasPorFaturarComClienteNIFInvalidoTest(){
-        String expectedMessage = "Não existe cliente associado ao NIF fornecido";
-
+    void procurarReservasPorFaturarDadoClienteNIFSemReservasPorFaturarAssociadasTest(){
+        int clienteNIF = 123458756;
         assertTrue(gestorDeBaseDeDados.temConexao());
-        Exception exceptionClienteInvalido = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.getReservasPorFaturarPorClienteNif(253265900, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, exceptionClienteInvalido.getMessage());
+
+        String mensagemEsperada = "Não existem reservas por faturar para o NIF dado";
+
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeReserva.getReservasPorFaturarPorClienteNif(clienteNIF, gestorDeBaseDeDados));
+
+        assertEquals(mensagemEsperada, exception.getMessage());
     }
     @Test
-    void procurarReservasPorFaturaParaClienteSemReservasPorFaturarTest(){
-        String expectedMessage = "Cliente não tem reservas por faturar";
-        assertTrue(gestorDeBaseDeDados.temConexao());
-        Exception exceptionClienteSemReservasPorFaturar = assertThrows(InvalidParameterException.class,
-                ()->gestorDeReserva.getReservasPorFaturarPorClienteNif(276953124, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, exceptionClienteSemReservasPorFaturar.getMessage());
+    void procurarReservasPorFaturarDadoClienteNIFComUmaReservaPorFaturarTest(){
+        int clienteNIF = 253265859;
+        Reserva reservaEsperada = new Reserva(2, clienteNIF, 4, 160.0f, false, null);
+
+        List<Reserva> reservasReais = gestorDeReserva.getReservasPorFaturarPorClienteNif(clienteNIF, gestorDeBaseDeDados);
+        assertNotNull(reservasReais);
+        assertEquals(1, reservasReais.size());
+
+        Reserva reservaReal = reservasReais.get(0);
+        assertNotNull(reservaReal);
+
+        assertEquals(reservaEsperada.getReservaID(), reservaReal.getReservaID());
+        assertEquals(reservaEsperada.getClienteNIF(), reservaReal.getClienteNIF());
+        assertEquals(reservaEsperada.getEmpregadoID(), reservaReal.getEmpregadoID());
+        assertEquals(reservaEsperada.getPrecoAtual(), reservaReal.getPrecoAtual());
+        assertEquals(reservaEsperada.getEstadoPagamento(), reservaReal.getEstadoPagamento());
+        assertFalse(reservaReal.getEstadoPagamento());
+        assertNull(reservaReal.getFatura());
     }
+
+    //gerarFatura()
     @Test
     void gerarFaturaParaReservaNulaTest(){
         String expectedMesssage = "Reserva nula.";

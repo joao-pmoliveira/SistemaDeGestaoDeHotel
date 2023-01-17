@@ -37,7 +37,6 @@ public class GestorDeReserva {
 
 
         for( String linha : linhasReserva){
-            System.out.println(linha);
             String[] colunas = linha.split(",");
             int reservaID = Integer.parseInt(colunas[0]);
             int clienteNIF = Integer.parseInt(colunas[1]);
@@ -60,6 +59,7 @@ public class GestorDeReserva {
             if(!reservasEncontradas.containsKey(reservaID)){
                 Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, quartoLayoutPrecoBase,estadoPagamento, fatura);
                 reservasEncontradas.put(reservaID, reserva);
+                continue;
             }
 
             reservasEncontradas.get(reservaID).adicionarQuarto(quartoID);
@@ -91,7 +91,7 @@ public class GestorDeReserva {
 
         List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
         if(linhasReserva.isEmpty())
-            throw new InvalidParameterException("Cliente não tem reservas por faturar");
+            throw new InvalidParameterException("Não existem reservas por faturar para o NIF dado");
 
         for( String linha : linhasReserva){
             String[] colunas = linha.split(",");
@@ -104,6 +104,7 @@ public class GestorDeReserva {
             if(!reservasEncontradas.containsKey(reservaID)){
                 Reserva reserva = new Reserva(reservaID, clienteNIF, empregadoID, quartoLayoutPrecoBase,false, null);
                 reservasEncontradas.put(reservaID, reserva);
+                continue;
             }
 
             reservasEncontradas.get(reservaID).adicionarQuarto(quartoID);
@@ -174,11 +175,14 @@ public class GestorDeReserva {
     }
 
     public Fatura gerarFaturaParaReserva(Reserva reserva, GestorDeBaseDeDados gestorDeBaseDeDados){
-        if (reserva == null)
-            throw new InvalidParameterException("Reserva nula.");
-
         if(gestorDeBaseDeDados == null)
             throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+
+        if (reserva == null)
+            throw new InvalidParameterException("Reserva nula.");
+        if (reserva.getFatura() != null)
+            throw new InvalidParameterException("Não é possível gerar um fatura para a reserva fornecido, reserva já se encontra faturada");
+
 
         float faturaMontante = reserva.getPrecoAtual();
         String sqlAdicionarFatura = "insert into fatura(montante_total) values (" + faturaMontante + ")";
