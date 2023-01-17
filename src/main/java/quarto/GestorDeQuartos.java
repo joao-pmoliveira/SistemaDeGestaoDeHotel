@@ -65,9 +65,9 @@ public class GestorDeQuartos {
     }
 
     public boolean adicionarQuarto(int layoutId, GestorDeBaseDeDados gestorBD){
-        String querylayout = "SELECT * FROM layout WHERE layout.id = 0";
+        String querylayout = "SELECT * FROM layout WHERE layout.id = " + layoutId;
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
-        if(gestorBD.tryQueryDatabase(querylayout) != null) throw new InvalidParameterException("LayoutID não existe");
+        if(gestorBD.tryQueryDatabase(querylayout).isEmpty()) throw new InvalidParameterException("LayoutID não existe");
 
         String query = String.format("REPLACE INTO quarto(layout_id) VALUES ('%d')", layoutId);
         gestorBD.tryUpdateDatabase(query);
