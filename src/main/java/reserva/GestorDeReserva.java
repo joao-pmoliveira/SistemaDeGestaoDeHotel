@@ -29,13 +29,15 @@ public class GestorDeReserva {
                 " left join dia_reserva on dia_reserva.reserva_id = reserva.id" +
                 " left join quarto on quarto.id = dia_reserva.quarto_id" +
                 " left join layout on layout.id = quarto.layout_id" +
-                " where reserva.cliente_nif = %d ", nifCliente);
+                " where reserva.cliente_nif = %d " +
+                "order by reserva.id asc", nifCliente);
 
         List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
         if(linhasReserva.isEmpty()) return null;
 
 
         for( String linha : linhasReserva){
+            System.out.println(linha);
             String[] colunas = linha.split(",");
             int reservaID = Integer.parseInt(colunas[0]);
             int clienteNIF = Integer.parseInt(colunas[1]);
@@ -90,7 +92,6 @@ public class GestorDeReserva {
         List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
         if(linhasReserva.isEmpty())
             throw new InvalidParameterException("Cliente não tem reservas por faturar");
-
 
         for( String linha : linhasReserva){
             String[] colunas = linha.split(",");

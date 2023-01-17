@@ -38,6 +38,8 @@ class GestorDeReservaTest {
     static void tearDown() {
         //gestorDeBaseDeDados.tryUpdateDatabase("");
     }
+
+    //getTodasReservasPorClienteNIF()
     @Test
     void procurarReservaComClienteNIFInvalidoTest(){
         String expectedMessage = "Não existe cliente associado ao NIF fornecido";
@@ -47,6 +49,61 @@ class GestorDeReservaTest {
                 ()-> gestorDeReserva.getTodasReservasPorClienteNIF(253265900, gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionClienteInvalido.getMessage());
     }
+    @Test
+    void procurarReservaComClienteNIFComReservaAssociadaTest(){
+        int clientNIF = 123458756;
+        int reservasEsperadas = 1;
+        Fatura faturaEsperada = new Fatura(1, 80f);
+        Reserva reservaEsperada = new Reserva(1, clientNIF, 3, 80f, true, faturaEsperada);
+
+        assertTrue(gestorDeBaseDeDados.temConexao());
+
+        List<Reserva> reservasReais = gestorDeReserva.getTodasReservasPorClienteNIF(clientNIF, gestorDeBaseDeDados);
+        assertNotNull(reservasReais);
+        assertEquals(reservasEsperadas, reservasReais.size());
+
+        Reserva reservaAtual = reservasReais.get(0);
+        assertNotNull(reservaAtual);
+        assertEquals(reservaEsperada.getReservaID(), reservaAtual.getReservaID());
+        assertEquals(reservaEsperada.getClienteNIF(), reservaAtual.getClienteNIF());
+        assertEquals(reservaEsperada.getEmpregadoID(), reservaAtual.getEmpregadoID());
+        assertEquals(reservaEsperada.getPrecoAtual(), reservaAtual.getPrecoAtual());
+        assertEquals(reservaEsperada.getEstadoPagamento(), reservaAtual.getEstadoPagamento());
+        assertEquals(faturaEsperada.getFaturaID(), reservaAtual.getFatura().getFaturaID());
+        assertEquals(faturaEsperada.getMontanteFinal(), reservaAtual.getFatura().getMontanteFinal());
+    }
+    @Test
+    void procurarReservaComClienteNIFComDuasReservasAssociadasTeste(){
+        int clienteNIF = 276953124;
+        Fatura primeiraFatura = new Fatura(2, 90f);
+        Reserva[] reservasEsperadas = new Reserva[2];
+        reservasEsperadas[0] = new Reserva(4, clienteNIF, 4, 90f, true, primeiraFatura);
+        reservasEsperadas[1] = new Reserva(5, clienteNIF, 3, 180f, false, null);
+        assertTrue(gestorDeBaseDeDados.temConexao());
+
+        List<Reserva> reservasReais = gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF, gestorDeBaseDeDados);
+        assertNotNull(reservasReais);
+        assertEquals(reservasEsperadas.length, reservasReais.size());
+
+        for(int i = 0; i < 2; i++){
+            Reserva reservaReal = reservasReais.get(i);
+            Reserva reservaEsperada = reservasEsperadas[i];
+            assertEquals( reservaEsperada.getReservaID(), reservaReal.getReservaID() );
+            assertEquals( reservaEsperada.getClienteNIF(), reservaReal.getClienteNIF() );
+            assertEquals( reservaEsperada.getEmpregadoID(), reservaReal.getEmpregadoID() );
+            assertEquals( reservaEsperada.getPrecoAtual(), reservaReal.getPrecoAtual() );
+            assertEquals( reservaEsperada.getEstadoPagamento(), reservaReal.getEstadoPagamento() );
+
+            if(reservaReal.getFatura() == null) assertNull(reservaEsperada.getFatura());
+            else{
+                assertNotNull(reservaEsperada.getFatura());
+                assertEquals(reservaEsperada.getFatura().getFaturaID(), reservaReal.getFatura().getFaturaID());
+                assertEquals(reservaEsperada.getFatura().getMontanteFinal(), reservaReal.getFatura().getMontanteFinal());
+            }
+        }
+    }
+
+    //getReservasPorFaturarPorClienteNif()
     @Test
     void procurarReservasPorFaturarComClienteNIFInvalidoTest(){
         String expectedMessage = "Não existe cliente associado ao NIF fornecido";
