@@ -24,8 +24,8 @@ public class GestorDeQuartos {
     }
 
     public ArrayList<Quarto> procurarQuartoPorLayout(int layoutId, GestorDeBaseDeDados gestorBD){
-        ArrayList<Quarto> quartosLayout = new ArrayList<>();
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        ArrayList<Quarto> quartosLayout = new ArrayList<>();
 
         String query = String.format( "SELECT * FROM quarto, layout WHERE quarto.layout_id = %d AND layout.id = %d", layoutId, layoutId);
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
@@ -40,9 +40,9 @@ public class GestorDeQuartos {
     }
 
     public ArrayList<Quarto> procurarQuartosDisponiveis(Date dataInicial, Date dataFinal, GestorDeBaseDeDados gestorBD) {
+        if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         ArrayList<Quarto> quartosDisponiveis = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         if(dataInicial.after(dataFinal)) throw new InvalidParameterException("A data inicial é superior à final.");
 
         String query = String.format("SELECT quarto.id, layout_id, layout.nome, layout.descricao, layout.preco_base "
@@ -65,8 +65,8 @@ public class GestorDeQuartos {
     }
 
     public boolean adicionarQuarto(int layoutId, GestorDeBaseDeDados gestorBD){
-        String querylayout = "SELECT * FROM layout WHERE layout.id = " + layoutId;
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        String querylayout = "SELECT * FROM layout WHERE layout.id = " + layoutId;
         if(gestorBD.tryQueryDatabase(querylayout).isEmpty()) throw new InvalidParameterException("LayoutID não existe");
 
         String query = String.format("REPLACE INTO quarto(layout_id) VALUES ('%d')", layoutId);

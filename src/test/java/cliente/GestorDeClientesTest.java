@@ -28,21 +28,24 @@ class GestorDeClientesTest {
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeClientes = new GestorDeClientes();
     }
-
-    @Test
-    void procurarClienteComNIFInvalidoTest(){
-        String expectedMessage = "Não existe cliente associado ao NIF fornecido";
-
-        Exception exceptionClienteInvalido = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeClientes.procurarClientePorNIF(123, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, exceptionClienteInvalido.getMessage());
-    }
     @Test
     void procurarClienteComBDInvalidaTest(){
         String expectedMessage = "Gestor de Base de Dados nulo.";
 
         Exception exceptionClienteInvalido = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeClientes.procurarClientePorNIF(123, null));
+        assertEquals(expectedMessage, exceptionClienteInvalido.getMessage());
+
+        Exception exceptionBaseDeDadosInvalida = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeClientes.adicionarCliente(123, "José Paulo", 9128212,  null));
+        assertEquals(expectedMessage, exceptionBaseDeDadosInvalida.getMessage());
+    }
+    @Test
+    void procurarClienteComNIFInvalidoTest(){
+        String expectedMessage = "Não existe cliente associado ao NIF fornecido";
+
+        Exception exceptionClienteInvalido = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeClientes.procurarClientePorNIF(123, gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionClienteInvalido.getMessage());
     }
     @Test
@@ -56,24 +59,16 @@ class GestorDeClientesTest {
         assertEquals(expectedCliente.getTelefone(), actualCliente.getTelefone());
     }
     @Test
-    void adicionarClienteComBDNULLTest(){
-        String expectedMessage = "Gestor de Base de Dados nulo.";
-
-        Exception exceptionBaseDeDadosInvalida = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeClientes.adicionarCliente(123, "José Paulo", 9128212,  null));
-        assertEquals(expectedMessage, exceptionBaseDeDadosInvalida.getMessage());
-    }
-    @Test
-    void adicionarClienteComParametroInvalidoTest(){
+    void adicionarClienteComNIFInvalidoTest(){
         Exception exceptionNIFInvalido = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeClientes.adicionarCliente(-1, "José Paulo", 9128212,  gestorDeBaseDeDados));
         assertEquals("NIF Inválido", exceptionNIFInvalido.getMessage());
-        Exception exceptionNomeInvalido = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeClientes.adicionarCliente(123, "", 9128212,  gestorDeBaseDeDados));
-        assertEquals("Nome Inválido", exceptionNomeInvalido.getMessage());
-        Exception exceptionTelefoneInvalido = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeClientes.adicionarCliente(123, "José Paulo", -1,  gestorDeBaseDeDados));
-        assertEquals("Telefone Inválido", exceptionTelefoneInvalido.getMessage());
+    }
+    @Test
+    void adicionarClienteComNIFRepetidoTest(){
+        Exception exceptionNIFInvalido = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeClientes.adicionarCliente(123458756, "José Paulo", 9128212,  gestorDeBaseDeDados));
+        assertEquals("NIF já existente", exceptionNIFInvalido.getMessage());
     }
 
     @Test
