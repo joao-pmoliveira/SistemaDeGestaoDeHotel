@@ -63,6 +63,12 @@ class GestorDeClientesTest {
         Exception exceptionNIFInvalido = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeClientes.adicionarCliente(-1, "José Paulo", 9128212,  gestorDeBaseDeDados));
         assertEquals("NIF Inválido", exceptionNIFInvalido.getMessage());
+        Exception exceptionNomeInvalido = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeClientes.adicionarCliente(123, "", 9128212,  gestorDeBaseDeDados));
+        assertEquals("Nome Inválido", exceptionNomeInvalido.getMessage());
+        Exception exceptionTelefoneInvalido = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeClientes.adicionarCliente(123, "José Paulo", -1,  gestorDeBaseDeDados));
+        assertEquals("Telefone Inválido", exceptionTelefoneInvalido.getMessage());
     }
     @Test
     void adicionarClienteComNIFRepetidoTest(){

@@ -6,6 +6,7 @@ import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class GestorDeQuartos {
@@ -56,18 +57,31 @@ public class GestorDeQuartos {
 
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
         if( dadosQuarto.isEmpty() ) throw new InvalidParameterException("Não existem quartos disponiveis no intervalo de datas fornecido");
-        for (String q : dadosQuarto) {
-            String[] dados = q.split(",");
+        for (String quartodados : dadosQuarto) {
+            String[] dados = quartodados.split(",");
             Quarto quarto = new Quarto(Integer.parseInt(dados[0]), Integer.parseInt(dados[1]), Float.parseFloat(dados[4]), dados[2], dados[3]);
             quartosDisponiveis.add(quarto);
         }
         return quartosDisponiveis;
     }
 
+    public HashMap<Integer, String> getTodosLayouts(GestorDeBaseDeDados gestorBD){
+        if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        String query = "SELECT id, nome FROM layout";
+        HashMap <Integer, String> layouts = new HashMap<>();
+        List<String> dadosLayout = gestorBD.tryQueryDatabase(query);
+        if(dadosLayout.isEmpty()) throw new InvalidParameterException("Não existem Layouts");
+        for (String layoutDados : dadosLayout) {
+            String[] dados = layoutDados.split(",");
+            layouts.put(Integer.parseInt(dados[0]), dados[1]);
+        }
+        return layouts;
+    }
+
     public boolean adicionarQuarto(int layoutId, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
-        String querylayout = "SELECT * FROM layout WHERE layout.id = " + layoutId;
-        if(gestorBD.tryQueryDatabase(querylayout).isEmpty()) throw new InvalidParameterException("LayoutID não existe");
+
+        if(getTodosLayouts(gestorBD).get(layoutId) == null) throw new InvalidParameterException("LayoutID não existe");
 
         String query = String.format("REPLACE INTO quarto(layout_id) VALUES ('%d')", layoutId);
         gestorBD.tryUpdateDatabase(query);

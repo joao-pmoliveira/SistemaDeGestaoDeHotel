@@ -57,6 +57,10 @@ class GestorDeQuartosTest {
         exceptionBDInvalida = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeQuartos.adicionarQuarto(1, null));
         assertEquals(expectedMessage, exceptionBDInvalida.getMessage());
+
+        exceptionBDInvalida = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeQuartos.getTodosLayouts(null));
+        assertEquals(expectedMessage, exceptionBDInvalida.getMessage());
     }
     @Test
     void procurarQuartoComParametrosValidosTest(){
@@ -131,7 +135,15 @@ class GestorDeQuartosTest {
     }
     @Test
     void adicionarQuartoComParametrosValidosTest(){
+        assertTrue(gestorDeQuartos.getTodosLayouts(gestorDeBaseDeDados).containsKey(1));
         assertTrue(gestorDeQuartos.adicionarQuarto(1, gestorDeBaseDeDados));
+    }
+    @Test
+    void getTodosOsLayoutsDisponiveisTest(){
+        String expectedMessage = "Não existem Layouts";
+        Exception exceptionLayoutIDInvalido = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeQuartos.getTodosLayouts(gestorDeBaseDeDados));
+        assertEquals(expectedMessage, exceptionLayoutIDInvalido.getMessage());
     }
 
 }

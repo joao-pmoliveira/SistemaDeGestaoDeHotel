@@ -28,6 +28,9 @@ public class GestorDeClientes {
         String queryNif = String.format( "SELECT * FROM cliente WHERE nif =  %d", nif);
         if(!gestorBD.tryQueryDatabase(queryNif).isEmpty()) throw new InvalidParameterException("NIF já existente");
 
+        if(nome.isEmpty() || nome.isBlank()) throw new InvalidParameterException("Nome Inválido");
+        if(telefone < 1 || telefone > Integer.MAX_VALUE) throw new InvalidParameterException("Telefone Inválido");
+
         String query = String.format("REPLACE INTO cliente VALUES ('%d', '%s', '%d')", nif, nome, telefone);
         gestorBD.tryUpdateDatabase(query);
         return true;
