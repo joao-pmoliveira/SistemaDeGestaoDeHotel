@@ -40,10 +40,10 @@ public class GestorDeQuartos {
     }
 
     public ArrayList<Quarto> procurarQuartosDisponiveis(Date dataInicial, Date dataFinal, GestorDeBaseDeDados gestorBD) {
-        ArrayList<Quarto> quartosLayout = new ArrayList<>();
+        ArrayList<Quarto> quartosDisponiveis = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
-        if(dataInicial.equals(dataFinal)) throw new InvalidParameterException("As datas são iguais.");
+        if(dataInicial.after(dataFinal)) throw new InvalidParameterException("A data inicial é superior à final.");
 
         String query = String.format("SELECT quarto.id, layout_id, layout.nome, layout.descricao, layout.preco_base "
                         + "FROM quarto "
@@ -59,14 +59,15 @@ public class GestorDeQuartos {
         for (String q : dadosQuarto) {
             String[] dados = q.split(",");
             Quarto quarto = new Quarto(Integer.parseInt(dados[0]), Integer.parseInt(dados[1]), Float.parseFloat(dados[4]), dados[2], dados[3]);
-            quartosLayout.add(quarto);
+            quartosDisponiveis.add(quarto);
         }
-        return quartosLayout;
+        return quartosDisponiveis;
     }
 
     public boolean adicionarQuarto(int layoutId, GestorDeBaseDeDados gestorBD){
-        if(layoutId < 1 || layoutId > 6) throw new InvalidParameterException("LayoutID inválido");
+        String querylayout = "SELECT * FROM layout WHERE layout.id = 0";
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        if(gestorBD.tryQueryDatabase(querylayout) != null) throw new InvalidParameterException("LayoutID não existe");
 
         String query = String.format("REPLACE INTO quarto(layout_id) VALUES ('%d')", layoutId);
         gestorBD.tryUpdateDatabase(query);

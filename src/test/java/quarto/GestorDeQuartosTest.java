@@ -89,21 +89,42 @@ class GestorDeQuartosTest {
         ArrayList<Quarto> actualQuartosLayout = gestorDeQuartos.procurarQuartoPorLayout(6, gestorDeBaseDeDados);
 
         assertNotNull(expectedQuartosLayout);
-        assertEquals(expectedQuartosLayout.size(), actualQuartosLayout.size());
+        assertEquals(expectedQuartosLayout.get(1).getQuartoId(), actualQuartosLayout.get(1).getQuartoId());
+        assertEquals(expectedQuartosLayout.get(1).getLayoutId(), actualQuartosLayout.get(1).getLayoutId());
+        assertEquals(expectedQuartosLayout.get(1).getPrecoBase(), actualQuartosLayout.get(1).getPrecoBase());
+        assertEquals(expectedQuartosLayout.get(1).getLayoutNome(), actualQuartosLayout.get(1).getLayoutNome());
+        assertEquals(expectedQuartosLayout.get(1).getLayoutDescricao(), actualQuartosLayout.get(1).getLayoutDescricao());
+        assertEquals(expectedQuartosLayout.get(0).getQuartoId(), actualQuartosLayout.get(0).getQuartoId());
+        assertEquals(expectedQuartosLayout.get(0).getLayoutId(), actualQuartosLayout.get(0).getLayoutId());
+        assertEquals(expectedQuartosLayout.get(0).getPrecoBase(), actualQuartosLayout.get(0).getPrecoBase());
+        assertEquals(expectedQuartosLayout.get(0).getLayoutNome(), actualQuartosLayout.get(0).getLayoutNome());
+        assertEquals(expectedQuartosLayout.get(0).getLayoutDescricao(), actualQuartosLayout.get(0).getLayoutDescricao());
     }
     @Test
-    void procurarQuartoDisponiveisEntreDuasDatasIguaisTest(){
-        String expectedMessage = "As datas são iguais.";
+    void procurarQuartoDisponiveisEntreDuasDatasInvalidasTest(){
+        String expectedMessage = "A data inicial é superior à final.";
         GestorDeDatas gestorDeDatas = new GestorDeDatas();
 
         Exception exceptionDatasInvalidas = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2023-10-04"), gestorDeDatas.validarData("2023-10-04"), gestorDeBaseDeDados));
+                ()-> gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2023-10-04"), gestorDeDatas.validarData("2023-10-03"), gestorDeBaseDeDados));
+        assertEquals(expectedMessage, exceptionDatasInvalidas.getMessage());
+    }
+    void procurarQuartoDisponiveisEntreDuasDatasSemQuartosDisponiveisTest(){
+        String expectedMessage = "Não existem quartos disponiveis no intervalo de datas fornecido";
+        GestorDeDatas gestorDeDatas = new GestorDeDatas();
+
+        Exception exceptionDatasInvalidas = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2023-10-05"), gestorDeDatas.validarData("2023-10-010"), gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionDatasInvalidas.getMessage());
     }
     @Test
+    void procurarQuartoDisponiveisEntreDuasDatasTest(){
+        GestorDeDatas gestorDeDatas = new GestorDeDatas();
+        assertNotNull(gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2023-10-03"), gestorDeDatas.validarData("2023-10-05"), gestorDeBaseDeDados));
+    }
+    @Test
     void adicionarQuartoComLayoutInvalidoTest(){
-        String expectedMessage = "LayoutID inválido";
-
+        String expectedMessage = "LayoutID não existe";
         Exception exceptionLayoutIDInvalido = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeQuartos.adicionarQuarto(0, gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionLayoutIDInvalido.getMessage());
