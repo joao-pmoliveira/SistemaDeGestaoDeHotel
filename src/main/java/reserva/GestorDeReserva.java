@@ -114,24 +114,43 @@ public class GestorDeReserva {
         return new ArrayList<>(reservasEncontradas.values());
     }
 
-    public void adicionarReserva(int clienteNIF, int empregadoID, List<LocalDate> datas, HashSet<Integer> quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+    public void adicionarReserva(int clienteNIF, int empregadoID, HashSet<LocalDate> datas, HashSet<Integer> quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if(gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
 
-        if(gestorDeBaseDeDados == null)
-            throw new InvalidParameterException("Gestor de Base de Dados nulo.");
-        if(datas == null || datas.isEmpty() || datas.contains(null))
-            throw new InvalidParameterException("Lista de datas vazia. Impossível registar reserva.");
-        if(quartos == null || quartos.isEmpty() || quartos.contains(null))
-            throw new InvalidParameterException("Lista de quartos vazia. Impossível registar reserva.");
+        if(datas == null) throw new InvalidParameterException("Lista de datas nula");
+        if(datas.isEmpty()) throw new InvalidParameterException("Lista de datas vazia");
+        if(datas.contains(null)) throw new InvalidParameterException("Lista de datas com elemento nulo");
+        LocalDate[] datasOrdenadas = datas.toArray(new LocalDate[datas.size()]);
+        if(datas.size() > 1){
+            Arrays.sort(datasOrdenadas);
+            for( int i = 1; i < datasOrdenadas.length; i++){
+                LocalDate dataAtual = datasOrdenadas[i];
+                LocalDate dataAnterior = datasOrdenadas[i-1];
+                if(dataAtual.isAfter(dataAnterior.plusDays(1)))
+                    throw new InvalidParameterException("Lista de datas inclui datas não consecutivas");
+            }
+        }
+
+        if(quartos == null) throw new InvalidParameterException("Lista de quarto é nula");
+        if(quartos.isEmpty()) throw new InvalidParameterException("Lista de quartos vazia");
+        if(quartos.contains(null)) throw new InvalidParameterException("Lista de quartos com elemento nulo");
+        //if(verificarSeAlgumQuartoInexistente(quartos, gestorDeBaseDeDados))
+            //throw new InvalidParameterException("Lista de quarto contêm quartos inexistentes");
+
+        LocalDate dataInicial = datasOrdenadas[0];
+        LocalDate dataFinal = datasOrdenadas[ datasOrdenadas.length - 1 ];
+        if(verificarSeQuartosIndisponiveisParaDatas(quartos, dataInicial, dataFinal, gestorDeBaseDeDados))
+            throw new InvalidParameterException("Lista de quartos inclui quartos indisponíveis para as datas fornecidas");
 
         String queryVerificaEmpregadoIdValido = "SELECT * FROM PTDA_BD_03.empregado where id = %d and cargo_id = 1";
         List<String> resultadosEmpregadoID = gestorDeBaseDeDados.tryQueryDatabase(String.format(queryVerificaEmpregadoIdValido, empregadoID));
         if(resultadosEmpregadoID.isEmpty())
-            throw new InvalidParameterException("Não existe empregado associado ao ID fornecido ou empregado não tem acesso a registar novas reservas. Impossível registar reserva.");
+            throw new InvalidParameterException("Não existe empregado associado ao ID fornecido ou empregado não tem acesso a registar novas reservas");
 
         String queryVerificarClienteNIFValido = "SELECT * from PTDA_BD_03.cliente where nif = %d";
         List<String> resultadosClienteNIF = gestorDeBaseDeDados.tryQueryDatabase(String.format(queryVerificarClienteNIFValido, clienteNIF));
         if (resultadosClienteNIF.isEmpty())
-            throw new InvalidParameterException("Não existe cliente associado ao NIF fornecido. Impossível registar reserva.");
+            throw new InvalidParameterException("Não existe cliente associado ao NIF fornecido");
 
         String baseQueryInsertReserva = "INSERT INTO reserva(cliente_nif, empregado_id, estado_pagamento, fatura_id) VALUES ";
         String baseQueryInsertDiasReserva = "INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES ";
@@ -148,27 +167,28 @@ public class GestorDeReserva {
         List<String> resultados = gestorDeBaseDeDados.tryQueryDatabase("select last_insert_id()");
         int reservaID = Integer.parseInt(resultados.get(0));
 
-        Iterator<Integer> iterator = quartos.iterator();
+        Iterator<Integer> iteratorQuarto = quartos.iterator();
 
-        while(iterator.hasNext()){
+        while(iteratorQuarto.hasNext()){
+            Integer quarto = iteratorQuarto.next();
+            Iterator<LocalDate> iteratorData = datas.iterator();
+
+            while (iteratorData.hasNext()){
+                LocalDate data = iteratorData.next();
+                String linhaDeValores = String.format("('%s', %s, %s)", data, quarto, reservaID);
+                stringBuilderInsertDiasReserva.append(linhaDeValores);
+
+                if(!iteratorQuarto.hasNext() && !iteratorData.hasNext()) continue;
+                stringBuilderInsertDiasReserva.append(",");
+            }/*
             for(int i = 0; i < datas.size(); i++){
-                String linhaDeValores = String.format("('%s', %s, %s)", datas.get(i), iterator.next(), reservaID);
+                String linhaDeValores = String.format("('%s', %s, %s)", datas.get(i), iteratorQuarto.next(), reservaID);
                 stringBuilderInsertDiasReserva.append(linhaDeValores);
 
-                if ( !iterator.hasNext() && i == datas.size() - 1 ) continue;
+                if ( !iteratorQuarto.hasNext() && i == datas.size() - 1 ) continue;
                 stringBuilderInsertDiasReserva.append(",");
-            }
+            }*/
         }
-
-        /*for(int i = 0; i < quartos.size(); i++){
-            for (int j = 0; j < datas.size(); j++) {
-                String linhaDeValores = String.format("('%s', %s, %s)", datas.get(j), quartos[i], reservaID);
-                stringBuilderInsertDiasReserva.append(linhaDeValores);
-
-                if ( i == quartos.size() -1 && j == datas.size()-1 ) continue;
-                stringBuilderInsertDiasReserva.append(",");
-            }
-        }*/
 
         String finalInsertDiaReservaQuery = stringBuilderInsertDiasReserva.toString();
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
@@ -200,4 +220,43 @@ public class GestorDeReserva {
         reserva.setReservaPaga(true);
         return fatura;
     }
+
+    protected static boolean verificarSeQuartosIndisponiveisParaDatas(HashSet<Integer> quartos, LocalDate dataInicial, LocalDate dataFinal, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if(gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        if(dataFinal.isBefore(dataInicial)) throw new InvalidParameterException("Data final vem antes da data inicial");
+
+        if(contemQuartoInexistentes(quartos, gestorDeBaseDeDados))
+            throw new InvalidParameterException("Lista de quarto contêm quartos inexistentes");
+
+        String baseQueryQuartosIndisponiveis = "SELECT quarto_id FROM PTDA_BD_03.dia_reserva " +
+                "where quarto_id in %s and " +
+                "data_reserva between '%s' and '%s' " +
+                "order by quarto_id asc";
+
+        String finalQueryQuartosIndisponiveis = String.format( baseQueryQuartosIndisponiveis,
+                quartos.toString().replace("[", "(").replace("]",")"),
+                dataInicial,
+                dataFinal);
+
+        List<String> resultadoQuartosIndisponiveis = gestorDeBaseDeDados.tryQueryDatabase(finalQueryQuartosIndisponiveis);
+        return !resultadoQuartosIndisponiveis.isEmpty();
+    }
+
+    protected static boolean contemQuartoInexistentes(HashSet<Integer> quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if (gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        if (quartos == null) throw new InvalidParameterException("Lista de quartos nula");
+        if (quartos.isEmpty()) throw  new InvalidParameterException("Lista de quartos vazia");
+        if (quartos.contains(null)) throw new InvalidParameterException("Lista de quartos com elementos nulos");
+
+        String baseQueryQuartosValidos = "SELECT count(*) FROM PTDA_BD_03.quarto where id in %s";
+
+        String finalQueryQuartosValidos = String.format( baseQueryQuartosValidos,
+                quartos.toString().replace("[", "(").replace("]",")"));
+
+        List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase(finalQueryQuartosValidos);
+        int quartosComID = Integer.parseInt(resultado.get(0));
+
+        return quartosComID < quartos.size();
+    }
+
 }

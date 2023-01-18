@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,12 +30,12 @@ class GestorDeReservaTest {
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeReserva = new GestorDeReserva();
 
-        //gestorDeBaseDeDads.tryUpdateDatabase("");
+        gestorDeBaseDeDados.tryResetDatabase();
     }
 
     @AfterAll
     static void tearDown() {
-        //gestorDeBaseDeDados.tryUpdateDatabase("");
+        gestorDeBaseDeDados.tryResetDatabase();
     }
 
     //getTodasReservasPorClienteNIF()
@@ -162,82 +161,195 @@ class GestorDeReservaTest {
         assertEquals(mensagemEsperada, exception.getMessage());
     }
 
+    //adicionarReserva()
     @Test
-    void adicionarReservaComListaDeDatasVaziaOuNulaTest(){
-        int clienteNIF = 253265859;
-        int empregadoId = 3;
-        List<LocalDate> datasVazias = new ArrayList<>();
+    void adicionarReservaUsandoEmpregadoIDInvalidoTest(){
+        int empregadoID = 1;
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023, 1, 17));
         HashSet<Integer> quartos = new HashSet<>();
         quartos.add(5);
 
-        String expectedMessage = "Lista de datas vazia. Impossível registar reserva.";
-
-        Exception exceptionDatasNula = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoId, null, quartos, gestorDeBaseDeDados));
-
-        Exception exceptionDatasVazias = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoId, datasVazias, quartos, gestorDeBaseDeDados));
-
-        assertEquals(expectedMessage, exceptionDatasNula.getMessage());
-        assertEquals(expectedMessage, exceptionDatasVazias.getMessage());
-    }
-    @Test
-    void adicionarReservaComListaDeQuartosVaziaOuNulaTest(){
-        int clienteNIF = 253265859;
-        int empregadoId = 3;
-        List<LocalDate> datas = new ArrayList<>();
-        LocalDate data = LocalDate.of(2023, 1, 10);
-        datas.add(data);
-        HashSet<Integer> quartosVazios = new HashSet<>();
-
-        String expectedMessage = "Lista de quartos vazia. Impossível registar reserva.";
-
-        Exception exceptionQuartosNulo = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoId, datas, null, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, exceptionQuartosNulo.getMessage());
-
-        Exception exceptionQuartosVazios = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoId, datas, quartosVazios, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, exceptionQuartosVazios.getMessage());
-
-        quartosVazios.add(null);
-        Exception execeptionQuartosComValorNulo = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoId, datas, quartosVazios, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, execeptionQuartosComValorNulo.getMessage());
-
-    }
-    @Test
-    void adicionarReservaComEmpregadoIDInvalidoTest(){
-        int empregadIDInvalido = 2;
-        List<LocalDate> datas = new ArrayList<>();
-        LocalDate data = LocalDate.of(2023, 1, 14);
-        datas.add(data);
-        HashSet<Integer> quartos = new HashSet<>();
-        quartos.add(5);
-
-        String expectedMessage = "Não existe empregado associado ao ID fornecido ou empregado não tem acesso a registar novas reservas. Impossível registar reserva.";
+        String mensagemEsperada = "Não existe empregado associado ao ID fornecido ou empregado não tem acesso a registar novas reservas";
 
         Exception exception = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeReserva.adicionarReserva(253265859, empregadIDInvalido, datas, quartos, gestorDeBaseDeDados));
+                ()-> gestorDeReserva.adicionarReserva(123458756, empregadoID, datas, quartos, gestorDeBaseDeDados));
 
-        assertEquals(expectedMessage, exception.getMessage());
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+
+    @Test
+    void adicionarReservaComDatasVaziasTest(){
+        String mensagemEsperada = "Lista de datas vazia";
+        HashSet<LocalDate> datas = new HashSet<>();
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(123458756, 3, datas, new HashSet<>(), gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
     }
     @Test
-    void adicionarReservaComClienteNIFInvalidoTest(){
-        int clienteNIFInvalido = 253265900;
-        int empregadoID = 3;
-        List<LocalDate> datas = new ArrayList<>();
-        LocalDate data = LocalDate.of(2023, 1, 14);
-        datas.add(data);
-        HashSet<Integer> quartos = new HashSet<>();
-        quartos.add(5);
+    void adicionarReservaComDatasNulasTest(){
+        String mensagemEsperada = "Lista de datas nula";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(123458756, 3, null, new HashSet<>(), gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void adicionarReservaComDatasAConterDataNulaTest(){
+        String mensagemEsperada = "Lista de datas com elemento nulo";
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023, 1, 10));
+        datas.add(null);
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(123458756, 3, datas, new HashSet<>(), gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void adicionarDatasDuplicadasTest(){
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023,1,10));
+        datas.add(LocalDate.of(2023, 1,11));
+        datas.add(LocalDate.of(2023,1,10));
+        assertNotEquals(3, datas.size());
+        assertEquals(2, datas.size());
+        assertTrue(datas.contains(LocalDate.of(2023,1,10)));
+        assertTrue(datas.contains(LocalDate.of(2023, 1, 11)));
+    }
+    @Test
+    void adicionarReservaParaDatasNaoConsecutivasTest(){
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023,1,11));
+        datas.add(LocalDate.of(2023, 1, 12));
+        datas.add(LocalDate.of(2023,1,23));
 
-        String expectedMessage = "Não existe cliente associado ao NIF fornecido. Impossível registar reserva.";
+        String mensagemEsperada = "Lista de datas inclui datas não consecutivas";
 
         Exception exception = assertThrows(InvalidParameterException.class,
-                ()->gestorDeReserva.adicionarReserva(clienteNIFInvalido, empregadoID, datas, quartos, gestorDeBaseDeDados));
-        assertEquals(expectedMessage, exception.getMessage());
+                ()->gestorDeReserva.adicionarReserva(123458756, 3, datas, new HashSet<>(), gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
     }
+
+    @Test
+    void adicionarReservaComQuartosVaziosTest(){
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add((LocalDate.of(2023,1,10)));
+
+        String mensagemEsperada = "Lista de quartos vazia";
+        HashSet<Integer> quartos = new HashSet<>();
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(123458756, 3, datas, quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void adicionarReservaComQuartosNulosTest(){
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023,1,10));
+
+        String mensagemEsperada = "Lista de quarto é nula";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeReserva.adicionarReserva(123458756, 3, datas, null, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void adicionarReservaComQuartosAConterQuartoNuloTest(){
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023,1,10));
+        HashSet<Integer> quartos = new HashSet<>();
+        quartos.add(5);
+        quartos.add(null);
+        String mensagemEsperada = "Lista de quartos com elemento nulo";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(123458756, 3, datas, quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void adicionarQuartosDuplicadosTest(){
+        HashSet<Integer> quartos = new HashSet<>();
+        quartos.add(5);
+        quartos.add(3);
+        quartos.add(5);
+        assertNotEquals(3, quartos.size());
+        assertEquals(2, quartos.size());
+        assertTrue(quartos.contains(5));
+        assertTrue(quartos.contains(3));
+    }
+    @Test
+    void adicionarReservaComQuartosIndisponiveis(){
+        HashSet<Integer> quartos = new HashSet<>();
+        quartos.add(3);
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2022,12,19));
+
+        String mensagemEsperada = "Lista de quartos inclui quartos indisponíveis para as datas fornecidas";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeReserva.adicionarReserva(123458756, 3, datas, quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void adicionarReservaComQuartosInexistentes(){
+        HashSet<Integer> quartos = new HashSet<>();
+        quartos.add(5);
+        quartos.add(1000);
+        HashSet<LocalDate> datas = new HashSet<>();
+        datas.add(LocalDate.of(2023,1,10));
+
+        String mensagemEsperada = "Lista de quarto contêm quartos inexistentes";
+
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(123458756,  3, datas, quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+
+    @Test
+    void adicionarReservaParaClienteNaoRegistado(){
+        HashSet<LocalDate> datas = new HashSet<>();
+        HashSet<Integer> quartos = new HashSet<>();
+        datas.add(LocalDate.of(2023,1,10));
+        quartos.add(5);
+        String mensagemEsperada = "Não existe cliente associado ao NIF fornecido";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->gestorDeReserva.adicionarReserva(10000, 3, datas, quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+
+    //verificarSeQuartosIndisponiveisParaDatas()
+    @Test
+    void verificarIndisponibilidadeComDatasInvalidasTest(){
+        LocalDate dataInicial = LocalDate.of(2023, 1, 10);
+        LocalDate dataFinal = LocalDate.of(2023,1,9);
+        HashSet<Integer> quartos = new HashSet<>();
+
+        String mensagemEsperada = "Data final vem antes da data inicial";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->GestorDeReserva.verificarSeQuartosIndisponiveisParaDatas(quartos, dataInicial, dataFinal, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+
+    //verificarSeAlgumQuartoInexistente()
+    @Test
+    void verificarQuartosInexistentesComListaNulaTest(){
+        String mensagemEsperada = "Lista de quartos nula";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->GestorDeReserva.contemQuartoInexistentes(null, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void verificarQuartosInexistentesComListaVaziaTest(){
+        HashSet<Integer> quartos = new HashSet<>();
+        String mensagemEsperada = "Lista de quartos vazia";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->GestorDeReserva.contemQuartoInexistentes(quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+    @Test
+    void verificarQuartosInexistentesComListaComQuartoNullTest(){
+        HashSet<Integer> quartos = new HashSet<>();
+        quartos.add(null);
+        String mensagemEsperada = "Lista de quartos com elementos nulos";
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()->GestorDeReserva.contemQuartoInexistentes(quartos, gestorDeBaseDeDados));
+        assertEquals(mensagemEsperada, exception.getMessage());
+    }
+
     @Test
     void interagirComBaseDeDadosSemConexaoTest(){
         String expectedMessage = "Cannot invoke \"java.sql.Connection.createStatement()\" because \"this.connection\" is null";
@@ -249,58 +361,81 @@ class GestorDeReservaTest {
         int clienteNIF = 276953124;
         int clienteNIFPorFaturar = 253265859;
         int empregadoID = 3;
-        List<LocalDate> datas = new ArrayList<>();
-        LocalDate data = LocalDate.of(2023, 1, 14);
-        datas.add(data);
+        HashSet<LocalDate> datas = new HashSet<>();
+        LocalDate dataInicial = LocalDate.of(2023, 1, 14);
+        datas.add(dataInicial);
+        LocalDate dataFinal = LocalDate.of(2023,1,15);
+        datas.add(dataFinal);
         HashSet<Integer> quartos = new HashSet<>();
         quartos.add(5);
         Reserva reservaPorFaturar = new Reserva(100, clienteNIF, empregadoID, 100, false, null);
 
-        Exception exceptionProcurarReservas = assertThrows(NullPointerException.class,
+        Exception exception;
+
+        exception = assertThrows(NullPointerException.class,
                 ()-> gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF, gestorDeBaseDeDadosSemConexao));
-        assertEquals(expectedMessage, exceptionProcurarReservas.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
 
-        Exception exceptionProcurarReservasFatura = assertThrows(NullPointerException.class,
+        exception = assertThrows(NullPointerException.class,
                 ()-> gestorDeReserva.getReservasPorFaturarPorClienteNif(clienteNIFPorFaturar, gestorDeBaseDeDadosSemConexao));
-        assertEquals(expectedMessage, exceptionProcurarReservasFatura.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
 
-        Exception exceptionAdicionarReserva = assertThrows(NullPointerException.class,
+        exception = assertThrows(NullPointerException.class,
                 ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoID, datas, quartos, gestorDeBaseDeDadosSemConexao));
-        assertEquals(expectedMessage, exceptionAdicionarReserva.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
 
-        Exception exceptionGerarFatura = assertThrows(NullPointerException.class,
+        exception = assertThrows(NullPointerException.class,
                 ()-> gestorDeReserva.gerarFaturaParaReserva(reservaPorFaturar, gestorDeBaseDeDadosSemConexao) );
-        assertEquals(expectedMessage, exceptionGerarFatura.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class,
+                ()-> GestorDeReserva.contemQuartoInexistentes(quartos, gestorDeBaseDeDadosSemConexao));
+        assertEquals(expectedMessage, exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class,
+                ()-> GestorDeReserva.verificarSeQuartosIndisponiveisParaDatas(quartos, dataInicial, dataFinal, gestorDeBaseDeDadosSemConexao));
+        assertEquals(expectedMessage, exception.getMessage());
     }
     @Test
     void interagirComBaseDeDadosGestorNuloTest(){
         int clienteNIF = 276953124;
         int clienteNIFPorFaturar = 253265859;
         int empregadoID = 3;
-        List<LocalDate> datas = new ArrayList<>();
-        LocalDate data = LocalDate.of(2023, 1, 14);
-        datas.add(data);
+        HashSet<LocalDate> datas = new HashSet<>();
+        LocalDate dataInicial = LocalDate.of(2023, 1, 14);
+        datas.add(dataInicial);
+        LocalDate dataFinal = LocalDate.of(2023,1,18);
+        datas.add(dataFinal);
         HashSet<Integer> quartos = new HashSet<>();
         quartos.add(5);
         Reserva reservaPorFaturar = new Reserva(100, clienteNIF, empregadoID, 100, false, null);
 
         String expectedMessage = "Gestor de Base de Dados nulo.";
+        Exception exception;
 
-        Exception exceptionProcurarReservas = assertThrows(InvalidParameterException.class,
+        exception = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF, null));
-        assertEquals(expectedMessage, exceptionProcurarReservas.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
 
-        Exception exceptionProcurarReservasFatura = assertThrows(InvalidParameterException.class,
+        exception = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeReserva.getReservasPorFaturarPorClienteNif(clienteNIFPorFaturar, null));
-        assertEquals(expectedMessage, exceptionProcurarReservasFatura.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
 
-        Exception exceptionAdicionarReserva = assertThrows(InvalidParameterException.class,
+        exception = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeReserva.adicionarReserva(clienteNIF, empregadoID, datas, quartos, null));
-        assertEquals(expectedMessage, exceptionAdicionarReserva.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
 
-        Exception exceptionGerarFatura = assertThrows(InvalidParameterException.class,
+        exception = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeReserva.gerarFaturaParaReserva(reservaPorFaturar, null) );
-        assertEquals(expectedMessage, exceptionGerarFatura.getMessage());
+        assertEquals(expectedMessage, exception.getMessage());
+
+        exception = assertThrows(InvalidParameterException.class,
+                ()-> GestorDeReserva.verificarSeQuartosIndisponiveisParaDatas(quartos, dataInicial, dataFinal, null));
+        assertEquals(expectedMessage, exception.getMessage());
+
+        exception = assertThrows(InvalidParameterException.class,
+                ()-> GestorDeReserva.contemQuartoInexistentes(quartos, null));
+        assertEquals(expectedMessage, exception.getMessage());
     }
 
 }

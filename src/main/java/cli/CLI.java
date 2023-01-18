@@ -474,7 +474,7 @@ public class CLI {
                         gestorDeClientes.adicionarCliente(nif, nome, telefone, gestorDeBaseDeDados);
                     }
 
-                    List<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(
+                    HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(
                             GestorDeDatas.converterDateParaLocalDate(dataInicial),
                             GestorDeDatas.converterDateParaLocalDate(dataFinal));
 
