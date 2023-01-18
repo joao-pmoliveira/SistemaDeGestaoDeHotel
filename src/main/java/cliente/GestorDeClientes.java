@@ -1,6 +1,7 @@
 package cliente;
 
 import basededados.GestorDeBaseDeDados;
+import utils.Validador;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -24,14 +25,16 @@ public class GestorDeClientes {
 
     public boolean adicionarCliente(int nif, String nome, int telefone, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
-        if(nif < 1) throw new InvalidParameterException("NIF Inválido");
+        String NIFValido = Validador.validaNIF(String.valueOf(nif));
+        if(NIFValido == null) throw new InvalidParameterException("NIF Inválido");
         String queryNif = String.format( "SELECT * FROM cliente WHERE nif =  %d", nif);
         if(!gestorBD.tryQueryDatabase(queryNif).isEmpty()) throw new InvalidParameterException("NIF já existente");
+        String NomeValido = Validador.validoNome(nome);
+        if(NomeValido == null) throw new InvalidParameterException("Nome Inválido");
+        String TelefoneValido = Validador.validaTelefone(String.valueOf(telefone));
+        if(TelefoneValido == null) throw new InvalidParameterException("Telefone Inválido");
 
-        if(nome.isEmpty() || nome.isBlank()) throw new InvalidParameterException("Nome Inválido");
-        if(telefone < 1 || telefone > Integer.MAX_VALUE) throw new InvalidParameterException("Telefone Inválido");
-
-        String query = String.format("REPLACE INTO cliente VALUES ('%d', '%s', '%d')", nif, nome, telefone);
+        String query = String.format("REPLACE INTO cliente VALUES ('%d', '%s', '%d')", Integer.valueOf(NIFValido), NomeValido, Integer.valueOf(TelefoneValido));
         gestorBD.tryUpdateDatabase(query);
         return true;
     }

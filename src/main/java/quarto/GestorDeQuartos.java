@@ -31,8 +31,8 @@ public class GestorDeQuartos {
         String query = String.format( "SELECT * FROM quarto, layout WHERE quarto.layout_id = %d AND layout.id = %d", layoutId, layoutId);
         List<String> dadosQuarto = gestorBD.tryQueryDatabase(query);
         if( dadosQuarto.isEmpty() ) throw new InvalidParameterException("Não existem quartos associado ao Layout fornecido");
-        for (String q:dadosQuarto) {
-            String [] dados = q.split(",");
+        for (String quartodados:dadosQuarto) {
+            String [] dados = quartodados.split(",");
             Quarto quarto = new Quarto(Integer.parseInt(dados[0]), Integer.parseInt(dados[2]), Float.parseFloat(dados[5]), dados[3], dados[4]);
             quartosLayout.add(quarto);
         }
@@ -80,8 +80,8 @@ public class GestorDeQuartos {
 
     public boolean adicionarQuarto(int layoutId, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
-
-        if(getTodosLayouts(gestorBD).get(layoutId) == null) throw new InvalidParameterException("LayoutID não existe");
+        String verificacaoLayout = getTodosLayouts(gestorBD).get(layoutId);
+        if(verificacaoLayout == null) throw new InvalidParameterException("LayoutID não existe");
 
         String query = String.format("REPLACE INTO quarto(layout_id) VALUES ('%d')", layoutId);
         gestorBD.tryUpdateDatabase(query);

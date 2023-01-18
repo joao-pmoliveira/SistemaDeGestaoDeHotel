@@ -145,5 +145,4 @@ class GestorDeQuartosTest {
                 ()-> gestorDeQuartos.getTodosLayouts(gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionLayoutIDInvalido.getMessage());
     }
-
 }
