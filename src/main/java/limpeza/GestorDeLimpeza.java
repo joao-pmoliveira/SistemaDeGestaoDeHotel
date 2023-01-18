@@ -2,7 +2,6 @@ package limpeza;
 
 
 import basededados.GestorDeBaseDeDados;
-import quarto.Quarto;
 
 
 import java.util.ArrayList;

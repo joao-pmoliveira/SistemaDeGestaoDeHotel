@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+
 class GestorDeLimpezaTest {
 
     static GestorDeBaseDeDados gestorDeBaseDeDados;
@@ -33,7 +34,7 @@ class GestorDeLimpezaTest {
 
     @Test
     void procurarLimpezacomBDInválida() {
-        String expectedMessage = "Base de Dados Nula";
+        String expectedMessage = "Base de Dados Nula!!";
 
         //QuartosId
         Exception exceptionQuarto = assertThrows(InvalidParameterException.class,
