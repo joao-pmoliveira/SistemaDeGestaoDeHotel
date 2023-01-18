@@ -4,6 +4,11 @@ package gui;
 
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
+import cliente.GestorDeClientes;
+import empregado.GestorDeEmpregados;
+import limpeza.GestorDeLimpeza;
+import quarto.GestorDeQuartos;
+import reserva.GestorDeReserva;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,14 +28,14 @@ public class GUI extends JFrame{
     private JLabel userLabel;
 
     static JFrame frame;
-    GestorDeBaseDeDados gestorBaseDados;
+    public GestorDeBaseDeDados gestorDeBaseDeDados;
     public GUI(String title){
         super(title);
         this.setUndecorated(true);// tela sem a barra de cima
 
-        ValidadorDeLogin vl = new ValidadorDeLogin("src/main/java/loginData");
-        gestorBaseDados = new GestorDeBaseDeDados(vl.getHostname(), vl.getPort(), vl.getSchema(), vl.getUsername(), vl.getPassword());
-        gestorBaseDados.tryConnectionToDataBase();
+        ValidadorDeLogin validadorDeLogin = new ValidadorDeLogin("src/main/java/loginData");
+        gestorDeBaseDeDados = new GestorDeBaseDeDados(validadorDeLogin.getHostname(), validadorDeLogin.getPort(), validadorDeLogin.getSchema(), validadorDeLogin.getUsername(), validadorDeLogin.getPassword());
+        gestorDeBaseDeDados.tryConnectionToDataBase();
 
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,20 +64,21 @@ public class GUI extends JFrame{
 
 
                 if(userField.getText().isEmpty()||passwordField.getPassword().length==0){
-                    System.out.println("campos vazios");
+                    System.out.println("Campos vazios");
                     return;
                 }
 
                 String pass = new String(passwordField.getPassword());
                 String pesquisa = String.format("SELECT (id) FROM empregado WHERE id = %d and palavra_passe = '%s'", Integer.parseInt(userField.getText()), pass);
-                List<String> resultado = gestorBaseDados.tryQueryDatabase(pesquisa);
+                List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase(pesquisa);
 
                 if(!resultado.isEmpty()) {
-                    JFrame menuGui = new MenuGui("Menu");
+                    JFrame menuGui = new MenuGui("Menu", gestorDeBaseDeDados);
                     menuGui.setVisible(true);
                     frame.setVisible(false);
+
                 }else {
-                    System.out.println("palavra passe errada ou utilizador errado");
+                    System.out.println("Palavra passe errada ou utilizador errado");
                 }
             }
         });
