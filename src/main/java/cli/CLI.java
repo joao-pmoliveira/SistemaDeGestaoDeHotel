@@ -51,7 +51,6 @@ public class CLI {
             scanner.nextLine();
 
             switch (opcao) {
-                // Input Inválido. Não foi possível ler número introduzido
                 //1: consultar ficha de cliente.
                 case 1 -> {
                     try{
@@ -303,52 +302,57 @@ public class CLI {
                         System.out.println(e.getMessage());
                     }
                 }
+                //10: consultar ficha de quarto (id)
                 case 10 -> {
-                    int quartoID;
-                    do {
-                        System.out.println("Quarto ID:");
+                    try{
+                        int quartoID;
+                        System.out.println("Introduza o número do quarto: ");
                         quartoID = scanner.nextInt();
                         scanner.nextLine();
-                        if (quartoID < 1) System.out.println("ID de Quarto Inválido. Introduza um valor superior a 0");
-                    } while (quartoID < 1);
-
-                    Quarto quarto = gestorDeQuartos.procurarQuartoPorID(quartoID, gestorDeBaseDeDados);
-
-                    if (quarto == null) {
-                        System.out.println("Não foi possível encontrar um quarto com o ID dado");
-                        break;
-                    }
-                    System.out.println(quarto.getQuartoId() + "|" + quarto.getLayoutNome());
-                }
-                case 11 -> {
-                    int quartoLayoutID;
-                    do {
-                        System.out.println("Quarto Layout ID:");
-                        quartoLayoutID = scanner.nextInt();
+                        Quarto quarto = gestorDeQuartos.procurarQuartoPorID(quartoID, gestorDeBaseDeDados);
+                        System.out.println(quarto.getQuartoId() + "|" + quarto.getLayoutNome());
+                    } catch (InputMismatchException e){
                         scanner.nextLine();
-                        if (quartoLayoutID < 1) System.out.println("Layout ID Inválido. Valores superiores a 0");
-                    } while (quartoLayoutID < 1);
-
-                    ArrayList<Quarto> quartos = gestorDeQuartos.procurarQuartoPorLayout(quartoLayoutID, gestorDeBaseDeDados);
-
-                    if (quartos == null || quartos.isEmpty()) {
-                        System.out.println("Não foram encontrados quartos do layout dado");
-                        break;
-                    }
-
-                    for (Quarto quarto : quartos) {
-                        System.out.println(quarto.getQuartoId() + "| " + quarto.getLayoutNome());
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
                 }
-                case 12 -> {
-                    int quartoLayoutID;
-                    do{
-                        System.out.println("Layout ID do quarto: ");
-                        quartoLayoutID = scanner.nextInt();
-                        if (quartoLayoutID < 1) System.out.println("Layout ID Inválido.");
-                    }while(quartoLayoutID < 1);
+                //11: consultar ficha de quarto (layout)
+                case 11 -> {
+                    try{
+                        int layoutID;
+                        System.out.println("Introduza o ID do layout: ");
+                        layoutID = scanner.nextInt();
+                        scanner.nextLine();
 
-                    gestorDeQuartos.adicionarQuarto(quartoLayoutID, gestorDeBaseDeDados);
+                        List<Quarto> quartos = gestorDeQuartos.procurarQuartoPorLayout(layoutID, gestorDeBaseDeDados);
+                        for (Quarto quarto : quartos){
+                            System.out.println(quarto.getQuartoId() + "| " + quarto.getLayoutNome());
+                        }
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler o número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
+                    }
+                }
+                //12: registar novo quarto
+                case 12 -> {
+                    try{
+                        int layoutID;
+                        System.out.println("Introduza o ID do layout do novo quarto: ");
+                        layoutID = scanner.nextInt();
+                        scanner.nextLine();
+
+                        boolean resultado = gestorDeQuartos.adicionarQuarto(layoutID, gestorDeBaseDeDados);
+                        System.out.println("Quarto adicionado: "+resultado);
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler o número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case 13 -> {
                     int clienteNIF;
