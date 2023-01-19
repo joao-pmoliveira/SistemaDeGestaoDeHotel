@@ -113,13 +113,16 @@ class GestorDeQuartosTest {
                 ()-> gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2023-10-04"), gestorDeDatas.validarData("2023-10-03"), gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionDatasInvalidas.getMessage());
     }
+    @Test
     void procurarQuartoDisponiveisEntreDuasDatasSemQuartosDisponiveisTest(){
+        gestorDeBaseDeDados.tryUpdateReservasDatabase();
         String expectedMessage = "Não existem quartos disponiveis no intervalo de datas fornecido";
         GestorDeDatas gestorDeDatas = new GestorDeDatas();
 
         Exception exceptionDatasInvalidas = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2023-10-05"), gestorDeDatas.validarData("2023-10-010"), gestorDeBaseDeDados));
+                ()-> gestorDeQuartos.procurarQuartosDisponiveis(gestorDeDatas.validarData("2021-12-31"), gestorDeDatas.validarData("2021-12-31"), gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionDatasInvalidas.getMessage());
+        gestorDeBaseDeDados.tryResetDatabase();
     }
     @Test
     void procurarQuartoDisponiveisEntreDuasDatasTest(){
@@ -140,9 +143,11 @@ class GestorDeQuartosTest {
     }
     @Test
     void getTodosOsLayoutsDisponiveisTest(){
+        gestorDeBaseDeDados.tryDeleteAllLayoutsDatabase();
         String expectedMessage = "Não existem Layouts";
         Exception exceptionLayoutIDInvalido = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeQuartos.getTodosLayouts(gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionLayoutIDInvalido.getMessage());
+        gestorDeBaseDeDados.tryResetDatabase();
     }
 }
