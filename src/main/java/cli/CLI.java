@@ -199,107 +199,109 @@ public class CLI {
                 }
                 //6: consultar registos de limpeza (por quarto)
                 case 6 -> {
-                    String dataRegistoInput;
-                    Date dataRegisto;
-                    int quartoId;
-                    int empregadoId;
-
-                    do {
-                        System.out.println("Insira a data do registo:");
-                        dataRegistoInput = scanner.nextLine();
-                        dataRegisto = GestorDeDatas.validarData(dataRegistoInput);
-                    } while (dataRegisto == null);
-
-                    Empregado empregado = null;
-                    do{
-                        System.out.println("Empregado ID:");
-                        empregadoId = scanner.nextInt();
+                    try{
+                        int quartoID;
+                        System.out.println("Introduza o número do quarto: ");
+                        quartoID = scanner.nextInt();
                         scanner.nextLine();
-                        if(empregadoId < 1) {
-                            System.out.println("Empregado ID inválido.");
-                            continue;
+
+                        List<RegistoDeLimpeza> registosLimpeza =
+                                gestorDeLimpeza.procurarRegistosPorQuarto(quartoID, gestorDeBaseDeDados);
+                        for(RegistoDeLimpeza registoDeLimpeza : registosLimpeza){
+                            System.out.println(registoDeLimpeza.getData()+" | "+registoDeLimpeza.getEmpregadoId());
                         }
-                        empregado = gestorDeEmpregados.procurarEmpregadoPorID(empregadoId, gestorDeBaseDeDados);
-                    }while(empregado == null);
-
-                    Quarto quarto;
-                    do{
-                        System.out.println("Quarto ID:");
-                        quartoId = scanner.nextInt();
+                    } catch (InputMismatchException e){
                         scanner.nextLine();
-                        if(quartoId < 1) System.out.println("Quarto ID inválido.");
-                        quarto = gestorDeQuartos.procurarQuartoPorID(quartoId, gestorDeBaseDeDados);
-                    }while(quarto == null);
-
-                    gestorDeLimpeza.adicionarRegisto(String.valueOf(dataRegisto), quartoId, empregadoId, gestorDeBaseDeDados);
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
+                //7: consultar registos de limpeza (por empregado id)
                 case 7 -> {
-                    int empregadoId;
-                    do{
-                        System.out.println("Empregado ID:");
-                        empregadoId = scanner.nextInt();
+                    try{
+                        int empregadoID;
+                        System.out.println("Introduza o ID do empregado de limpeza: ");
+                        empregadoID = scanner.nextInt();
                         scanner.nextLine();
-                        if(empregadoId < 1) System.out.println("Empregado ID inválido.");
-                    }while(empregadoId < 1);
 
-                    List<RegistoDeLimpeza> registoDeLimpezas = gestorDeLimpeza.procurarRegistosPorEmpregadoId(empregadoId, gestorDeBaseDeDados);
-
-                    if(registoDeLimpezas == null || registoDeLimpezas.isEmpty()){
-                        System.out.println("Não foram encontrados registos associados a esse empregado");
-                        break;
-                    }
-
-                    for(RegistoDeLimpeza registoDeLimpeza : registoDeLimpezas){
-                        System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
-                            +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                        List<RegistoDeLimpeza> registos =
+                                gestorDeLimpeza.procurarRegistosPorEmpregadoId(empregadoID, gestorDeBaseDeDados);
+                        for(RegistoDeLimpeza registoDeLimpeza : registos){
+                            System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
+                                +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                        }
+                    } catch (InputMismatchException e){
+                        scanner.nextInt();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
                 }
+                //8: consultar registos de limpeza (por data)
                 case 8 -> {
-                    String dataRegistoInput;
-                    Date dataRegisto;
-
-                    do {
-                        System.out.println("Insira a data do registo:");
-                        dataRegistoInput = scanner.nextLine();
-                        dataRegisto = GestorDeDatas.validarData(dataRegistoInput);
-                    } while (dataRegisto == null);
-                    System.out.println(dataRegisto);
-
-                    List<RegistoDeLimpeza> registoDeLimpezas = gestorDeLimpeza.procurarRegistosPorData(String.valueOf(dataRegisto), gestorDeBaseDeDados);
-
-                    if(registoDeLimpezas == null || registoDeLimpezas.isEmpty()){
-                        System.out.println("Não foram encontrados registos associados a essa data");
-                        break;
-                    }
-
-                    for(RegistoDeLimpeza registoDeLimpeza : registoDeLimpezas){
-                        System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
-                                +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                    try {
+                        LocalDate dataRegisto;
+                        System.out.println("Introduza a data do registo: ");
+                        System.out.print("Ano: ");
+                        int ano = scanner.nextInt();
+                        System.out.print("Mês: ");
+                        int mes = scanner.nextInt();
+                        System.out.print("Dia: ");
+                        int dia = scanner.nextInt();
+                        scanner.nextLine();
+                        dataRegisto = LocalDate.of(ano, mes, dia);
+                        //todo alterar parametro para usar LocalData em vez de String
+                        List<RegistoDeLimpeza> registos =
+                                gestorDeLimpeza.procurarRegistosPorData(String.valueOf(dataRegisto), gestorDeBaseDeDados);
+                        for(RegistoDeLimpeza registoDeLimpeza : registos){
+                            System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
+                                    +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
+                        }
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (DateTimeException e){
+                        System.out.println("Data Inválida. Não foi possíve ler a data introduzida");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
                 }
+                //9: registar limpeza
                 case 9 -> {
-                    int quartoId;
-                    do{
-                        System.out.println("Quarto ID:");
-                        quartoId = scanner.nextInt();
+                    try{
+                        LocalDate dataRegisto;
+                        System.out.println("Introduza a data do registo: ");
+                        System.out.print("Ano: ");
+                        int ano = scanner.nextInt();
+                        System.out.print("Mês: ");
+                        int mes = scanner.nextInt();
+                        System.out.print("Dia: ");
+                        int dia = scanner.nextInt();
                         scanner.nextLine();
-                        if(quartoId < 1) System.out.println("Quarto ID inválido.");
-                    }while(quartoId < 1);
+                        dataRegisto = LocalDate.of(ano, mes, dia);
 
+                        int quartoID;
+                        System.out.println("Introduza o ID do quarto: ");
+                        quartoID = scanner.nextInt();
+                        scanner.nextLine();
 
+                        int empregadoID;
+                        System.out.println("Introduza o ID do empregado de limpeza: ");
+                        empregadoID = scanner.nextInt();
+                        scanner.nextLine();
 
-                    List<RegistoDeLimpeza> registoDeLimpezas = gestorDeLimpeza.procurarRegistosPorQuarto(quartoId, gestorDeBaseDeDados);
-
-                    if(registoDeLimpezas == null || registoDeLimpezas.isEmpty()){
-                        System.out.println("Não foram encontrados registos associados a esse quarto");
-                        break;
+                        //todo alterar parametro para usar LocalDate em vez de String
+                        boolean resultado = gestorDeLimpeza.adicionarRegisto(String.valueOf(dataRegisto), quartoID, empregadoID, gestorDeBaseDeDados);
+                        System.out.println("Registo adicionado: "+resultado);
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (DateTimeException e){
+                        System.out.println("Data Inválida. Não foi possível ler data introduzida");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
-
-                    for(RegistoDeLimpeza registoDeLimpeza : registoDeLimpezas){
-                        System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
-                                +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());
-                    }
-
                 }
                 case 10 -> {
                     int quartoID;
