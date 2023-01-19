@@ -15,7 +15,9 @@ import reserva.Reserva;
 import utils.GestorDeDatas;
 
 import java.security.InvalidParameterException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +52,7 @@ public class CLI {
 
             switch (opcao) {
                 // Input Inválido. Não foi possível ler número introduzido
-                //1: Consultar Ficha de Cliente.
+                //1: consultar ficha de cliente.
                 case 1 -> {
                     try{
                         int clienteNIF;
@@ -66,7 +68,7 @@ public class CLI {
                         System.out.println(e.getMessage());
                     }
                 }
-                //2: Registar Novo Cliente
+                //2: registar novo cliente
                 case 2 -> {
                     try{
                         int clienteTelefone;
@@ -93,116 +95,109 @@ public class CLI {
                         System.out.println(e.getMessage());
                     }
                 }
-                //3: Consultar Ficha de Empregado (NIF)
+                //3: consultar ficha de empregado (NIF)
                 case 3 -> {
-                    int empregadoNIF;
-                    do {
+                    try{
+                        int empregadoNIF;
+                        System.out.println("Introduza o NIF do empregado: ");
                         empregadoNIF = scanner.nextInt();
                         scanner.nextLine();
-                        if (empregadoNIF < 1) System.out.println("NIF Inválido. Introduza um valor superior a 0");
-                    } while (empregadoNIF < 1);
 
-                    Empregado empregado = gestorDeEmpregados.procurarEmpregadoPorNIF(empregadoNIF, gestorDeBaseDeDados);
-
-                    if (empregado == null) {
-                        System.out.println("Não foi possível encontrar um empregado para o NIF dado.");
-                        break;
+                        Empregado empregado =
+                                gestorDeEmpregados.procurarEmpregadoPorNIF(empregadoNIF, gestorDeBaseDeDados);
+                        System.out.println(empregado.getNome());
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
-                    System.out.println(empregado.getNome());
                 }
+                //4: consultar ficha de empregado (ID)
                 case 4 -> {
-                    int empregadoID;
-                    do {
+                    try{
+                        int empregadoID;
+                        System.out.println("Introduza o ID do empregado: ");
                         empregadoID = scanner.nextInt();
                         scanner.nextLine();
-                        if (empregadoID < 1) System.out.println("ID Inválido. Introduza um valor superior a 0");
-                    } while (empregadoID < 1);
-
-                    Empregado empregado = gestorDeEmpregados.procurarEmpregadoPorNIF(empregadoID, gestorDeBaseDeDados);
-
-                    if (empregado == null) {
-                        System.out.println("Não foi possível encontrar um empregado para o ID dado.");
-                        break;
+                        Empregado empregado =
+                                gestorDeEmpregados.procurarEmpregadoPorID(empregadoID, gestorDeBaseDeDados);
+                        System.out.println(empregado.getNome());
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
-                    System.out.println(empregado.getNome());
                 }
+                //5: registar novo empregado
                 case 5 -> {
-                    String empregadoNome;
-                    int minTamanhoNome = 3;
-                    do {
-                        System.out.println("Nome do empregado:");
+                    try{
+                        String empregadoNome;
+                        System.out.println("Introduza o nome do novo empregado: ");
                         empregadoNome = scanner.nextLine();
-                        empregadoNome = empregadoNome.trim();
-                        empregadoNome = empregadoNome.replaceAll("[^A-Za-z\\s]", "");
-                        if (empregadoNome.length() < minTamanhoNome) System.out.println("Nome Inválido.");
-                    } while (empregadoNome.length() < minTamanhoNome);
 
-                    int empregadoCargoID;
-                    do{
-                        System.out.println("Cargo do Empregado: [1-Rececionista,2-Limpeza,3-RecursosHumanos");
+                        int empregadoCargoID;
+                        System.out.println("Introduza o ID do cargo do empregado: ");
+                        //todo listar cargos possíveis
                         empregadoCargoID = scanner.nextInt();
                         scanner.nextLine();
-                    }while(empregadoCargoID < 1 || empregadoCargoID > 3);
 
-                    String empregadoMorada;
-                    do{
-                        System.out.println("Morada: (sem vírgulas)");
+                        String empregadoMorada;
+                        System.out.println("Introduza a morada do novo empregado: ");
                         empregadoMorada = scanner.nextLine();
-                        empregadoMorada = empregadoMorada.replaceAll(",(?=\\s|$)", "");
-                    }while(empregadoMorada.isEmpty());
 
-                    String telefone;
-                    do {
-                        System.out.println("Telefone: ");
-                        telefone = scanner.nextLine();
-                    } while (!telefone.matches("\\d{9}"));
-                    int empregadoTelefone = Integer.parseInt(telefone);
+                        int empregadoTelefone;
+                        System.out.println("Introduza o número de telefone do novo empregado: ");
+                        empregadoTelefone = scanner.nextInt();
+                        scanner.nextLine();
 
-                    int empregadoNIF;
-                    do{
-                        System.out.println("NIF do empregado:");
+                        int empregadoNIF;
+                        System.out.println("Introduza o NIF do novo empregado: ");
                         empregadoNIF = scanner.nextInt();
-                        if(empregadoNIF < 1) System.out.println("NIF inválido.");
-                    }while(empregadoNIF < 1);
+                        scanner.nextLine();
 
-                    float empregadoSalario;
-                    do{
-                        System.out.println("Salario do empregado");
+                        float empregadoSalario;
+                        System.out.println("Introduza o salário do novo empregado: ");
                         empregadoSalario = scanner.nextFloat();
                         scanner.nextLine();
-                    }while(empregadoSalario <= 0f);
 
-                    boolean horaValida;
-                    String empregadoHoraEntrada;
-                    do{
-                        System.out.println("Introduza a hora de entrada HH:mm:ss");
-                        empregadoHoraEntrada = scanner.nextLine();
-                        Pattern pattern = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
-                        Matcher matcher = pattern.matcher(empregadoHoraEntrada);
-                        horaValida = matcher.matches();
-                    }while(!horaValida);
+                        LocalTime empregadoHorarioEntrada;
+                        System.out.println("Introduza o horário de entrada do novo empregado: ");
+                        System.out.print("hora (0-23): ");
+                        int horaEntrada = scanner.nextInt();
+                        System.out.print("min (0-59): ");
+                        int minutoEntrada = scanner.nextInt();
+                        empregadoHorarioEntrada = LocalTime.of(horaEntrada, minutoEntrada);
 
-                    String empregadoHoraSaida;
-                    do{
-                        System.out.println("Introduza a hora de saida HH:mm:ss");
-                        empregadoHoraSaida = scanner.nextLine();
-                        Pattern pattern = Pattern.compile("^([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$");
-                        Matcher matcher = pattern.matcher(empregadoHoraSaida);
-                        horaValida = matcher.matches();
-                    }while(!horaValida);
+                        LocalTime empregadoHorarioSaida;
+                        System.out.println("Introduza o horário de saída do novo empregado: ");
+                        System.out.print("hora (0-23): ");
+                        int horaSaida = scanner.nextInt();
+                        System.out.println("min (0-59): ");
+                        int minutoSaida = scanner.nextInt();
+                        empregadoHorarioSaida = LocalTime.of(horaSaida, minutoSaida);
+                        scanner.nextLine();
 
-                    String empregadoPasse;
-                    boolean passwordValida;
-                    do{
-                        System.out.println("Introduza a password:");
-                        empregadoPasse = scanner.nextLine();
-                        passwordValida = !empregadoPasse.isEmpty();
-                    }while(!passwordValida);
+                        String empregadoPalavraPasse;
+                        System.out.println("Introduza a palavra-passe do novo empregado: ");
+                        empregadoPalavraPasse = scanner.nextLine();
 
-                    gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargoID, empregadoMorada,
-                            empregadoTelefone, empregadoNIF, empregadoSalario, empregadoHoraEntrada,
-                            empregadoHoraSaida, empregadoPasse, gestorDeBaseDeDados);
+                        boolean resultado =
+                                gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargoID, empregadoMorada,
+                                        empregadoTelefone, empregadoNIF, empregadoSalario, empregadoHorarioEntrada,
+                                        empregadoHorarioSaida, empregadoPalavraPasse, gestorDeBaseDeDados);
+                        System.out.println("Empregado adicionado: "+resultado);
+                    } catch (DateTimeException e){
+                        System.out.println("Hora Inválida.");
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
+                //6: consultar registos de limpeza (por quarto)
                 case 6 -> {
                     String dataRegistoInput;
                     Date dataRegisto;
