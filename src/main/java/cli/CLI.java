@@ -18,6 +18,8 @@ import java.security.InvalidParameterException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -354,131 +356,167 @@ public class CLI {
                         System.out.println(e.getMessage());
                     }
                 }
+                //13: consultar reservas de cliente
                 case 13 -> {
-                    int clienteNIF;
-                    do {
-                        System.out.println("Cliente NIF:");
+                    try{
+                        int clienteNIF;
+                        System.out.println("Introduza o NIF do cliente: ");
                         clienteNIF = scanner.nextInt();
                         scanner.nextLine();
-                        if (clienteNIF < 1) System.out.println("Cliente NIF Inválido. Valores superiores a 0");
-                    } while (clienteNIF < 1);
 
-                    List<Reserva> reservas = gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF, gestorDeBaseDeDados);
-
-                    if (reservas == null || reservas.isEmpty()) {
-                        System.out.println("Não foram encontrados reservas com o NIF dado");
-                        break;
-                    }
-
-                    for (Reserva reserva : reservas) {
-                        System.out.println(reserva);
+                        List<Reserva> reservas =
+                                gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF, gestorDeBaseDeDados);
+                        for(Reserva reserva : reservas){
+                            System.out.println(reserva);
+                        }
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler o número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
                 }
-                case 14 -> {
-                    String dataInicialInput;
-                    String dataFinalInput;
-                    Date dataInicial;
-                    Date dataFinal;
-                    do {
-                        System.out.println("Insira a data de começo:");
-                        dataInicialInput = scanner.nextLine();
-                        dataInicial = GestorDeDatas.validarData(dataInicialInput);
-                    } while (dataInicial == null);
+                //14: gerar fatura para reserva
+                case 14 ->{
+                    try{
+                        int clienteNIF;
+                        System.out.println("Introduza o NIF do cliente: ");
+                        clienteNIF = scanner.nextInt();
+                        scanner.nextLine();
 
-                    do {
-                        System.out.println("Insira a data de saída:");
-                        dataFinalInput = scanner.nextLine();
-                        dataFinal = GestorDeDatas.validarData(dataFinalInput);
-                    } while (dataFinal == null || dataFinal.before(dataInicial));
-
-
-                    ArrayList<Quarto> quartosDisponiveis = gestorDeQuartos.procurarQuartosDisponiveis(dataInicial, dataFinal, gestorDeBaseDeDados);
-
-                    if (quartosDisponiveis.isEmpty()) {
-                        System.out.println("Não existem quartos disponíveis para as datas que indicou");
-                        break;
+                        List<Reserva> reservas =
+                                gestorDeReserva.getReservasPorFaturarPorClienteNif(clienteNIF, gestorDeBaseDeDados);
+                        for (Reserva reserva : reservas){
+                            System.out.println(reserva);
+                        }
+                        int reservaID;
+                        System.out.println("Introduza o ID da reserva a gerar fatura: ");
+                        reservaID = scanner.nextInt();
+                        scanner.nextLine();
+                        Reserva reservaAFaturar= null;
+                        for(Reserva reserva : reservas){
+                            if(reserva.getReservaID() == reservaID){
+                                reservaAFaturar = reserva;
+                                break;
+                            }
+                        }
+                        if(reservaAFaturar == null){
+                            System.out.println("ID introduzido não corresponde a nenhuma reserva");
+                            break;
+                        }
+                        gestorDeReserva.gerarFaturaParaReserva(reservaAFaturar, gestorDeBaseDeDados);
+                        System.out.println("Reserva Faturada: "+ reservaAFaturar);
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler o número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
+                }
+                //15: registar nova reserva
+                case 15 -> {
+                    try{
+                        LocalDate dataInicial;
+                        System.out.println("Introduza a data inicial da reserva: ");
+                        System.out.print("Ano: ");
+                        int ano = scanner.nextInt();
+                        System.out.print("Mês: ");
+                        int mes = scanner.nextInt();
+                        System.out.print("Dia: ");
+                        int dia = scanner.nextInt();
+                        dataInicial = LocalDate.of(ano, mes, dia);
 
-                    HashSet<Integer> quartosDisponiveisIDs = new HashSet<>();
-                    for (Quarto quarto : quartosDisponiveis) {
-                        quartosDisponiveisIDs.add(quarto.getQuartoId());
-                        System.out.println(quarto.getQuartoId());
-                    }
+                        LocalDate dataFinal;
+                        System.out.println("Introduza a data final da reserva: ");
+                        System.out.print("Ano: ");
+                        ano = scanner.nextInt();
+                        System.out.print("Mês: ");
+                        mes = scanner.nextInt();
+                        System.out.print("Dia: ");
+                        dia = scanner.nextInt();
+                        dataFinal = LocalDate.of(ano, mes, dia);
 
-                    long diferencaData = dataFinal.getTime() - dataInicial.getTime();
-                    long diasDiferenca = (diferencaData / (1000 * 60 * 60 * 24)) % 365;
-                    long diasReservados = diasDiferenca + 1;
-                    System.out.println("Diferenca: " + diasReservados);
+                        //todo alterar parameteros de Date para LocalData
+                        ZoneId defaultZoneId = ZoneId.systemDefault();
+                        Date dataI = Date.from(dataInicial.atStartOfDay(defaultZoneId).toInstant());
+                        Date dataF = Date.from(dataFinal.atStartOfDay(defaultZoneId).toInstant());
+                        List<Quarto> quartosDisponiveis = gestorDeQuartos.procurarQuartosDisponiveis(dataI, dataF, gestorDeBaseDeDados);
+                        HashSet<Integer> quartosDisponiveisIDs = new HashSet<>();
 
-                    String[] quartosInseridos;
-                    do {
-                        System.out.println("Introduza os quartos a reservar: ");
-                        quartosInseridos = scanner.nextLine().split(",");
-                    } while (quartosInseridos.length == 0);
+                        for(Quarto quarto : quartosDisponiveis){
+                            quartosDisponiveisIDs.add(quarto.getQuartoId());
+                        }
 
-                    HashSet<Integer> quartosAReservar = new HashSet<>();
+                        long reservaDuracaoDias = ChronoUnit.DAYS.between(dataInicial, dataFinal) + 1;
 
-                    for (String quartoInserido : quartosInseridos) {
-                        quartoInserido = quartoInserido.trim();
-                        int quartoID = Integer.parseInt(quartoInserido);
+                        String[] quartosInseridos;
+                        do{
+                            System.out.println("Introduza os quartos a reservar (1,2,...):");
+                            quartosInseridos = scanner.nextLine().trim().split(",");
+                        }while(quartosInseridos.length == 0);
 
-                        if (quartosDisponiveisIDs.contains(quartoID)) {
+                        HashSet<Integer> quartosAReservar = new HashSet<>();
+                        for (String quartoInserido : quartosInseridos){
+                            int quartoID = Integer.parseInt(quartoInserido);
+                            if(!quartosDisponiveisIDs.contains(quartoID))
+                                throw new InvalidParameterException("Um dos quarto inseridos não está disponível");
                             quartosAReservar.add(quartoID);
-                        } else {
-                            System.out.println("Um dos quartos inseridos não está disponível: " + quartoInserido);
                         }
-                    }
 
-                    float precoBaseDaReserva = 0;
-                    for (Quarto quarto : quartosDisponiveis) {
-                        if (quartosAReservar.contains(quarto.getQuartoId())) {
-                            precoBaseDaReserva += quarto.getPrecoBase() * diasReservados;
+                        float reservaPrecoBase = 0.0f;
+                        for(Quarto quarto : quartosDisponiveis){
+                            if(quartosAReservar.contains(quarto.getQuartoId()))
+                                reservaPrecoBase += quarto.getPrecoBase() * reservaDuracaoDias;
                         }
+
+                        System.out.printf("Montante base da reserva: %.2f euros\n", reservaPrecoBase);
+                        System.out.println("Confirmar reserva? (s/n)");
+                        String confirmacao = scanner.nextLine();
+                        if(confirmacao.toLowerCase().equals("n")){
+                            System.out.println("Reserva cancelada.");
+                            break;
+                        }
+
+                        int clienteNIF;
+                        System.out.println("Introduza o NIF do cliente");
+                        clienteNIF = scanner.nextInt();
+                        scanner.nextLine();
+
+                        Cliente cliente = null;
+                        try{
+                            cliente = gestorDeClientes.procurarClientePorNIF(clienteNIF, gestorDeBaseDeDados);
+                        }catch (InvalidParameterException e){
+                            System.out.println("NIF não reconhecido. A registar novo cliente...");
+                            System.out.println("Nome do cliente: ");
+                            String clienteNome = scanner.nextLine();
+
+                            System.out.println("Número de telefone");
+                            int clienteTelefone = scanner.nextInt();
+                            scanner.nextLine();
+
+                            boolean resultado =
+                                    gestorDeClientes.adicionarCliente(clienteNIF, clienteNome, clienteTelefone, gestorDeBaseDeDados);
+                            System.out.println("Cliente adicionado: "+resultado);
+                        }
+                        if(cliente == null)
+                            throw new InvalidParameterException("Não foi possível associar um cliente à reserva");
+
+                        System.out.println("Introduza o ID do rececionista: ");
+                        int empregadoID = scanner.nextInt();
+                        scanner.nextLine();
+
+                        HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(dataInicial, dataFinal);
+                        gestorDeReserva.adicionarReserva(cliente.getNIF(), empregadoID, datas, quartosAReservar, gestorDeBaseDeDados);
+
+                    } catch (DateTimeException e){
+                        System.out.println("Data Inválida. Não foi possível ler a data introduzida");
+                    } catch (InputMismatchException e){
+                        System.out.println("Input Inválido. Não foi possível ler o número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
+                    } catch (NumberFormatException e){
+                        System.out.println("ID de Quarto Inválido. Não foi possível ler um dos IDs de quarto introduzidos");
                     }
-
-                    System.out.printf("Montante base da reserva: %.2f\n", precoBaseDaReserva);
-                    System.out.println("Confirmar reserva?");
-                    boolean continuarComReserva = scanner.nextBoolean();
-
-                    if (!continuarComReserva) {
-                        System.out.println("Reserva Cancelada");
-                        break;
-                    }
-
-                    System.out.println("NIF do Cliente:");
-                    int nif = scanner.nextInt();
-                    scanner.nextLine();
-
-                    Cliente cliente = gestorDeClientes.procurarClientePorNIF(nif, gestorDeBaseDeDados);
-
-                    if (cliente == null) {
-                        System.out.println("NIF do Cliente não atribuído a cliente existente.");
-                        System.out.println("Criar novo cliente:");
-                        System.out.println("Telefone do Cliente:");
-                        String telefoneInput;
-                        do {
-                            telefoneInput = scanner.nextLine();
-                        } while (!telefoneInput.matches("\\d{9}"));
-                        int telefone = Integer.parseInt(telefoneInput);
-
-                        String nome;
-                        int minTamanhoNome = 3;
-                        do {
-                            System.out.println("Nome do Cliente:");
-                            nome = scanner.nextLine();
-                            nome = nome.trim();
-                            nome = nome.replaceAll("[^A-Za-z\\s]", "");
-                            if (nome.length() < minTamanhoNome) System.out.println("Nome Inválido.");
-                        } while (nome.length() < minTamanhoNome);
-
-                        gestorDeClientes.adicionarCliente(nif, nome, telefone, gestorDeBaseDeDados);
-                    }
-
-                    HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(
-                            GestorDeDatas.converterDateParaLocalDate(dataInicial),
-                            GestorDeDatas.converterDateParaLocalDate(dataFinal));
-
-                    gestorDeReserva.adicionarReserva(nif, 3, datas, quartosAReservar, gestorDeBaseDeDados);
                 }
             }
 
@@ -501,7 +539,8 @@ public class CLI {
         System.out.println("11: Consultar Ficha de Quarto (Por Layout).");
         System.out.println("12: Registar Novo Quarto");
         System.out.println("13: Consultar Reserva de Cliente.");
-        System.out.println("14: Registar Nova Reserva");
+        System.out.println("14: Gerar Fatura para Reserva.");
+        System.out.println("15: Registar Nova Reserva");
         System.out.println("0: Sair");
     }
 }
