@@ -79,6 +79,6 @@ class GestorDeClientesTest {
 
     @Test
     void adicionarClienteComParametrosValidosTest(){
-        assertTrue(gestorDeClientes.adicionarCliente(1234, "josé", 23, gestorDeBaseDeDados));
+        assertTrue(gestorDeClientes.adicionarCliente(1234, "jose lopes", 23, gestorDeBaseDeDados));
     }
 }

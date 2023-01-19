@@ -77,10 +77,10 @@ public class GestorDeBaseDeDados {
         tryUpdateDatabase("ALTER TABLE cargo AUTO_INCREMENT = 1");
         tryUpdateDatabase("INSERT INTO cargo(nome) VALUES  ('Rececionista'), ('Empregado Limpeza'), ('Recursos Humanos')");
         tryUpdateDatabase("INSERT INTO empregado(nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida, palavra_passe) VALUES " +
-                "('João Lopes', '2', 'Rua das flores, 150', '914568524', '123456789', '1000', '06:00:00', '16:00:00', '1234'), " +
-                "('Rodrigo Martim', '3', 'Avenida D.José, 10', '939753152', '456789123', '1500', '09:00:00', '17:00:00', 'abc'), " +
-                "('Ana Silva', '1', 'Rua da Sacristia, 83', '915831556', '357159846', '2000', '07:00:00', '15:00:00', 'qwerty'), " +
-                "('Duarte Simões', '1', 'Rua do Luar, 78', '937854756', '456754154', '2000', '15:00:00', '23:00:00', 'minhapass')");
+                "('João Lopes', '2', 'Rua das flores 150', '914568524', '123456789', '1000', '06:00:00', '16:00:00', '1234'), " +
+                "('Rodrigo Martim', '3', 'Avenida D.José 10', '939753152', '456789123', '1500', '09:00:00', '17:00:00', 'abc'), " +
+                "('Ana Silva', '1', 'Rua da Sacristia 83', '915831556', '357159846', '2000', '07:00:00', '15:00:00', 'qwerty'), " +
+                "('Duarte Simões', '1', 'Rua do Luar 78', '937854756', '456754154', '2000', '15:00:00', '23:00:00', 'minhapass')");
         tryUpdateDatabase("DELETE FROM cliente");
         tryUpdateDatabase("INSERT INTO cliente VALUES " +
                 "('123458756', 'José Feiteira', '925412236'), " +
@@ -97,7 +97,7 @@ public class GestorDeBaseDeDados {
                 "('Solteiro Duplo', '2 camas de solteiro', '90'), " +
                 "('Casal + 2', '1 cama de casal + 2 camas de solteiro', '120'), " +
                 "('Casal Duplo', '2 camas de casal', '130'), " +
-                "('Suite Master', '2 divisões (1 cama de casa cada)', '300')");
+                "('Suite Master', '2 divisões (1 cama de casal cada)', '300')");
         tryUpdateDatabase("DELETE FROM quarto");
         tryUpdateDatabase("ALTER TABLE quarto AUTO_INCREMENT = 1");
         tryUpdateDatabase("INSERT INTO quarto(layout_id) VALUES " +
@@ -130,5 +130,23 @@ public class GestorDeBaseDeDados {
                 "('2022-12-25', '3', '3'),('2023-02-14', '5', '2'), " +
                 "('2023-02-15', '5', '2'),('2023-03-05', '10', '5'), " +
                 "('2023-03-05', '11', '5')");
+    }
+    public void tryDeleteAllLayoutsDatabase(){
+        tryUpdateDatabase("DELETE FROM layout");
+        tryUpdateDatabase("ALTER TABLE layout AUTO_INCREMENT = 1");
+    }
+    public void tryUpdateReservasDatabase(){
+        tryUpdateDatabase("DELETE FROM dia_reserva");
+        tryUpdateDatabase("INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES " +
+                "('2021-12-31', '1', '4'), ('2021-12-31', '11', '3'), " +
+                "('2021-12-31', '2', '1'), ('2021-12-31', '12', '3'), " +
+                "('2021-12-31', '3', '3'), ('2021-12-31', '13', '3'), " +
+                "('2021-12-31', '4', '4'), ('2021-12-31', '14', '3'), " +
+                "('2021-12-31', '5', '1'), ('2021-12-31', '15', '3'), " +
+                "('2021-12-31', '6', '3'), ('2021-12-31', '16', '3'), " +
+                "('2021-12-31', '7', '3'), ('2021-12-31', '17', '3'), " +
+                "('2021-12-31', '8', '3'), ('2021-12-31', '18', '3'), " +
+                "('2021-12-31', '9', '3'), ('2021-12-31', '19', '3'), " +
+                "('2021-12-31', '10', '3'), ('2021-12-31', '20', '5')");
     }
 }
