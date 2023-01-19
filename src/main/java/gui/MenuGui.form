@@ -93,12 +93,12 @@
             </constraints>
             <properties/>
           </component>
-          <component id="9e96b" class="javax.swing.JButton" binding="guardarButtonReserva">
+          <component id="9e96b" class="javax.swing.JButton" binding="buttonAdicionarReserva">
             <constraints>
               <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Guardar"/>
+              <text value="Adicionar Reserva"/>
             </properties>
           </component>
           <component id="83b1" class="javax.swing.JButton" binding="recuarButtonReserva">
@@ -109,7 +109,7 @@
               <text value="Recuar"/>
             </properties>
           </component>
-          <component id="ea4f2" class="javax.swing.JTextField" binding="pesquisarReservaNifField">
+          <component id="ea4f2" class="javax.swing.JTextField" binding="pesquisarReservaClienteNIFField">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -133,7 +133,7 @@
               <text value="NIF"/>
             </properties>
           </component>
-          <component id="7b35" class="javax.swing.JTextField" binding="nifField1">
+          <component id="7b35" class="javax.swing.JTextField" binding="clienteNIFReservaField">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -149,7 +149,7 @@
               <text value="Número de Quarto"/>
             </properties>
           </component>
-          <component id="9a487" class="javax.swing.JTextField" binding="numeroQuartoField">
+          <component id="9a487" class="javax.swing.JTextField" binding="quartosIDReservaField">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -165,7 +165,7 @@
               <text value="Data Inicial"/>
             </properties>
           </component>
-          <component id="c90ec" class="javax.swing.JTextField" binding="dataInicialField">
+          <component id="c90ec" class="javax.swing.JTextField" binding="dataInicialReservaField">
             <constraints>
               <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -181,7 +181,7 @@
               <text value="ID empregado"/>
             </properties>
           </component>
-          <component id="cfae8" class="javax.swing.JTextField" binding="dataFinalField">
+          <component id="cfae8" class="javax.swing.JTextField" binding="dataFinalReservaField">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -197,7 +197,7 @@
               <text value="Data Final"/>
             </properties>
           </component>
-          <component id="fa6f8" class="javax.swing.JTextField" binding="idEmpregadoField">
+          <component id="fa6f8" class="javax.swing.JTextField" binding="empregadoIDReservaField">
             <constraints>
               <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -231,7 +231,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="b185a" class="javax.swing.JTextField" binding="telefoneField">
+          <component id="b185a" class="javax.swing.JTextField" binding="clienteTelefoneField">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -247,7 +247,7 @@
               <text value="Telefone"/>
             </properties>
           </component>
-          <component id="6cef5" class="javax.swing.JTextField" binding="nifField">
+          <component id="6cef5" class="javax.swing.JTextField" binding="clienteNIFField">
             <constraints>
               <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -265,7 +265,7 @@
               <text value="NIF"/>
             </properties>
           </component>
-          <component id="cb818" class="javax.swing.JTextField" binding="nomeField">
+          <component id="cb818" class="javax.swing.JTextField" binding="clienteNomeField">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -281,14 +281,14 @@
               <text value="Nome"/>
             </properties>
           </component>
-          <component id="21776" class="javax.swing.JButton" binding="guardarButtonCliente">
+          <component id="21776" class="javax.swing.JButton" binding="buttonAdicionarCliente">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <borderPainted value="true"/>
-              <label value="Guardar"/>
-              <text value="Guardar"/>
+              <label value="Adicionar Cliente"/>
+              <text value="Adicionar Cliente"/>
             </properties>
           </component>
           <component id="a06e9" class="javax.swing.JButton" binding="recuarButtonCliente">
@@ -399,7 +399,7 @@
               <text value="ID Empregado"/>
             </properties>
           </component>
-          <component id="fded2" class="javax.swing.JTextField" binding="idEmpregadoField1">
+          <component id="fded2" class="javax.swing.JTextField" binding="empregadoIDField">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -415,7 +415,7 @@
               <text value="Quarto"/>
             </properties>
           </component>
-          <component id="41225" class="javax.swing.JTextField" binding="quartoLabelField">
+          <component id="41225" class="javax.swing.JTextField" binding="quartoIDField">
             <constraints>
               <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -441,12 +441,12 @@
               <text value=""/>
             </properties>
           </component>
-          <component id="fb639" class="javax.swing.JButton" binding="guardarButtonLimpeza">
+          <component id="fb639" class="javax.swing.JButton" binding="buttonAdicionarRegistoLimpeza">
             <constraints>
               <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Guardar"/>
+              <text value="Adicionar Registo de Limpeza"/>
             </properties>
           </component>
           <component id="bab75" class="javax.swing.JButton" binding="recuarButtonLimpeza">
@@ -483,7 +483,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="59336" class="javax.swing.JTextField" binding="nomeField1">
+          <component id="59336" class="javax.swing.JTextField" binding="empregadoNomeField">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -507,7 +507,7 @@
               <text value="Cargo"/>
             </properties>
           </component>
-          <component id="4a782" class="javax.swing.JTextField" binding="moradaField">
+          <component id="4a782" class="javax.swing.JTextField" binding="empregadoMoradaField">
             <constraints>
               <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -529,7 +529,7 @@
             </constraints>
             <properties/>
           </component>
-          <component id="e8377" class="javax.swing.JTextField" binding="telefoneField1">
+          <component id="e8377" class="javax.swing.JTextField" binding="empregadoTelefoneField">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -545,7 +545,7 @@
               <text value="Telefone"/>
             </properties>
           </component>
-          <component id="761cf" class="javax.swing.JTextField" binding="nifField2">
+          <component id="761cf" class="javax.swing.JTextField" binding="empregadoNIFField">
             <constraints>
               <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -561,7 +561,7 @@
               <text value="NIF"/>
             </properties>
           </component>
-          <component id="c22f5" class="javax.swing.JTextField" binding="horaEntradaField">
+          <component id="c22f5" class="javax.swing.JTextField" binding="empregadoHoraEntradaField">
             <constraints>
               <grid row="13" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -577,7 +577,7 @@
               <text value="Hora de Entrada"/>
             </properties>
           </component>
-          <component id="f497b" class="javax.swing.JTextField" binding="horasaidaField">
+          <component id="f497b" class="javax.swing.JTextField" binding="empregadoHoraSaidaField">
             <constraints>
               <grid row="15" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -593,7 +593,7 @@
               <text value="Hora de Saída"/>
             </properties>
           </component>
-          <component id="8f913" class="javax.swing.JPasswordField" binding="passwordField">
+          <component id="8f913" class="javax.swing.JPasswordField" binding="empregadoPasswordField">
             <constraints>
               <grid row="17" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -609,12 +609,12 @@
               <text value="Password"/>
             </properties>
           </component>
-          <component id="ead24" class="javax.swing.JButton" binding="guardarButtonEmpregado">
+          <component id="ead24" class="javax.swing.JButton" binding="buttonAdicionarEmpregado">
             <constraints>
               <grid row="18" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Guardar"/>
+              <text value="Adicionar Empregado"/>
             </properties>
           </component>
           <component id="cb05b" class="javax.swing.JButton" binding="recuarButtonEmpregado">
@@ -625,7 +625,7 @@
               <text value="Recuar"/>
             </properties>
           </component>
-          <component id="a4879" class="javax.swing.JTextField" binding="salarioField">
+          <component id="a4879" class="javax.swing.JTextField" binding="empregadoSalarioField">
             <constraints>
               <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
