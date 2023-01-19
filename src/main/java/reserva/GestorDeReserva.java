@@ -33,7 +33,7 @@ public class GestorDeReserva {
                 "order by reserva.id asc", nifCliente);
 
         List<String> linhasReserva = gestorDeBaseDeDados.tryQueryDatabase(query);
-        if(linhasReserva.isEmpty()) return null;
+        if(linhasReserva.isEmpty()) throw new InvalidParameterException("Não existe reservas associadas ao NIF fornecido");
 
 
         for( String linha : linhasReserva){
@@ -134,8 +134,6 @@ public class GestorDeReserva {
         if(quartos == null) throw new InvalidParameterException("Lista de quarto é nula");
         if(quartos.isEmpty()) throw new InvalidParameterException("Lista de quartos vazia");
         if(quartos.contains(null)) throw new InvalidParameterException("Lista de quartos com elemento nulo");
-        //if(verificarSeAlgumQuartoInexistente(quartos, gestorDeBaseDeDados))
-            //throw new InvalidParameterException("Lista de quarto contêm quartos inexistentes");
 
         LocalDate dataInicial = datasOrdenadas[0];
         LocalDate dataFinal = datasOrdenadas[ datasOrdenadas.length - 1 ];
@@ -180,14 +178,7 @@ public class GestorDeReserva {
 
                 if(!iteratorQuarto.hasNext() && !iteratorData.hasNext()) continue;
                 stringBuilderInsertDiasReserva.append(",");
-            }/*
-            for(int i = 0; i < datas.size(); i++){
-                String linhaDeValores = String.format("('%s', %s, %s)", datas.get(i), iteratorQuarto.next(), reservaID);
-                stringBuilderInsertDiasReserva.append(linhaDeValores);
-
-                if ( !iteratorQuarto.hasNext() && i == datas.size() - 1 ) continue;
-                stringBuilderInsertDiasReserva.append(",");
-            }*/
+            }
         }
 
         String finalInsertDiaReservaQuery = stringBuilderInsertDiasReserva.toString();
@@ -223,6 +214,9 @@ public class GestorDeReserva {
 
     protected static boolean verificarSeQuartosIndisponiveisParaDatas(HashSet<Integer> quartos, LocalDate dataInicial, LocalDate dataFinal, GestorDeBaseDeDados gestorDeBaseDeDados){
         if(gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
+        if(quartos == null) throw new InvalidParameterException("Lista de quartos nula");
+        if(quartos.isEmpty()) throw new InvalidParameterException("Lista de quartos vazia");
+        if(quartos.contains(null)) throw new InvalidParameterException("Lista de quarto contem elemento nulo");
         if(dataFinal.isBefore(dataInicial)) throw new InvalidParameterException("Data final vem antes da data inicial");
 
         if(contemQuartoInexistentes(quartos, gestorDeBaseDeDados))

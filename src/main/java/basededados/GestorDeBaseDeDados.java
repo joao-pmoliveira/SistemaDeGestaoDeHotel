@@ -86,7 +86,9 @@ public class GestorDeBaseDeDados {
                 "('123458756', 'José Feiteira', '925412236'), " +
                 "('253265859', 'Manuel Ferreira', '914656765'), " +
                 "('256458573', 'Anabela Silva', '933874256'), " +
-                "('276953124', 'Guilherme Jorge', '928943275')");
+                "('276953124', 'Guilherme Jorge', '928943275'), " +
+                "('244555666', 'Xavier Silva', '928999777'), " +
+                "('298412365', 'Mariana Borges', '966021033')");
         tryUpdateDatabase("DELETE FROM layout");
         tryUpdateDatabase("ALTER TABLE layout AUTO_INCREMENT = 1");
         tryUpdateDatabase("INSERT INTO layout(nome, descricao, preco_base) VALUES " +

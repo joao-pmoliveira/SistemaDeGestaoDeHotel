@@ -14,6 +14,6 @@ public class Fatura {
 
     @Override
     public String toString() {
-        return String.format("Fatura #%d | Montante pago: %.2f€", faturaId, montanteFinal);
+        return String.format("Fatura #%d | Montante pago: %.2f euros", faturaId, montanteFinal);
     }
 }
