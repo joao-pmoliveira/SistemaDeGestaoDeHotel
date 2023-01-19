@@ -11,7 +11,7 @@ public class Reserva {
     private boolean reservaPaga;
     private float precoAtual;
     private Fatura fatura;
-    private ArrayList<Integer> quartos;
+    private final ArrayList<Integer> quartos;
 
 
     public Reserva(int reservaID, int clienteNIF, int empregadoId, float precoAtual, boolean reservaPaga,Fatura fatura){
@@ -26,7 +26,7 @@ public class Reserva {
 
     public int getClienteNIF(){ return clienteNIF; }
     public int getReservaID(){ return reservaID; }
-    public int getEmpregadoNIF(){ return empregadoNIF; }
+    public int getEmpregadoID(){ return empregadoNIF; }
     public boolean getEstadoPagamento(){ return reservaPaga; }
     public float getPrecoAtual(){ return precoAtual; }
     public Fatura getFatura(){ return fatura; }
@@ -47,8 +47,6 @@ public class Reserva {
         if (quartos.contains(quartoID)) return;
         quartos.add(quartoID);
     }
-
-    protected Fatura gerarFatura(){ return null; }
 
 
     @Override

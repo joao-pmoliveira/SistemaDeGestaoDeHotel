@@ -9,8 +9,11 @@ public class Fatura {
         this.montanteFinal = montanteFinal;
     }
 
+    public int getFaturaID(){ return faturaId; }
+    public float getMontanteFinal(){ return montanteFinal; }
+
     @Override
     public String toString() {
-        return String.format("Fatura #%d | Montante pago: %.2f€", faturaId, montanteFinal);
+        return String.format("Fatura #%d | Montante pago: %.2f euros", faturaId, montanteFinal);
     }
 }

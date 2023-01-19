@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 public class GestorDeDatas {
@@ -20,8 +21,8 @@ public class GestorDeDatas {
         }
     }
 
-    public static List<LocalDate> obterDatasEntreDuasDatas(LocalDate dataInicial, LocalDate dataFinal){
-        List<LocalDate> datas = new ArrayList<>();
+    public static HashSet<LocalDate> obterDatasEntreDuasDatas(LocalDate dataInicial, LocalDate dataFinal){
+        HashSet<LocalDate> datas = new HashSet<>();
 
         LocalDate dataAtual = dataInicial;
         while (dataAtual.isBefore(dataFinal) || dataAtual.isEqual(dataFinal)) {
