@@ -14,6 +14,7 @@ import reserva.GestorDeReserva;
 import reserva.Reserva;
 import utils.GestorDeDatas;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -48,53 +49,51 @@ public class CLI {
             scanner.nextLine();
 
             switch (opcao) {
+                // Input Inválido. Não foi possível ler número introduzido
+                //1: Consultar Ficha de Cliente.
                 case 1 -> {
-                    int clienteNIF;
-                    do {
-                        System.out.println("NIF do cliente: ");
+                    try{
+                        int clienteNIF;
+                        System.out.println("Introduza o NIF do cliente: ");
                         clienteNIF = scanner.nextInt();
                         scanner.nextLine();
-                        if (clienteNIF < 1) System.out.println("NIF Inválido. Introduza um valor superior a 0");
-                    } while (clienteNIF < 1);
-
-                    Cliente cliente = gestorDeClientes.procurarClientePorNIF(clienteNIF, gestorDeBaseDeDados);
-
-                    if (cliente == null) {
-                        System.out.println("Não foi possível encontrar cliente para o NIF dado.");
-                        break;
+                        Cliente cliente = gestorDeClientes.procurarClientePorNIF(clienteNIF, gestorDeBaseDeDados);
+                        System.out.println(cliente.getNome() + " | " + cliente.getNIF() + " | " + cliente.getTelefone());
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
                     }
-                    System.out.println(cliente.getNome() + " | " + cliente.getNIF() + " | " + cliente.getTelefone());
                 }
+                //2: Registar Novo Cliente
                 case 2 -> {
-                    int clienteNIF;
-                    do{
-                        System.out.println("NIF do cliente:");
+                    try{
+                        int clienteTelefone;
+                        System.out.println("Introduza o número de telefone do novo cliente:");
+                        clienteTelefone = scanner.nextInt();
+                        scanner.nextLine();
+
+                        int clienteNIF;
+                        System.out.println("Introduza o NIF do novo cliente: ");
                         clienteNIF = scanner.nextInt();
                         scanner.nextLine();
-                        if(clienteNIF < 1) System.out.println("NIF inválido.");
-                    }while(clienteNIF < 1);
 
-                    String clienteNome;
-                    int minTamanhoNome = 3;
-                    do {
-                        System.out.println("Nome do Cliente:");
+                        String clienteNome;
+                        System.out.println("Introduza o nome do novo cliente: ");
                         clienteNome = scanner.nextLine();
-                        clienteNome = clienteNome.trim();
-                        clienteNome = clienteNome.replaceAll("[^A-Za-z\\s]", "");
-                        if (clienteNome.length() < minTamanhoNome) System.out.println("Nome Inválido.");
-                    } while (clienteNome.length() < minTamanhoNome);
 
-                    String telefone;
-                    do {
-                        System.out.println("Telefone: ");
-                        telefone = scanner.nextLine();
-                    } while (!telefone.matches("\\d{9}"));
-                    int clienteTefelone = Integer.parseInt(telefone);
-
-                    boolean resultado = gestorDeClientes.adicionarCliente(clienteNIF, clienteNome, clienteTefelone, gestorDeBaseDeDados);
-
-                    System.out.println("Adição bem sucedida?: " + resultado);
+                        boolean resultado =
+                                gestorDeClientes.adicionarCliente(clienteNIF, clienteNome, clienteTelefone, gestorDeBaseDeDados);
+                        System.out.println("Cliente Adicionado: "+resultado);
+                    } catch (InputMismatchException e){
+                        scanner.nextLine();
+                        System.out.println("Input Inválido. Não foi possível ler número introduzido");
+                    } catch (InvalidParameterException e){
+                        System.out.println(e.getMessage());
+                    }
                 }
+                //3: Consultar Ficha de Empregado (NIF)
                 case 3 -> {
                     int empregadoNIF;
                     do {
