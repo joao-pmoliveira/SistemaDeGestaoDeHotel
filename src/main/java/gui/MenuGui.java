@@ -54,8 +54,8 @@ public class MenuGui extends JFrame{
     private JTextField dataInicialField;
     private JLabel pesquisarReservaNIFLabel;
     private JTable table4;
-    private JTextField textField3;
-    private JLabel pesquisarFaturaNIF;
+    private JTextField pesquisarFaturaNifField;
+    private JLabel pesquisarFaturaNifLabel;
     private JButton recuarButtonFaturacao;
     private JTable table5;
     private JTextField nomeField1;
@@ -97,6 +97,10 @@ public class MenuGui extends JFrame{
     private JLabel dataFinalLabel;
     private JTextField salarioField;
     private JLabel salarioLabel;
+    private JButton pesquisarReservaNifButton;
+    private JButton pesquisarClienteNifButton;
+    private JButton pesquisarLimpezaButton;
+    private JButton pesquisarFaturaNIFButton;
 
     public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados) {
         super(title);
@@ -333,7 +337,7 @@ public class MenuGui extends JFrame{
                 String password = Arrays.toString(passwordField.getPassword()); //PASSWORD
                 //FALTA LIDAR COM ERRO
 
-                gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargo, empregadoMorada, telefone, empregadoNif, empregadoSalario, horaEntrada, horaSaida, password, gestorDeBaseDeDados);
+               // gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargo, empregadoMorada, telefone, empregadoNif, empregadoSalario, horaEntrada, horaSaida, password, gestorDeBaseDeDados);
             }
         });
     }
