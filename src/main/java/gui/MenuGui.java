@@ -215,19 +215,20 @@ public class MenuGui extends JFrame{
                     int quartoID = Integer.parseInt(quarto);
                     quartosAReservar.add(quartoID);
                 }
-                int[] quartosIDs = quartosAReservar.stream().mapToInt(i -> i).toArray();
+
+                //int[] quartosIDs = quartosAReservar.stream().mapToInt(i -> i).toArray();
 
                 String dataInicalInput = dataInicialField.getText(); //DATAS
                 Date dataInicial = GestorDeDatas.validarData(dataInicalInput);
                 String dataFinalInput = dataFinalField.getText();
                 Date dataFinal = GestorDeDatas.validarData(dataFinalInput);
 
-                List<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(
+                HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(
                         GestorDeDatas.converterDateParaLocalDate(dataInicial),
                         GestorDeDatas.converterDateParaLocalDate(dataFinal));
 
                 int id = Integer.parseInt(idEmpregadoField.getText()); //ID
-                gestorDeReserva.adicionarReserva(nif, id, datas, quartosIDs, gestorDeBaseDeDados);
+                gestorDeReserva.adicionarReserva(nif, id, datas, quartosAReservar, gestorDeBaseDeDados);
             }
         });
         guardarButtonCliente.addMouseListener(new MouseAdapter() {
