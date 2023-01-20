@@ -9,6 +9,8 @@ public class GestorDeBaseDeDados {
     private final String url;
     private final Properties props;
     private Connection connection;
+    private int operadorID;
+    private static final String ENCRYPT_KEY = "pass";
 
     public GestorDeBaseDeDados(String hostname, String port, String schema, String username, String password){
         url = String.format("jdbc:mysql://%s:%s/%s",
@@ -18,6 +20,10 @@ public class GestorDeBaseDeDados {
         props.put("user", username);
         props.put("password", password);
     }
+
+    public static String getEncryptKey(){ return ENCRYPT_KEY; }
+    public int getOperadorID(){ return operadorID; }
+    public void setOperadorID(int empregadoID ){ operadorID = empregadoID;}
 
     public boolean temConexao(){
         try {
@@ -76,11 +82,12 @@ public class GestorDeBaseDeDados {
         tryUpdateDatabase("ALTER TABLE empregado AUTO_INCREMENT = 1");
         tryUpdateDatabase("ALTER TABLE cargo AUTO_INCREMENT = 1");
         tryUpdateDatabase("INSERT INTO cargo(nome) VALUES  ('Rececionista'), ('Empregado Limpeza'), ('Recursos Humanos')");
-        tryUpdateDatabase("INSERT INTO empregado(nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida, palavra_passe) VALUES " +
-                "('João Lopes', '2', 'Rua das flores 150', '914568524', '123456789', '1000', '06:00:00', '16:00:00', '1234'), " +
-                "('Rodrigo Martim', '3', 'Avenida D.José 10', '939753152', '456789123', '1500', '09:00:00', '17:00:00', 'abc'), " +
-                "('Ana Silva', '1', 'Rua da Sacristia 83', '915831556', '357159846', '2000', '07:00:00', '15:00:00', 'qwerty'), " +
-                "('Duarte Simões', '1', 'Rua do Luar 78', '937854756', '456754154', '2000', '15:00:00', '23:00:00', 'minhapass')");
+        tryUpdateDatabase(String.format("INSERT INTO empregado(nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida, palavra_passe) VALUES " +
+                "('João Lopes', '2', 'Rua das flores 150', '914568524', '123456789', '1000', '06:00:00', '16:00:00', aes_encrypt('1234', '%s')), " +
+                "('Rodrigo Martim', '3', 'Avenida D.José 10', '939753152', '456789123', '1500', '09:00:00', '17:00:00', aes_encrypt('abc', '%s')), " +
+                "('Ana Silva', '1', 'Rua da Sacristia 83', '915831556', '357159846', '2000', '07:00:00', '15:00:00', aes_encrypt('qwerty', '%s')), " +
+                "('Duarte Simões', '1', 'Rua do Luar 78', '937854756', '456754154', '2000', '15:00:00', '23:00:00', aes_encrypt('minhapass', '%s'))",
+                GestorDeBaseDeDados.getEncryptKey(), GestorDeBaseDeDados.getEncryptKey(), GestorDeBaseDeDados.getEncryptKey(), GestorDeBaseDeDados.getEncryptKey()));
         tryUpdateDatabase("DELETE FROM cliente");
         tryUpdateDatabase("INSERT INTO cliente VALUES " +
                 "('123458756', 'José Feiteira', '925412236'), " +

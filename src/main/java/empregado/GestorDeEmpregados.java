@@ -87,8 +87,8 @@ public class GestorDeEmpregados {
             throw new InvalidParameterException("Campo de Palavra-Passe inválido");
 
 
-        String query = String.format(Locale.US, "REPLACE INTO empregado(nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida, palavra_passe) VALUES ('%s', %d, '%s', %s, %s, %f, '%s', '%s', '%s')",
-                nomeValido, cargo, moradaValido, telefoneValido, nifValido, salario, horaEntrada, horaSaida, passeValida);
+        String query = String.format(Locale.US, "REPLACE INTO empregado(nome, cargo_id, morada, telefone, nif, salario, hora_entrada, hora_saida, palavra_passe) VALUES ('%s', %d, '%s', %s, %s, %f, '%s', '%s', aes_encrypt('%s', '%s'))",
+                nomeValido, cargo, moradaValido, telefoneValido, nifValido, salario, horaEntrada, horaSaida, passeValida, GestorDeBaseDeDados.getEncryptKey());
             gestorDeBaseDeDados.tryUpdateDatabase(query);
             return true;
 
