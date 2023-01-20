@@ -116,7 +116,7 @@ public class GestorDeLimpeza {
                 "INNER JOIN quarto on quarto.id=registo_limpeza.quarto_id \n" +
                 "INNER JOIN layout on layout.id=quarto.layout_id\n" +
                 "INNER JOIN empregado on empregado.id=registo_limpeza.empregado_id\n" +
-                " WHERE data_hora = %s",data );
+                " WHERE data_hora = '%s'",data );
         List<String> resultadosRegistoDeLimpeza = gestorBD.tryQueryDatabase(query);
 
 
@@ -147,12 +147,12 @@ public class GestorDeLimpeza {
      * @param data : data da limpeza do quarto
      * @param quartoId : quarto que foi limpo
      * @param empregadoId : empregado/a que o limpou
-     * @param gestorBD
+     * @param gestorDeBaseDeDados
      * @return
      */
-    public boolean adicionarRegisto(LocalDate data, int quartoId, int empregadoId, GestorDeBaseDeDados gestorBD){
+    public boolean adicionarRegisto(LocalDate data, int quartoId, int empregadoId, GestorDeBaseDeDados gestorDeBaseDeDados){
 
-        if (gestorBD==null)
+        if (gestorDeBaseDeDados==null)
             throw new InvalidParameterException("Gestor de base de dados nulo");
 
         //Verifica se a data introduzida é valida
@@ -161,18 +161,19 @@ public class GestorDeLimpeza {
 
         //Verifica se o quarto ID é valido e compara se existe um quarto inserido na base de dados com esse ID
         String pesquisarquarto = String.format("SELECT quarto.id from quarto WHERE quarto.id = %d", quartoId);
-        List<String> quartosdados = gestorBD.tryQueryDatabase(pesquisarquarto);
-        if (!quartosdados.isEmpty())
+        List<String> quartosdados = gestorDeBaseDeDados.tryQueryDatabase(pesquisarquarto);
+        if (quartosdados.isEmpty())
             throw new InvalidParameterException("Não existe Quarto associado a esse ID!");
 
         //Verifica se o empregado ID é valido e compara se existe um empregado inserido na base de dados com esse ID
         String pesquisarempregado = String.format("SELECT empregado.id from empregado WHERE empregado.id = %d", empregadoId);
-        List<String> emregadodados = gestorBD.tryQueryDatabase(pesquisarempregado);
-        if (!emregadodados.isEmpty())
+        List<String> emregadodados = gestorDeBaseDeDados.tryQueryDatabase(pesquisarempregado);
+        if (emregadodados.isEmpty())
             throw new InvalidParameterException("Não existe Empregado associado a esse ID!");
 
         String query = String.format(Locale.US,"INSERT INTO registo_limpeza (`data_hora`, `quarto_id`, `empregado_id`) " +
                 "VALUES ('%s', '%d', '%d')", data, quartoId, empregadoId);
+        gestorDeBaseDeDados.tryUpdateDatabase(query);
         return true;
     }
 }

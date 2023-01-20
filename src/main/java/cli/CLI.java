@@ -21,8 +21,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CLI {
 
@@ -471,7 +469,7 @@ public class CLI {
                         System.out.printf("Montante base da reserva: %.2f euros\n", reservaPrecoBase);
                         System.out.println("Confirmar reserva? (s/n)");
                         String confirmacao = scanner.nextLine();
-                        if(confirmacao.toLowerCase().equals("n")){
+                        if(confirmacao.equalsIgnoreCase("n")){
                             System.out.println("Reserva cancelada.");
                             break;
                         }

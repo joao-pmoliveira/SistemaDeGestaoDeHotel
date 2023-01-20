@@ -214,7 +214,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String resultado = "";
+                String resultado;
                 try{
                     String clienteNIFInput = clienteNIFReservaField.getText().trim();
                     String empregadoIDInput = empregadoIDReservaField.getText().trim();
@@ -265,7 +265,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String resultado = "";
+                String resultado;
                 try{
                     String clienteNIFInput = clienteNIFClienteField.getText().trim();
                     String clienteNomeInput = clienteNomeClienteField.getText().trim();
@@ -295,10 +295,15 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String resultado = "";
+                String resultado;
 
                 try{
+                    String quartoIDInput = quartoIDLimpezaField.getText().trim();
+                    String empregadoIDInput = empregadoIDLimpezaField.getText().trim();
                     String dataHoraInput = dataLimpezaField.getText().trim();
+
+                    if(quartoIDInput.isEmpty() || empregadoIDInput.isEmpty() || dataHoraInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)!");
 
                     String[] data = dataHoraInput.split("-");
                     int ano = Integer.parseInt(data[0]);
@@ -307,8 +312,8 @@ public class MenuGui extends JFrame{
 
                     LocalDate dataRegisto = LocalDate.of(ano, mes, dia);
 
-                    int quartoID = Integer.parseInt(quartoIDLimpezaField.getText().trim());
-                    int empregadoID = Integer.parseInt(empregadoIDLimpezaField.getText().trim());
+                    int quartoID = Integer.parseInt(quartoIDInput);
+                    int empregadoID = Integer.parseInt(empregadoIDInput);
 
                     gestorDeLimpeza.adicionarRegisto(dataRegisto, quartoID, empregadoID, gestorDeBaseDeDados);
                     resultado = "Registo adicionado com sucesso!";
@@ -328,7 +333,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String resultado = "";
+                String resultado;
                 try{
                     String empregadoNomeInput = empregadoNomeEmpregadoField.getText().trim();
                     String empregadoCargoIDInput;
@@ -376,7 +381,7 @@ public class MenuGui extends JFrame{
         buttonClienteNIFProcuraReserva.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String resultado = "";
+                String resultado;
                 try{
                     String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
 
@@ -401,7 +406,7 @@ public class MenuGui extends JFrame{
         buttonClienteNIFProcuraCliente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String resultado = "";
+                String resultado;
                 try{
                     String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
 
@@ -424,7 +429,7 @@ public class MenuGui extends JFrame{
         buttonQuartoIDProcuraLimpeza.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String resultado = "";
+                String resultado;
                 try{
                     String quartoIDInput = quartoIDLimpezaProcuraField.getText().trim();
 
@@ -449,7 +454,7 @@ public class MenuGui extends JFrame{
         buttonEmpregadoIDProcuraLimpeza.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String resultado = "";
+                String resultado;
                 try{
                     String empregadoIDInput = empregadoIDLimpezaProcuraField.getText().trim();
 
@@ -474,7 +479,7 @@ public class MenuGui extends JFrame{
         buttonDataProcuraLimpeza.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String resultado = "";
+                String resultado;
                 try{
                     String dataInput = dataLimpezaProcuraField.getText().trim();
 
@@ -487,9 +492,7 @@ public class MenuGui extends JFrame{
                     int dia = Integer.parseInt(dataComponentes[2]);
                     LocalDate data = LocalDate.of(ano,mes,dia);
 
-
-
-                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorData(data.toString(), gestorDeBaseDeDados);
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorData(data, gestorDeBaseDeDados);
                     for (RegistoDeLimpeza registo : registosDeLimpeza){
                         System.out.println(registo);
                     }
