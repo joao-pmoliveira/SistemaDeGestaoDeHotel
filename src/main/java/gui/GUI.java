@@ -58,7 +58,8 @@ public class GUI extends JFrame{
                 }
 
                 String pass = new String(passwordField.getPassword());
-                String pesquisa = String.format("SELECT (id) FROM empregado WHERE id = %d and palavra_passe = '%s'", Integer.parseInt(userField.getText()), pass);
+                String pesquisa = String.format("SELECT (id) FROM empregado WHERE id = %d and palavra_passe = aes_encrypt('%s','%s')", Integer.parseInt(userField.getText()),
+                        pass, GestorDeBaseDeDados.getEncryptKey());
                 List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase(pesquisa);
 
                 if(!resultado.isEmpty()) {

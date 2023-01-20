@@ -43,8 +43,31 @@ public class CLI {
         GestorDeQuartos gestorDeQuartos = new GestorDeQuartos();
         GestorDeReserva gestorDeReserva = new GestorDeReserva();
 
-        int opcao;
+        boolean logged = false;
+        int opcao = -1;
         do{
+            if (!logged){
+                try{
+                    System.out.print("ID:");
+                    int empregadoID = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.print("password: ");
+                    String password = scanner.nextLine();
+
+                    String queryLogIn = "Select cargo_id from empregado where id = %d and palavra_passe = aes_encrypt('%s','%s')";
+
+                    List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase(String.format(queryLogIn, empregadoID, password, GestorDeBaseDeDados.getEncryptKey()));
+                    if(!resultado.isEmpty()){
+                        logged = true;
+                        System.out.println("Login bem sucessido!");
+                        int operadorID = Integer.parseInt(resultado.get(0));
+                        gestorDeBaseDeDados.setOperadorID(operadorID);
+                    }
+                }catch (InputMismatchException e){
+                    System.out.println("Erro ao ler número");
+                }
+                if(!logged) continue;
+            }
             printMenu();
             System.out.println("Escolha  uma opção: ");
             opcao = scanner.nextInt();
