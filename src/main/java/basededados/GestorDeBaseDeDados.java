@@ -21,10 +21,24 @@ public class GestorDeBaseDeDados {
         props.put("password", password);
     }
 
+    /**
+     *
+     * @return Return chave encriptada
+     */
     public static String getEncryptKey(){ return ENCRYPT_KEY; }
+
+    /**
+     *
+     * @return  Return id do operador
+     */
     public int getOperadorID(){ return operadorID; }
+
     public void setOperadorID(int empregadoID ){ operadorID = empregadoID;}
 
+    /**
+     *
+     * @return Return se existe conecção com a base de dados
+     */
     public boolean temConexao(){
         try {
             return connection.isValid(0);
@@ -33,6 +47,9 @@ public class GestorDeBaseDeDados {
         }
     }
 
+    /**
+     * Conectar com a base de dados
+     */
     public void tryConnectionToDataBase(){
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -43,7 +60,11 @@ public class GestorDeBaseDeDados {
     }
 
 
-
+    /**
+     *
+     * @param query
+     * @return Return dos resultados da query
+     */
     public List<String> tryQueryDatabase(String query){
         List<String> resultRows = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
@@ -68,6 +89,11 @@ public class GestorDeBaseDeDados {
         return resultRows;
     }
 
+    /**
+     *
+     * @param query
+     *  executar querys de alteração na base de dados
+     */
     public void tryUpdateDatabase(String query){
         try (Statement statement = connection.createStatement()){
             statement.executeUpdate(query);
@@ -76,6 +102,9 @@ public class GestorDeBaseDeDados {
         }
     }
 
+    /**
+     * Dar reset aos dados da base de dados
+     */
     public void tryResetDatabase(){
         tryUpdateDatabase("DELETE from empregado");
         tryUpdateDatabase("DELETE from cargo");
@@ -138,10 +167,18 @@ public class GestorDeBaseDeDados {
                 "('2023-02-15', '5', '2'),('2023-03-05', '10', '5'), " +
                 "('2023-03-05', '11', '5')");
     }
+
+    /**
+     * Alterar dados dos layouts na base de dados
+     */
     public void tryDeleteAllLayoutsDatabase(){
         tryUpdateDatabase("DELETE FROM layout");
         tryUpdateDatabase("ALTER TABLE layout AUTO_INCREMENT = 1");
     }
+
+    /**
+     * Alterar dados do dia_reserva na base de dados
+     */
     public void tryUpdateReservasDatabase(){
         tryUpdateDatabase("DELETE FROM dia_reserva");
         tryUpdateDatabase("INSERT INTO dia_reserva(data_reserva, quarto_id, reserva_id) VALUES " +

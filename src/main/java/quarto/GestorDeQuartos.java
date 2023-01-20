@@ -12,6 +12,12 @@ import java.util.List;
 public class GestorDeQuartos {
     public GestorDeQuartos(){}
 
+    /**
+     *
+     * @param quartoId
+     * @param gestorBD
+     * @return Return do quarto com o id inserido pelo utilizador
+     */
     public Quarto procurarQuartoPorID(int quartoId, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         String query = String.format( "SELECT * FROM quarto, layout WHERE quarto.id = %d AND layout.id = quarto.layout_id", quartoId);
@@ -24,6 +30,12 @@ public class GestorDeQuartos {
         return quarto;
     }
 
+    /**
+     *
+     * @param layoutId
+     * @param gestorBD
+     * @return Return de lista com todos os quartos com o layout inserido pelo utilizador
+     */
     public ArrayList<Quarto> procurarQuartoPorLayout(int layoutId, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         ArrayList<Quarto> quartosLayout = new ArrayList<>();
@@ -40,6 +52,13 @@ public class GestorDeQuartos {
         return quartosLayout;
     }
 
+    /**
+     *
+     * @param dataInicial
+     * @param dataFinal
+     * @param gestorBD
+     * @return  Return de lista de quartos disponiveis entre as datas introduzidas pelo utilizador
+     */
     public ArrayList<Quarto> procurarQuartosDisponiveis(Date dataInicial, Date dataFinal, GestorDeBaseDeDados gestorBD) {
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         ArrayList<Quarto> quartosDisponiveis = new ArrayList<>();
@@ -65,6 +84,11 @@ public class GestorDeQuartos {
         return quartosDisponiveis;
     }
 
+    /**
+     *
+     * @param gestorBD
+     * @return Return de um HashMap com todos os layouts presentes na base de dados
+     */
     public HashMap<Integer, String> getTodosLayouts(GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         String query = "SELECT id, nome FROM layout";
@@ -78,6 +102,12 @@ public class GestorDeQuartos {
         return layouts;
     }
 
+    /**
+     *
+     * @param layoutId
+     * @param gestorBD
+     * @return Return de true quando o utilizador é introduzido com sucesso na base de dados
+     */
     public boolean adicionarQuarto(int layoutId, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         String verificacaoLayout = getTodosLayouts(gestorBD).get(layoutId);

@@ -10,6 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 
 public class GestorDeDatas {
+    /**
+     *
+     * @param dataInput
+     * @return Return de data introduzida validada
+     */
     public static Date validarData(String dataInput){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if(dataInput.isBlank()) return null;
@@ -21,6 +26,12 @@ public class GestorDeDatas {
         }
     }
 
+    /**
+     *
+     * @param dataInicial
+     * @param dataFinal
+     * @return  Return de lista com todas as datas entre duas datas especificas
+     */
     public static HashSet<LocalDate> obterDatasEntreDuasDatas(LocalDate dataInicial, LocalDate dataFinal){
         HashSet<LocalDate> datas = new HashSet<>();
 
@@ -32,6 +43,11 @@ public class GestorDeDatas {
         return datas;
     }
 
+    /**
+     *
+     * @param data
+     * @return Return de date em localdate
+     */
     public static LocalDate converterDateParaLocalDate(Date data){
         return data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }

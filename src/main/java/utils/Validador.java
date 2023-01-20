@@ -14,6 +14,11 @@ public class Validador {
     private static final String TELEFONE_PADRAO = "^[0-9]+$";
     private static final String NIF_PADRAO = "^[0-9]+$";
 
+    /**
+     *
+     * @param nome
+     * @return Return do nome validado
+     */
     public static String validoNome(String nome){
         if(nome == null) return null;
         String nomeValido = nome.trim();
@@ -24,6 +29,11 @@ public class Validador {
         else return null;
     }
 
+    /**
+     *
+     * @param morada
+     * @return Return da morada validada
+     */
     public static String validaMorada(String morada){
         if(morada == null) return null;
         String moradaValida = morada.trim();
@@ -34,6 +44,11 @@ public class Validador {
         else return null;
     }
 
+    /**
+     *
+     * @param password
+     * @return  Return da password validada
+     */
     public static String validaPassword(String password){
         if(password == null) return null;
         String passwordValida = password.trim();
@@ -43,6 +58,12 @@ public class Validador {
         if(comparador.matches()) return passwordValida;
         else return null;
     }
+
+    /**
+     *
+     * @param telefone
+     * @return Return do telefone validado
+     */
     public static String validaTelefone(String telefone){
         if(telefone == null) return null;
         String telefoneValido = telefone.trim();
@@ -53,6 +74,11 @@ public class Validador {
         else return null;
     }
 
+    /**
+     *
+     * @param nif
+     * @return Return do NIF validado
+     */
     public static String validaNIF(String nif){
         if(nif == null) return null;
         String nifValido = nif.trim();

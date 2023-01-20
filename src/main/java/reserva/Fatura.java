@@ -9,9 +9,22 @@ public class Fatura {
         this.montanteFinal = montanteFinal;
     }
 
+    /**
+     *
+     * @return Return do id da fatura
+     */
     public int getFaturaID(){ return faturaId; }
+
+    /**
+     *
+     * @return Return do montante final
+     */
     public float getMontanteFinal(){ return montanteFinal; }
 
+    /**
+     *
+     * @return Return da classe em string formatada
+     */
     @Override
     public String toString() {
         return String.format("Fatura #%d | Montante pago: %.2f euros", faturaId, montanteFinal);

@@ -11,6 +11,12 @@ public class GestorDeClientes {
     public GestorDeClientes(){
     }
 
+    /**
+     *
+     * @param nif
+     * @param gestorBD
+     * @return Return de cliente com o nif pedido
+     */
     public Cliente procurarClientePorNIF(int nif, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         String query = String.format( "SELECT * FROM cliente WHERE nif =  %d", nif);
@@ -23,6 +29,14 @@ public class GestorDeClientes {
         return cliente;
     }
 
+    /**
+     *
+     * @param nif
+     * @param nome
+     * @param telefone
+     * @param gestorBD
+     * @return Return de true em caso de sucesso em adicionar cliente à base de dados
+     */
     public boolean adicionarCliente(int nif, String nome, int telefone, GestorDeBaseDeDados gestorBD){
         if(gestorBD == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         String NIFValido = Validador.validaNIF(String.valueOf(nif));

@@ -10,6 +10,11 @@ public class Cliente {
         this.nome = nome;
         this.telefone = telefone;
     }
+
+    /**
+     *
+     * @return Cada um retorna a variavel correspondente
+     */
     public int getNIF(){return nif;}
     public String getNome(){return nome;}
     public int getTelefone(){return telefone;}
