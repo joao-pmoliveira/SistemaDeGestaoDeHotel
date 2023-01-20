@@ -64,7 +64,6 @@ public class MenuGui extends JFrame{
     private JTable table5;
     private JTextField empregadoNomeEmpregadoField;
     private JTextField empregadoMoradaEmpregadoField;
-    private JComboBox cargoComboBox;
     private JTextField empregadoTelefoneEmpregadoField;
     private JTextField empregadoNIFEmpregadoField;
     private JTextField empregadoHoraEntradaEmpregadoField;
@@ -103,12 +102,29 @@ public class MenuGui extends JFrame{
     private JButton buttonClienteNIFProcuraReserva;
     private JButton buttonClienteNIFProcuraCliente;
     private JButton buttonDataProcuraLimpeza;
-    private JButton pesquisarFaturaNIFButton;
+    private JButton buttonFaturacaoProcuraReservaId;
     private JButton buttonQuartoIDProcuraLimpeza;
     private JButton buttonEmpregadoIDProcuraLimpeza;
     private JScrollPane tableReservasScrollPane;
     private JScrollPane tableClientesScrollPane;
     private JScrollPane tableLimpezasScrollPane;
+    private JTextField empregadoCargoIdEmpregadoField;
+    private JButton buttonEmpregadoIDProcuraEmpregado;
+    private JTextField empregadoIDEmpregadoProcuraField;
+    private JButton buttonEmpregadoNifProcuraEmpregado;
+    private JTextField empregadoNifEmpregadoProcuraField;
+    private JLabel pesquisarEmpregadoID;
+    private JLabel pesquisarEmpregadoNif;
+    private JButton buttonQuartosTab;
+    private JPanel quartoPanel;
+    private JTextField fieldQuartoQuartoId;
+    private JTable tableQuarto;
+    private JButton buttonQuartoProcuraQuartoId;
+    private JButton buttonQuartoProcuraQuartoNif;
+    private JTextField fieldQuartoProcuraQuartoId;
+    private JTextField fieldQuartoProcuraQuartoNif;
+    private JButton buttonGuardarQuarto;
+    private JButton buttonRecuarQuarto;
 
     private JTable tabelaReservas;
     private JTable tabelaClientes;
