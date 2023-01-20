@@ -18,7 +18,6 @@ import java.security.InvalidParameterException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class MenuGui extends JFrame{
     private JTable table4;
     private JTextField reservaIDFaturaProcuraField;
     private JLabel pesquisarFaturaNifLabel;
-    private JButton recuarButtonFaturacao;
+    private JButton buttonRecuarDeFaturacao;
     private JTable table5;
     private JTextField empregadoNomeEmpregadoField;
     private JTextField empregadoMoradaEmpregadoField;
@@ -125,7 +124,6 @@ public class MenuGui extends JFrame{
         GestorDeLimpeza gestorDeLimpeza = new GestorDeLimpeza();
         GestorDeQuartos gestorDeQuartos = new GestorDeQuartos();
         GestorDeReserva gestorDeReserva = new GestorDeReserva();
-        GestorDeDatas gestorDeDatas = new GestorDeDatas();
 
         buttonClienteTab.addMouseListener(new MouseAdapter() {
             @Override
@@ -139,6 +137,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposClientePanel();
                 clientePanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
@@ -155,6 +154,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposReservaPanel();
                 reservaPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
@@ -167,10 +167,11 @@ public class MenuGui extends JFrame{
                 faturacaoPanel.setVisible(true);
             }
         });
-        recuarButtonFaturacao.addMouseListener(new MouseAdapter() {
+        buttonRecuarDeFaturacao.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposFaturacaoPanel();
                 faturacaoPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
@@ -179,6 +180,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposEmpregadoPanel();
                 empregadoPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
@@ -203,6 +205,7 @@ public class MenuGui extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposLimpezaPanel();
                 limpezaPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
@@ -497,6 +500,46 @@ public class MenuGui extends JFrame{
                 }
             }
         });
+    }
+
+    private void limparCamposReservaPanel(){
+        clienteNIFReservaField.setText("");
+        quartosIDReservaField.setText("");
+        dataInicialReservaField.setText("");
+        dataFinalReservaField.setText("");
+        empregadoIDReservaField.setText("");
+        clienteNIFReservaProcuraField.setText("");
+    }
+
+    private void limparCamposClientePanel(){
+        clienteNIFClienteField.setText("");
+        clienteNomeClienteField.setText("");
+        clienteTelefoneClienteField.setText("");
+        clienteNIFClienteProcuraField.setText("");
+    }
+
+    private void limparCamposEmpregadoPanel(){
+        empregadoMoradaEmpregadoField.setText("");
+        empregadoNIFEmpregadoField.setText("");
+        empregadoNomeEmpregadoField.setText("");
+        empregadoPasswordEmpregadoField.setText("");
+        empregadoHoraEntradaEmpregadoField.setText("");
+        empregadoHoraSaidaEmpregadoField.setText("");
+        empregadoTelefoneEmpregadoField.setText("");
+        empregadoSalarioEmpregadoField.setText("");
+    }
+
+    private void limparCamposLimpezaPanel(){
+        dataLimpezaField.setText("");
+        empregadoIDLimpezaField.setText("");
+        quartoIDLimpezaField.setText("");
+        dataLimpezaProcuraField.setText("");
+        empregadoIDLimpezaProcuraField.setText("");
+        quartoIDLimpezaProcuraField.setText("");
+    }
+
+    private void limparCamposFaturacaoPanel(){
+        clienteNIFReservaProcuraField.setText("");
     }
 }
 
