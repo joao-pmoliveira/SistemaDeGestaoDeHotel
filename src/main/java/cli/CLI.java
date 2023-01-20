@@ -2,8 +2,8 @@ package cli;
 
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
-import cli.cliente.Cliente;
-import cli.cliente.GestorDeClientes;
+import cliente.Cliente;
+import cliente.GestorDeClientes;
 import empregado.Empregado;
 import empregado.GestorDeEmpregados;
 import limpeza.GestorDeLimpeza;

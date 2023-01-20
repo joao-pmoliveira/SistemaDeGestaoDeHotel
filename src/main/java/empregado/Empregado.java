@@ -24,7 +24,6 @@ public class Empregado {
         this.horaSaida = horaSaida;
         this.morada = morada;
         this.salario = salario;
-
     }
 
     public int getId (){return id;}

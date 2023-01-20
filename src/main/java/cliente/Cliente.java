@@ -1,4 +1,4 @@
-package cli.cliente;
+package cliente;
 
 public class Cliente {
     private int nif;
