@@ -1,19 +1,24 @@
 package gui;
 
 import basededados.GestorDeBaseDeDados;
-import cliente.GestorDeClientes;
+import cli.cliente.Cliente;
+import cli.cliente.GestorDeClientes;
 import empregado.GestorDeEmpregados;
 import limpeza.GestorDeLimpeza;
+import limpeza.RegistoDeLimpeza;
 import quarto.GestorDeQuartos;
 import reserva.GestorDeReserva;
+import reserva.Reserva;
 import utils.GestorDeDatas;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.security.InvalidParameterException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,53 +26,52 @@ public class MenuGui extends JFrame{
     private JPanel mainPanel;
     private JPanel menuPanel;
     private JTable table1;
-    private JButton clienteButton;
-    private JButton limpezaButton;
-    private JButton empregadoButton;
-    private JButton faturacaoButton;
+    private JButton buttonClienteTab;
+    private JButton buttonLimpezaTab;
+    private JButton buttonEmpregadoTab;
+    private JButton buttonFaturacaoTab;
     private JPanel reservaPanel;
     private JPanel clientePanel;
     private JPanel limpezaPanel;
     private JPanel empregadoPanel;
     private JPanel faturacaoPanel;
-    private JButton reservaButton;
-    private JTable table2;
-    private JTextField nomeField;
+    private JButton buttonReservaTab;
+    private JTextField clienteNomeClienteField;
     private JLabel nomeLabel;
-    private JTextField telefoneField;
+    private JTextField clienteTelefoneClienteField;
     private JLabel telefoneLabel;
-    private JTextField nifField;
+    private JTextField clienteNIFClienteField;
     private JLabel nifLabel;
-    private JButton guardarButtonCliente;
-    private JButton recuarButtonCliente;
-    private JTextField pesquisarClienteNifField;
+    private JButton buttonAdicionarCliente;
+    private JButton buttonRecuarDeCliente;
+    private JTextField clienteNIFClienteProcuraField;
     private JLabel pesquisarClienteNifLabel;
     private JTable table3;
-    private JTextField nifField1;
-    private JTextField idEmpregadoField;
+    private JTextField clienteNIFReservaField;
+    private JTextField empregadoIDReservaField;
     private JLabel nifLabel2;
-    private JButton guardarButtonReserva;
-    private JButton recuarButtonReserva;
-    private JTextField pesquisarReservaNifField;
-    private JTextField numeroQuartoField;
+    private JButton buttonAdicionarReserva;
+    private JButton buttonRecuarDeReserva;
+    private JTextField clienteNIFReservaProcuraField;
+    private JTextField quartosIDReservaField;
     private JLabel numeroQuartoLabel;
-    private JTextField dataInicialField;
+    private JTextField dataInicialReservaField;
     private JLabel pesquisarReservaNIFLabel;
     private JTable table4;
-    private JTextField pesquisarFaturaNifField;
+    private JTextField reservaIDFaturaProcuraField;
     private JLabel pesquisarFaturaNifLabel;
-    private JButton recuarButtonFaturacao;
+    private JButton buttonRecuarDeFaturacao;
     private JTable table5;
-    private JTextField nomeField1;
-    private JTextField moradaField;
+    private JTextField empregadoNomeEmpregadoField;
+    private JTextField empregadoMoradaEmpregadoField;
     private JComboBox cargoComboBox;
-    private JTextField telefoneField1;
-    private JTextField nifField2;
-    private JTextField horaEntradaField;
-    private JTextField horasaidaField;
-    private JPasswordField passwordField;
-    private JButton guardarButtonEmpregado;
-    private JButton recuarButtonEmpregado;
+    private JTextField empregadoTelefoneEmpregadoField;
+    private JTextField empregadoNIFEmpregadoField;
+    private JTextField empregadoHoraEntradaEmpregadoField;
+    private JTextField empregadoHoraSaidaEmpregadoField;
+    private JPasswordField empregadoPasswordEmpregadoField;
+    private JButton buttonAdicionarEmpregado;
+    private JButton buttonRecuarDeEmpregado;
     private JLabel cargoField;
     private JLabel moradaLabel;
     private JLabel telefoneLabel1;
@@ -75,15 +79,14 @@ public class MenuGui extends JFrame{
     private JLabel horaEntradaLabel;
     private JLabel horaSaidaLabel;
     private JLabel passwordLabel;
-    private JTable table6;
-    private JTextField idEmpregadoField1;
-    private JTextField quartoLabelField;
-    private JTextField dataHoraField;
-    private JTextField pesquisarEmpregadoField;
-    private JTextField pesquisarQuartoField;
-    private JTextField pesquisarDataField;
-    private JButton guardarButtonLimpeza;
-    private JButton recuarButtonLimpeza;
+    private JTextField empregadoIDLimpezaField;
+    private JTextField quartoIDLimpezaField;
+    private JTextField dataLimpezaField;
+    private JTextField empregadoIDLimpezaProcuraField;
+    private JTextField quartoIDLimpezaProcuraField;
+    private JTextField dataLimpezaProcuraField;
+    private JButton buttonAdicionarRegistoLimpeza;
+    private JButton buttonRecuarDeLimpeza;
     private JLabel pesquisarDataLabel;
     private JLabel pesquisarQuartoLabel;
     private JLabel pesquisarEmpregadoLabel;
@@ -93,21 +96,30 @@ public class MenuGui extends JFrame{
     private JLabel idEmpregadoLabel1;
     private JLabel dataInicialLabel;
     private JLabel nomeLabel1;
-    private JTextField dataFinalField;
+    private JTextField dataFinalReservaField;
     private JLabel dataFinalLabel;
-    private JTextField salarioField;
+    private JTextField empregadoSalarioEmpregadoField;
     private JLabel salarioLabel;
-    private JButton pesquisarReservaNifButton;
-    private JButton pesquisarClienteNifButton;
-    private JButton pesquisarLimpezaButton;
+    private JButton buttonClienteNIFProcuraReserva;
+    private JButton buttonClienteNIFProcuraCliente;
+    private JButton buttonDataProcuraLimpeza;
     private JButton pesquisarFaturaNIFButton;
+    private JButton buttonQuartoIDProcuraLimpeza;
+    private JButton buttonEmpregadoIDProcuraLimpeza;
+    private JScrollPane tableReservasScrollPane;
+    private JScrollPane tableClientesScrollPane;
+    private JScrollPane tableLimpezasScrollPane;
+
+    private JTable tabelaReservas;
+    private JTable tabelaClientes;
+    private JTable tabelaLimpezas;
+    private JTable tabelaEmpregados;
 
     public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados) {
         super(title);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(mainPanel);
-
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         //this.setSize(dim.width-this.getSize().width +1 , dim.height-this.getSize().height);// full screen
@@ -119,9 +131,48 @@ public class MenuGui extends JFrame{
         GestorDeLimpeza gestorDeLimpeza = new GestorDeLimpeza();
         GestorDeQuartos gestorDeQuartos = new GestorDeQuartos();
         GestorDeReserva gestorDeReserva = new GestorDeReserva();
-        GestorDeDatas gestorDeDatas = new GestorDeDatas();
 
-        clienteButton.addMouseListener(new MouseAdapter() {
+        DefaultTableModel modelReservas = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaReservas = new JTable(modelReservas);
+        tableReservasScrollPane.getViewport().add(tabelaReservas);
+        modelReservas.addColumn("ID");
+        modelReservas.addColumn("Cliente");
+        modelReservas.addColumn("Empregado");
+        modelReservas.addColumn("Pagamento");
+        modelReservas.addColumn("Preço");
+
+        DefaultTableModel modelClientes = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaClientes = new JTable(modelClientes);
+        tableClientesScrollPane.getViewport().add(tabelaClientes);
+        modelClientes.addColumn("NIF");
+        modelClientes.addColumn("Nome");
+        modelClientes.addColumn("Telefone");
+
+        DefaultTableModel modelLimpezas = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaLimpezas = new JTable(modelLimpezas);
+        tableLimpezasScrollPane.getViewport().add(tabelaLimpezas);
+        modelLimpezas.addColumn("Data");
+        modelLimpezas.addColumn("Quarto");
+        modelLimpezas.addColumn("Empregado");
+
+
+
+        buttonClienteTab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -129,15 +180,16 @@ public class MenuGui extends JFrame{
                 clientePanel.setVisible(true);
             }
         });
-        recuarButtonCliente.addMouseListener(new MouseAdapter() {
+        buttonRecuarDeCliente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposClientePanel();
                 clientePanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
         });
-        reservaButton.addMouseListener(new MouseAdapter() {
+        buttonReservaTab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -145,15 +197,16 @@ public class MenuGui extends JFrame{
                 reservaPanel.setVisible(true);
             }
         });
-        recuarButtonReserva.addMouseListener(new MouseAdapter() {
+        buttonRecuarDeReserva.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposReservaPanel();
                 reservaPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
         });
-        faturacaoButton.addMouseListener(new MouseAdapter() {
+        buttonFaturacaoTab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -161,23 +214,25 @@ public class MenuGui extends JFrame{
                 faturacaoPanel.setVisible(true);
             }
         });
-        recuarButtonFaturacao.addMouseListener(new MouseAdapter() {
+        buttonRecuarDeFaturacao.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposFaturacaoPanel();
                 faturacaoPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
         });
-        recuarButtonEmpregado.addMouseListener(new MouseAdapter() {
+        buttonRecuarDeEmpregado.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposEmpregadoPanel();
                 empregadoPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
         });
-        empregadoButton.addMouseListener(new MouseAdapter() {
+        buttonEmpregadoTab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -185,7 +240,7 @@ public class MenuGui extends JFrame{
                 empregadoPanel.setVisible(true);
             }
         });
-        limpezaButton.addMouseListener(new MouseAdapter() {
+        buttonLimpezaTab.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -193,154 +248,371 @@ public class MenuGui extends JFrame{
                 limpezaPanel.setVisible(true);
             }
         });
-        recuarButtonLimpeza.addMouseListener(new MouseAdapter() {
+        buttonRecuarDeLimpeza.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                limparCamposLimpezaPanel();
                 limpezaPanel.setVisible(false);
                 menuPanel.setVisible(true);
             }
         });
-        guardarButtonReserva.addMouseListener(new MouseAdapter() {
+        buttonAdicionarReserva.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                int nif = Integer.parseInt(nifField1.getText()); //NIF
+                String resultado;
+                try{
+                    String clienteNIFInput = clienteNIFReservaField.getText().trim();
+                    String empregadoIDInput = empregadoIDReservaField.getText().trim();
+                    String quartosIDInput = quartosIDReservaField.getText().trim();
+                    String dataInicialInput = dataInicialReservaField.getText().trim();
+                    String dataFinalInput = dataFinalReservaField.getText().trim();
 
-                String quartosInseridos = numeroQuartoField.getText(); //QUARTOS
-                String[] quartos = quartosInseridos.split(",");
-                HashSet<Integer> quartosAReservar = new HashSet<>();
-                for(String quarto : quartos){
-                    quarto = quarto.trim();
-                    int quartoID = Integer.parseInt(quarto);
-                    quartosAReservar.add(quartoID);
+                    if(clienteNIFInput.isEmpty() || empregadoIDInput.isEmpty() || quartosIDInput.isEmpty() ||
+                        dataInicialInput.isEmpty() || dataFinalInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)!");
+
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+                    int empregadoID = Integer.parseInt(empregadoIDInput);
+                    String[] quartosInseridos = quartosIDInput.split(",");
+
+                    HashSet<Integer> quartosIDs = new HashSet<>();
+                    for(String quartoInserido : quartosInseridos){
+                        int quartoID = Integer.parseInt(quartoInserido.trim());
+                        quartosIDs.add(quartoID);
+                    }
+
+                    String[] data = dataInicialInput.split("-");
+                    int ano = Integer.parseInt(data[0]);
+                    int mes = Integer.parseInt(data[1]);
+                    int dia = Integer.parseInt(data[2]);
+                    LocalDate dataInicial = LocalDate.of(ano, mes, dia);
+
+                    data = dataFinalInput.split("-");
+                    ano = Integer.parseInt(data[0]);
+                    mes = Integer.parseInt(data[1]);
+                    dia = Integer.parseInt(data[2]);
+                    LocalDate dataFinal = LocalDate.of(ano, mes, dia);
+                    HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(dataInicial, dataFinal);
+
+                    gestorDeReserva.adicionarReserva(clienteNIF, empregadoID, datas, quartosIDs, gestorDeBaseDeDados);
+                    resultado = "Reserva adicionada com sucesso!";
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing";
+                } catch (DateTimeException exception){
+                    resultado = "Erro a lidar com as datas";
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
                 }
-
-                //int[] quartosIDs = quartosAReservar.stream().mapToInt(i -> i).toArray();
-
-                String dataInicalInput = dataInicialField.getText(); //DATAS
-                Date dataInicial = GestorDeDatas.validarData(dataInicalInput);
-                String dataFinalInput = dataFinalField.getText();
-                Date dataFinal = GestorDeDatas.validarData(dataFinalInput);
-
-                HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(
-                        GestorDeDatas.converterDateParaLocalDate(dataInicial),
-                        GestorDeDatas.converterDateParaLocalDate(dataFinal));
-
-                int id = Integer.parseInt(idEmpregadoField.getText()); //ID
-                gestorDeReserva.adicionarReserva(nif, id, datas, quartosAReservar, gestorDeBaseDeDados);
+                JOptionPane.showMessageDialog(GUI.frame, resultado);
             }
         });
-        guardarButtonCliente.addMouseListener(new MouseAdapter() {
+        buttonAdicionarCliente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                int clienteNif = Integer.parseInt(nifField.getText());// NIF
-                if(clienteNif < 1){
-                    System.out.println("NIF do cliente inválido!");
-                    return;
+                String resultado;
+                try{
+                    String clienteNIFInput = clienteNIFClienteField.getText().trim();
+                    String clienteNomeInput = clienteNomeClienteField.getText().trim();
+                    String clienteTelefoneInput = clienteTelefoneClienteField.getText().trim();
+
+                    if(clienteNIFInput.isEmpty() || clienteNomeInput.isEmpty() || clienteTelefoneInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)!");
+
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+                    int clienteTelefone = Integer.parseInt(clienteTelefoneInput);
+
+                    gestorDeClientes.adicionarCliente(clienteNIF, clienteNomeInput, clienteTelefone, gestorDeBaseDeDados);
+
+                    resultado = "Cliente adicionado com sucesso!";
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                } catch (DateTimeException exception){
+                    resultado = "Erro a lidar com as datas" + "\n" + exception.getMessage();
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
                 }
-
-                String clienteNome = nomeField.getText(); //NOME
-                if(clienteNome.isEmpty()){
-                    System.out.println("Nome inválido!");
-                    return;
-                }
-
-                int clienteTelefone = Integer.parseInt(telefoneField.getText()); //TELEFONE
-
-                gestorDeClientes.adicionarCliente(clienteNif, clienteNome, clienteTelefone, gestorDeBaseDeDados);
-
+                JOptionPane.showMessageDialog(GUI.frame, resultado);
             }
         });
 
-
-        guardarButtonLimpeza.addMouseListener(new MouseAdapter() {
+        buttonAdicionarRegistoLimpeza.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                String dataRegistoInput = dataHoraField.getText(); //DATA REGISTO
-                Date dataRegisto = GestorDeDatas.validarData(dataRegistoInput);
-                if(dataRegisto == null) {
-                    System.out.println("Data do Registo inválida!");
-                    return;
+                String resultado;
+
+                try{
+                    String quartoIDInput = quartoIDLimpezaField.getText().trim();
+                    String empregadoIDInput = empregadoIDLimpezaField.getText().trim();
+                    String dataHoraInput = dataLimpezaField.getText().trim();
+
+                    if(quartoIDInput.isEmpty() || empregadoIDInput.isEmpty() || dataHoraInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)!");
+
+                    String[] data = dataHoraInput.split("-");
+                    int ano = Integer.parseInt(data[0]);
+                    int mes = Integer.parseInt(data[1]);
+                    int dia = Integer.parseInt(data[2]);
+
+                    LocalDate dataRegisto = LocalDate.of(ano, mes, dia);
+
+                    int quartoID = Integer.parseInt(quartoIDInput);
+                    int empregadoID = Integer.parseInt(empregadoIDInput);
+
+                    gestorDeLimpeza.adicionarRegisto(dataRegisto, quartoID, empregadoID, gestorDeBaseDeDados);
+                    resultado = "Registo adicionado com sucesso!";
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                } catch (DateTimeException exception){
+                    resultado = "Erro a lidar com as datas" + "\n" + exception.getMessage();
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
                 }
-
-
-
-                int idQuarto = Integer.parseInt(quartoLabelField.getText()); //QUARTO ID
-                if(idQuarto < 1) {
-                    JOptionPane.showMessageDialog(GUI.frame, "Quarto ID inválido!");
-                    return;
-                }
-
-                int idEmpregado = Integer.parseInt(idEmpregadoField1.getText()); //EMPREGADO ID
-                if(idEmpregado< 1) {
-                    JOptionPane.showMessageDialog(GUI.frame, "Empregado inválido!");
-                    return;
-                }
-
-                gestorDeLimpeza.adicionarRegisto(dataRegistoInput, idQuarto, idEmpregado, gestorDeBaseDeDados);
+                JOptionPane.showMessageDialog(GUI.frame, resultado);
             }
         });
 
 
-        guardarButtonEmpregado.addMouseListener(new MouseAdapter() {
+        buttonAdicionarEmpregado.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                String resultado;
+                try{
+                    String empregadoNomeInput = empregadoNomeEmpregadoField.getText().trim();
+                    String empregadoCargoIDInput;
+                    String empregadoTelefoneInput = empregadoTelefoneEmpregadoField.getText().trim();
+                    String empregadoNIFInput = empregadoNIFEmpregadoField.getText().trim();
+                    String empregadoSalarioInput = empregadoSalarioEmpregadoField.getText().trim();
+                    String empregadoMoradaInput = empregadoMoradaEmpregadoField.getText().trim();
+                    String empregadoHoraEntradaInput = empregadoHoraEntradaEmpregadoField.getText().trim();
+                    String empregadoHoraSaidaInput = empregadoHoraSaidaEmpregadoField.getText().trim();
+                    String empregadoPasswordInput = String.valueOf(empregadoPasswordEmpregadoField.getPassword());
 
-                String empregadoNome = nomeField1.getText(); //NOME
-                if(empregadoNome.isEmpty()){
-                    System.out.println("Nome inválido!");
+                    if( empregadoNomeInput.isEmpty() || empregadoTelefoneInput.isEmpty() || empregadoNIFInput.isEmpty() ||
+                        empregadoSalarioInput.isEmpty() || empregadoMoradaInput.isEmpty() || empregadoHoraEntradaInput.isEmpty() ||
+                        empregadoHoraSaidaInput.isEmpty() || empregadoPasswordInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)!");
+
+                    int empregadoCargoID = 1;
+                    int empregadoTelefone = Integer.parseInt(empregadoTelefoneInput);
+                    int empregadoNIF = Integer.parseInt(empregadoNIFInput);
+                    float empregadoSalario= Float.parseFloat(empregadoSalarioInput);
+
+                    String[] horaInput = empregadoHoraEntradaInput.split(":");
+                    int horas = Integer.parseInt(horaInput[0]);
+                    int minutos = Integer.parseInt(horaInput[1]);
+                    LocalTime empregadoHoraEntrada = LocalTime.of(horas, minutos);
+
+                    horaInput = empregadoHoraSaidaInput.split(":");
+                    horas = Integer.parseInt(horaInput[0]);
+                    minutos = Integer.parseInt(horaInput[1]);
+                    LocalTime empregadoHoraSaida = LocalTime.of(horas, minutos);
+
+                    gestorDeEmpregados.adicionarEmpregado(empregadoNomeInput, empregadoCargoID, empregadoMoradaInput, empregadoTelefone,
+                            empregadoNIF, empregadoSalario, empregadoHoraEntrada, empregadoHoraSaida, empregadoPasswordInput, gestorDeBaseDeDados);
+                    resultado = "Empregado adicionado com sucesso!";
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                } catch (DateTimeException exception){
+                    resultado = "Erro a lidar com as datas" + "\n" + exception.getMessage();
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
                 }
-
-                int empregadoCargo = Integer.parseInt(cargoField.getText()); //CARGO
-                if(empregadoCargo < 1 || empregadoCargo > 3 ){
-                    System.out.println("Cargo inválido!");
-                    return;
-                }
-
-                String empregadoMorada = moradaField.getText();; //MORADA
-                if(empregadoMorada.isEmpty()){
-                    System.out.println("Morada inválida!");
-                    return;
-                }
-
-                int telefone = Integer.parseInt(telefoneField1.getText()); //MUDAR.
-                /*if(telefone.matches()) {
-                    System.out.println("Telefone inválido");
-                    return;
-                }
-                int empregadoTelefone = Integer.parseInt(telefone); //TELEFONE */
-
-
-                int empregadoNif = Integer.parseInt(nifField2.getText()); //NIF
-                if(empregadoNif < 1) {
-                    System.out.println("Empregado ID inválido!");
-                    return;
-                }
-
-                float empregadoSalario = Float.parseFloat(salarioField.getText()); //SALARIO
-                if (empregadoSalario <= 0f) {
-                    System.out.println("Salário inválido");
-                    return;
-                }
-
-                String horaEntrada = horaEntradaField.getText(); //HORA ENTRADA
-                //FALTA LIDAR COM ERRO
-
-
-
-                String horaSaida = horasaidaField.getText(); //HORA SAIDA
-                //FALTA LIDAR COM ERRO
-
-                String password = Arrays.toString(passwordField.getPassword()); //PASSWORD
-                //FALTA LIDAR COM ERRO
-
-               // gestorDeEmpregados.adicionarEmpregado(empregadoNome, empregadoCargo, empregadoMorada, telefone, empregadoNif, empregadoSalario, horaEntrada, horaSaida, password, gestorDeBaseDeDados);
+                JOptionPane.showMessageDialog(GUI.frame, resultado);
             }
         });
+        buttonClienteNIFProcuraReserva.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
+
+                    if(clienteNIFInput.isEmpty())
+                        throw new InvalidParameterException("Preenche NIF do cliente para procurar!");
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+
+                    List<Reserva> reservas = gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF,gestorDeBaseDeDados);
+                    limparCamposReservaPanel();
+                    for(Reserva reserva : reservas){
+                        modelReservas.addRow(new Object[]{
+                                reserva.getReservaID(), reserva.getClienteNIF(), reserva.getEmpregadoID(), reserva.getEstadoPagamento(),
+                                reserva.getPrecoAtual()
+                        });
+                    }
+                    System.out.println(reservas);
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+
+
+        });
+        buttonClienteNIFProcuraCliente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String clienteNIFInput = clienteNIFClienteProcuraField.getText().trim();
+
+                    if(clienteNIFInput.isEmpty())
+                        throw new InvalidParameterException("Preenche NIF do cliente para procurar!");
+
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+
+                    Cliente cliente = gestorDeClientes.procurarClientePorNIF(clienteNIF, gestorDeBaseDeDados);
+                    limparCamposClientePanel();
+                    modelClientes.addRow(new Object[]{
+                            cliente.getNIF(), cliente.getNome(), cliente.getTelefone()
+                    });
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonQuartoIDProcuraLimpeza.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String quartoIDInput = quartoIDLimpezaProcuraField.getText().trim();
+
+                    if(quartoIDInput.isEmpty())
+                        throw new InvalidParameterException("Preenche ID do quarto para procurar!");
+
+                    int quartoID = Integer.parseInt(quartoIDInput);
+
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorQuarto(quartoID, gestorDeBaseDeDados);
+                    limparCamposLimpezaPanel();
+                    for (RegistoDeLimpeza registo : registosDeLimpeza){
+                        modelLimpezas.addRow(new Object[]{
+                                registo.getData(), registo.getQuartoId(), registo.getEmpregadoId()
+                        });
+                    }
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonEmpregadoIDProcuraLimpeza.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String empregadoIDInput = empregadoIDLimpezaProcuraField.getText().trim();
+
+                    if(empregadoIDInput.isEmpty())
+                        throw new InvalidParameterException("Preenche ID do quarto para procurar!");
+
+                    int empregadoID = Integer.parseInt(empregadoIDInput);
+
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorEmpregadoId(empregadoID, gestorDeBaseDeDados);
+                    limparCamposLimpezaPanel();
+                    for (RegistoDeLimpeza registo : registosDeLimpeza){
+                        modelLimpezas.addRow(new Object[]{
+                                registo.getData(), registo.getQuartoId(), registo.getEmpregadoId()
+                        });
+                    }
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonDataProcuraLimpeza.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String dataInput = dataLimpezaProcuraField.getText().trim();
+
+                    if(dataInput.isEmpty())
+                        throw new InvalidParameterException("Preenche ID do quarto para procurar!");
+
+                    String[] dataComponentes = dataInput.split("-");
+                    int ano = Integer.parseInt(dataComponentes[0]);
+                    int mes = Integer.parseInt(dataComponentes[1]);
+                    int dia = Integer.parseInt(dataComponentes[2]);
+                    LocalDate data = LocalDate.of(ano,mes,dia);
+
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorData(data, gestorDeBaseDeDados);
+                    limparCamposLimpezaPanel();
+                    for (RegistoDeLimpeza registo : registosDeLimpeza){
+                        modelLimpezas.addRow(new Object[]{
+                                registo.getData(), registo.getQuartoId(), registo.getEmpregadoId()
+                        });
+                    }
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+    }
+
+    private void limparCamposReservaPanel(){
+        clienteNIFReservaField.setText("");
+        quartosIDReservaField.setText("");
+        dataInicialReservaField.setText("");
+        dataFinalReservaField.setText("");
+        empregadoIDReservaField.setText("");
+        clienteNIFReservaProcuraField.setText("");
+        ((DefaultTableModel)tabelaReservas.getModel()).setRowCount(0);
+    }
+
+    private void limparCamposClientePanel(){
+        clienteNIFClienteField.setText("");
+        clienteNomeClienteField.setText("");
+        clienteTelefoneClienteField.setText("");
+        clienteNIFClienteProcuraField.setText("");
+        ((DefaultTableModel)tabelaClientes.getModel()).setRowCount(0);
+    }
+
+    private void limparCamposEmpregadoPanel(){
+        empregadoMoradaEmpregadoField.setText("");
+        empregadoNIFEmpregadoField.setText("");
+        empregadoNomeEmpregadoField.setText("");
+        empregadoPasswordEmpregadoField.setText("");
+        empregadoHoraEntradaEmpregadoField.setText("");
+        empregadoHoraSaidaEmpregadoField.setText("");
+        empregadoTelefoneEmpregadoField.setText("");
+        empregadoSalarioEmpregadoField.setText("");
+    }
+
+    private void limparCamposLimpezaPanel(){
+        dataLimpezaField.setText("");
+        empregadoIDLimpezaField.setText("");
+        quartoIDLimpezaField.setText("");
+        dataLimpezaProcuraField.setText("");
+        empregadoIDLimpezaProcuraField.setText("");
+        quartoIDLimpezaProcuraField.setText("");
+        ((DefaultTableModel)tabelaLimpezas.getModel()).setRowCount(0);
+    }
+
+    private void limparCamposFaturacaoPanel(){
+        clienteNIFReservaProcuraField.setText("");
     }
 }
 

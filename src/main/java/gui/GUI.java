@@ -1,14 +1,8 @@
 package gui;
 
 
-
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
-import cliente.GestorDeClientes;
-import empregado.GestorDeEmpregados;
-import limpeza.GestorDeLimpeza;
-import quarto.GestorDeQuartos;
-import reserva.GestorDeReserva;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,36 +28,31 @@ public class GUI extends JFrame{
         this.setUndecorated(true);// tela sem a barra de cima
 
         ValidadorDeLogin validadorDeLogin = new ValidadorDeLogin("src/main/java/loginData");
-        gestorDeBaseDeDados = new GestorDeBaseDeDados(validadorDeLogin.getHostname(), validadorDeLogin.getPort(), validadorDeLogin.getSchema(), validadorDeLogin.getUsername(), validadorDeLogin.getPassword());
+        gestorDeBaseDeDados = new GestorDeBaseDeDados(validadorDeLogin.getHostname(), validadorDeLogin.getPort(),
+                validadorDeLogin.getSchema(), validadorDeLogin.getUsername(), validadorDeLogin.getPassword());
         gestorDeBaseDeDados.tryConnectionToDataBase();
-
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(mainPanel);
-
 
         //Dimensões
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/3-this.getSize().width/2, dim.height/3-this.getSize().height/2);
         this.setSize(500,250);
 
-
-
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 frame.dispose();
+                //todo fechar conexão à base de dados
             }
         });
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-
-
-
-                if(userField.getText().isEmpty()||passwordField.getPassword().length==0){
+                if(userField.getText().isEmpty() || passwordField.getPassword().length==0){
                     System.out.println("Campos vazios");
                     return;
                 }
@@ -76,7 +65,6 @@ public class GUI extends JFrame{
                     JFrame menuGui = new MenuGui("Menu", gestorDeBaseDeDados);
                     menuGui.setVisible(true);
                     frame.setVisible(false);
-
                 }else {
                     System.out.println("Palavra passe errada ou utilizador errado");
                 }
