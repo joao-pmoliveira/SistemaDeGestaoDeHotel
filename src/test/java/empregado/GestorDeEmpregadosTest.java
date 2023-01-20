@@ -2,6 +2,7 @@ package empregado;
 
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,12 @@ class GestorDeEmpregadosTest {
 
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeEmpregados = new GestorDeEmpregados();
+        gestorDeBaseDeDados.tryResetDatabase();
+    }
+
+    @AfterAll
+    static void tearDown(){
+        gestorDeBaseDeDados.tryResetDatabase();
     }
 
 
