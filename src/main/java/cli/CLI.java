@@ -432,8 +432,8 @@ public class CLI {
                         System.out.print("Dia: ");
                         dia = scanner.nextInt();
                         dataFinal = LocalDate.of(ano, mes, dia);
+                        scanner.nextLine();
 
-                        //todo alterar parameteros de Date para LocalData
                         ZoneId defaultZoneId = ZoneId.systemDefault();
                         Date dataI = Date.from(dataInicial.atStartOfDay(defaultZoneId).toInstant());
                         Date dataF = Date.from(dataFinal.atStartOfDay(defaultZoneId).toInstant());
@@ -504,7 +504,7 @@ public class CLI {
 
                         HashSet<LocalDate> datas = GestorDeDatas.obterDatasEntreDuasDatas(dataInicial, dataFinal);
                         gestorDeReserva.adicionarReserva(cliente.getNIF(), empregadoID, datas, quartosAReservar, gestorDeBaseDeDados);
-
+                        System.out.println("Reserva registada com sucesso!");
                     } catch (DateTimeException e){
                         System.out.println("Data Inválida. Não foi possível ler a data introduzida");
                     } catch (InputMismatchException e){
