@@ -4,6 +4,7 @@ import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
 import cli.cliente.Cliente;
 import cli.cliente.GestorDeClientes;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,12 @@ class GestorDeClientesTest {
 
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeClientes = new GestorDeClientes();
+        gestorDeBaseDeDados.tryResetDatabase();
+    }
+
+    @AfterAll
+    static void tearDown(){
+        gestorDeBaseDeDados.tryResetDatabase();
     }
     @Test
     void procurarClienteComBDInvalidaTest(){

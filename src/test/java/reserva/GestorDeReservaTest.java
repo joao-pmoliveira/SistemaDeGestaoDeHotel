@@ -29,9 +29,7 @@ class GestorDeReservaTest {
 
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeReserva = new GestorDeReserva();
-
         gestorDeBaseDeDados.tryResetDatabase();
-        System.out.println("Limpa Base");
     }
 
     @AfterAll

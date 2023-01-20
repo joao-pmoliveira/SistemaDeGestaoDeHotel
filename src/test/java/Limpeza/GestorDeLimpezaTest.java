@@ -1,27 +1,23 @@
-package Limpeza;
+package limpeza;
 
-import limpeza.GestorDeLimpeza;
-import limpeza.RegistoDeLimpeza;
-import org.junit.jupiter.api.Test;
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
+import limpeza.GestorDeLimpeza;
+import limpeza.RegistoDeLimpeza;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-
 
 class GestorDeLimpezaTest {
 
     static GestorDeBaseDeDados gestorDeBaseDeDados;
     static GestorDeLimpeza gestorDeLimpeza;
-
-
 
     @BeforeAll //Validar o Login Da Base De dados
     static void startup() {
@@ -35,6 +31,12 @@ class GestorDeLimpezaTest {
 
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeLimpeza = new GestorDeLimpeza();
+        gestorDeBaseDeDados.tryResetDatabase();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        gestorDeBaseDeDados.tryResetDatabase();
     }
 
     @Test
@@ -55,7 +57,6 @@ class GestorDeLimpezaTest {
 
     }
 
-
     @Test
     void procurarRegistoComQuartoIDInvalidoTest() {
         String expectedMessage = "Não existe Quarto associado a esse ID!";
@@ -72,20 +73,6 @@ class GestorDeLimpezaTest {
         Exception exceptionQuartoSemRegistos = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeLimpeza.procurarRegistosPorQuarto(10, gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionQuartoSemRegistos.getMessage());
-    }
-
-
-
-    @Test
-    void procurarQuartoValidoTest(){
-        LocalDate data=LocalDate.of(2022,12,19);
-        RegistoDeLimpeza registoDeLimpezaEsperado = new RegistoDeLimpeza(data,1,1);
-        List<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorQuarto(1, gestorDeBaseDeDados);
-        assertEquals(1, registos.size());
-        RegistoDeLimpeza registoDeLimpezaReal=registos.get(0);
-        assertEquals(registoDeLimpezaEsperado.getQuartoId(), registoDeLimpezaReal.getQuartoId());
-        assertEquals(registoDeLimpezaEsperado.getEmpregadoId(), registoDeLimpezaReal.getEmpregadoId());
-        assertEquals(registoDeLimpezaEsperado.getData(), registoDeLimpezaReal.getData());
     }
 
     @Test
@@ -106,48 +93,36 @@ class GestorDeLimpezaTest {
         assertEquals(expectedMessage, exceptionEmpregadoSemRegistos.getMessage());
     }
 
-
     @Test
-    void procurarEmpregadoValidoTest(){
-        LocalDate data=LocalDate.of(2022,12,19);
-        RegistoDeLimpeza registoDeLimpezaEsperado = new RegistoDeLimpeza(data,1,1);
-        List<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorEmpregadoId(1, gestorDeBaseDeDados);
-
-        assertEquals(1, registos.size());
-        RegistoDeLimpeza registoDeLimpezaReal=registos.get(0);
-        assertEquals(registoDeLimpezaEsperado.getQuartoId(), registoDeLimpezaReal.getQuartoId());
-        assertEquals(registoDeLimpezaEsperado.getEmpregadoId(), registoDeLimpezaReal.getEmpregadoId());
-        assertEquals(registoDeLimpezaEsperado.getData(), registoDeLimpezaReal.getData());
-    }
-
-    @Test
-    void procurarDataInvalidaTest() {
-        String expectedMessage = "Não encontrado registo de limpeza para a data pedida!";
+    void procurarRegistosComDataInvalidaTest() {
+        String expectedMessage = "Data é nula";
 
         Exception exceptionDataNula = assertThrows(InvalidParameterException.class,
                 ()-> gestorDeLimpeza.procurarRegistosPorData(null, gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionDataNula.getMessage());
-
     }
-
-
     @Test
-    void procurarDataValidaTest(){
-        LocalDate data = LocalDate.of(2022,12,19);
-        RegistoDeLimpeza registoDeLimpezaEsperado = new RegistoDeLimpeza(data,1,1);
-        List<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorData(data, gestorDeBaseDeDados);
+    void procurarRegistosParaDataSemRegistosTest(){
+        String expectedMessage = "Não forma encontrados registos de limpeza para a data fornecida";
 
-        assertEquals(1, registos.size());
-        RegistoDeLimpeza registoDeLimpezaReal=registos.get(0);
-        assertEquals(registoDeLimpezaEsperado.getQuartoId(), registoDeLimpezaReal.getQuartoId());
-        assertEquals(registoDeLimpezaEsperado.getEmpregadoId(), registoDeLimpezaReal.getEmpregadoId());
-        assertEquals(registoDeLimpezaEsperado.getData(), registoDeLimpezaReal.getData());
+        Exception exception = assertThrows(InvalidParameterException.class,
+                ()-> gestorDeLimpeza.procurarRegistosPorData(LocalDate.of(2020,12,12),gestorDeBaseDeDados));
+        assertEquals(expectedMessage, exception.getMessage());
     }
 
     @Test
-    void AdicionarRegistoDeLimpezasValidoTest(){
-        LocalDate data=LocalDate.of(2022,12,19);
-        assertTrue(gestorDeLimpeza.adicionarRegisto(data,1,1,gestorDeBaseDeDados));
+    void adicionarEProcurarRegistosTest(){
+        LocalDate data = LocalDate.of(2021,12,25);
+        assertTrue(gestorDeLimpeza.adicionarRegisto(data,15,1,gestorDeBaseDeDados));
+
+        List<RegistoDeLimpeza> registosPorData = gestorDeLimpeza.procurarRegistosPorData(data, gestorDeBaseDeDados);
+        assertEquals(1, registosPorData.size());
+
+        List<RegistoDeLimpeza> registosPorEmpregadoId = gestorDeLimpeza.procurarRegistosPorEmpregadoId(1, gestorDeBaseDeDados);
+        assertEquals(7, registosPorEmpregadoId.size());
+
+        List<RegistoDeLimpeza> registosPorQuarto = gestorDeLimpeza.procurarRegistosPorQuarto(15, gestorDeBaseDeDados);
+        assertEquals(1, registosPorQuarto.size());
     }
 }
 

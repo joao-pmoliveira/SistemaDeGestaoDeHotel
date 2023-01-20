@@ -108,7 +108,8 @@ public class GestorDeLimpeza {
     public List<RegistoDeLimpeza> procurarRegistosPorData(LocalDate data, GestorDeBaseDeDados gestorBD){
         if (gestorBD==null)
             throw new InvalidParameterException("Gestor de base de dados nulo");
-
+        if(data == null)
+            throw new InvalidParameterException("Data é nula");
         List<RegistoDeLimpeza> registosDeLimpeza = new ArrayList<>();
 
         String query= String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,\n" +
@@ -119,9 +120,8 @@ public class GestorDeLimpeza {
                 " WHERE data_hora = '%s'",data );
         List<String> resultadosRegistoDeLimpeza = gestorBD.tryQueryDatabase(query);
 
-
         if(resultadosRegistoDeLimpeza.isEmpty())
-            throw new InvalidParameterException("Não encontrado registo de limpeza para a data pedida!");
+            throw new InvalidParameterException("Não forma encontrados registos de limpeza para a data fornecida");
 
         for (String  linha : resultadosRegistoDeLimpeza) {
             String[] dados =  linha.split(",");

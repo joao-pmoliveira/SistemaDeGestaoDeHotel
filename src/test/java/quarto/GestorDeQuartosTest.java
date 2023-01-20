@@ -2,6 +2,7 @@ package quarto;
 
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import utils.GestorDeDatas;
@@ -27,6 +28,11 @@ class GestorDeQuartosTest {
 
         gestorDeBaseDeDados.tryConnectionToDataBase();
         gestorDeQuartos = new GestorDeQuartos();
+    }
+
+    @AfterAll
+    static void tearDown(){
+        gestorDeBaseDeDados.tryResetDatabase();
     }
 
     @Test
