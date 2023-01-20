@@ -12,6 +12,12 @@ public class GestorDeEmpregados {
 
     public GestorDeEmpregados(){}
 
+    /**
+     * Esta função é para procurar o empregado através do seu NIF
+     * @param nif: NIF do Empregado já registado na base de dados
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return retorna o empregado com o NIF pesquisado pelo utilizador
+     */
     public Empregado procurarEmpregadoPorNIF(int nif, GestorDeBaseDeDados gestorDeBaseDeDados){
         if (gestorDeBaseDeDados==null){
             throw new InvalidParameterException("Gestor de base de dados nulo");
@@ -27,7 +33,12 @@ public class GestorDeEmpregados {
         return empregado;
     }
 
-
+    /**
+     * Esta função é para procurar o empregado através do seu ID
+     * @param id: ID do Empregado já registado na base de dados
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return retorna o empregado com o id pesquisado pelo utilizador
+     */
     public Empregado procurarEmpregadoPorID(int id, GestorDeBaseDeDados gestorDeBaseDeDados){
         if (gestorDeBaseDeDados==null){
             throw new InvalidParameterException("Gestor de base de dados nulo");
@@ -44,7 +55,20 @@ public class GestorDeEmpregados {
         return empregado;
     }
 
-
+    /**
+     * Esta função serve para Adicionar um empregado na base de dados
+     * @param nome: Nome do Empregado
+     * @param cargo: Cargo do Empregado
+     * @param morada: Morada do Empregado
+     * @param telefone: Telefone do Empregado
+     * @param nif: NIF do Empregado
+     * @param salario: Salario do Empregado
+     * @param horaEntrada: Hora De Entrada no trabalho do Empregado
+     * @param horaSaida: Hora De Saida do trabalho do Empregado
+     * @param passe: Password para aceder há aplicação
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return
+     */
     public boolean adicionarEmpregado(String nome, int cargo, String morada, int telefone, int nif, float salario, LocalTime horaEntrada, LocalTime horaSaida, String passe, GestorDeBaseDeDados gestorDeBaseDeDados){
         if (gestorDeBaseDeDados==null){
             throw new InvalidParameterException("Gestor de base de dados nulo");

@@ -57,7 +57,7 @@ public class GestorDeLimpeza {
     /**
      * Esta função serve para procurar na base de dados nos registos de limpeza os quartos limpos por Id do empregado escolhido pelo utilizador
      * @param empregadoId : número do empregado na base de dados
-     * @param gestorBD
+     * @param gestorBD: conexão há base de dados
      * @return retorna uma lista dos registos de limpeza de quarto com o Id do empregado procurado pelo utilizador
      */
     public List<RegistoDeLimpeza> procurarRegistosPorEmpregadoId( int empregadoId, GestorDeBaseDeDados gestorBD) {
@@ -101,8 +101,8 @@ public class GestorDeLimpeza {
     /**
      * Esta função serve para procurar no registo de limpezas as datas pretendidas pelo utilizador
      * @param data : data do dia do registo de limpeza de cada quarto
-     * @param gestorBD
-     * @return gera uma lista dos registos de limpeza da data escolhida pelo utilizador
+     * @param gestorBD: conexão há base de dados
+     * @return retorna uma lista dos registos de limpeza da data escolhida pelo utilizador
      */
 
     public List<RegistoDeLimpeza> procurarRegistosPorData(LocalDate data, GestorDeBaseDeDados gestorBD){
@@ -144,10 +144,10 @@ public class GestorDeLimpeza {
 
     /**
      * Esta função serve para adiconar um novo registo de limpezas numa data especifica, num quarto e o empregado
-     * @param data : data da limpeza do quarto
+     * @param data : data que foi efetuada a limpeza do quarto
      * @param quartoId : quarto que foi limpo
      * @param empregadoId : empregado/a que o limpou
-     * @param gestorDeBaseDeDados
+     * @param gestorDeBaseDeDados: conexão há base de dados
      * @return
      */
     public boolean adicionarRegisto(LocalDate data, int quartoId, int empregadoId, GestorDeBaseDeDados gestorDeBaseDeDados){

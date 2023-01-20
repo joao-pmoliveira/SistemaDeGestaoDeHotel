@@ -11,6 +11,12 @@ public class GestorDeReserva {
     public GestorDeReserva(){
     }
 
+    /**
+     * Esta função é para procurar todas as reservas pelo NIF do cliente
+     * @param nifCliente: NIF do cliente que fez a reserva
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return retorna as reservas por NIF do cliente pesquisadas pelo utilizador
+     */
     public List<Reserva> getTodasReservasPorClienteNIF(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados) {
         if(gestorDeBaseDeDados == null)
             throw new InvalidParameterException("Gestor de Base de Dados nulo.");
@@ -70,6 +76,12 @@ public class GestorDeReserva {
 
     }
 
+    /**
+     * Esta função é para procurar todas as as reservas por faturar pelo NIF do cliente
+     * @param nifCliente: NIF do cliente que fez a reserva
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return retorna as reservas por faturar por NIF do cliente pesquisadas pelo utilizador
+     */
     public List<Reserva> getReservasPorFaturarPorClienteNif(int nifCliente, GestorDeBaseDeDados gestorDeBaseDeDados){
         if(gestorDeBaseDeDados == null)
             throw new InvalidParameterException("Gestor de Base de Dados nulo.");
@@ -114,6 +126,15 @@ public class GestorDeReserva {
         return new ArrayList<>(reservasEncontradas.values());
     }
 
+
+    /**
+     * Esta função serve para Adicionar uma Reserva na base de dados
+     * @param clienteNIF: NIF do cliente que fez a reserva
+     * @param empregadoID: ID do Empregado que irá efetuar a reserva
+     * @param datas: Intervalo de Datas da reserva
+     * @param quartos: Quartos que prentende reservar
+     * @param gestorDeBaseDeDados conexão há base de dados
+     */
     public void adicionarReserva(int clienteNIF, int empregadoID, HashSet<LocalDate> datas, HashSet<Integer> quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
         if(gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
 
@@ -185,6 +206,12 @@ public class GestorDeReserva {
         gestorDeBaseDeDados.tryUpdateDatabase(finalInsertDiaReservaQuery);
     }
 
+    /**
+     * Esta função serve para gerar Faturas para uma determinada Reserva
+     * @param reserva: Número da reserva
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return  retorna a fatura gerada para a reserva pedida
+     */
     public Fatura gerarFaturaParaReserva(Reserva reserva, GestorDeBaseDeDados gestorDeBaseDeDados){
         if(gestorDeBaseDeDados == null)
             throw new InvalidParameterException("Gestor de Base de Dados nulo.");
@@ -212,6 +239,14 @@ public class GestorDeReserva {
         return fatura;
     }
 
+    /**
+     * Esta função serve para verificar se os quartos estão disponíveis para as datas pretendidas pelo cliente
+     * @param quartos: Número do Quarto
+     * @param dataInicial: Data Inicial (Data de Check-In)
+     * @param dataFinal: Data Final (Data de Check-Out)
+     * @param gestorDeBaseDeDados: conexão há base de dados
+     * @return retorna se está disponível nas datas pretendidas
+     */
     protected static boolean verificarSeQuartosIndisponiveisParaDatas(HashSet<Integer> quartos, LocalDate dataInicial, LocalDate dataFinal, GestorDeBaseDeDados gestorDeBaseDeDados){
         if(gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         if(quartos == null) throw new InvalidParameterException("Lista de quartos nula");
@@ -236,6 +271,12 @@ public class GestorDeReserva {
         return !resultadoQuartosIndisponiveis.isEmpty();
     }
 
+    /**
+     * Esta função serve para verificar se existe o quarto pretendido pelo Cliente
+     * @param quartos: Número do Quarto
+     * @param gestorDeBaseDeDados conexão há base de dados
+     * @return retorna se existe o quarto pedido pelo utilizador
+     */
     protected static boolean contemQuartoInexistentes(HashSet<Integer> quartos, GestorDeBaseDeDados gestorDeBaseDeDados){
         if (gestorDeBaseDeDados == null) throw new InvalidParameterException("Gestor de Base de Dados nulo.");
         if (quartos == null) throw new InvalidParameterException("Lista de quartos nula");
