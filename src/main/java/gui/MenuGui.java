@@ -12,6 +12,7 @@ import reserva.Reserva;
 import utils.GestorDeDatas;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.security.InvalidParameterException;
@@ -107,6 +108,9 @@ public class MenuGui extends JFrame{
     private JButton pesquisarFaturaNIFButton;
     private JButton buttonQuartoIDProcuraLimpeza;
     private JButton buttonEmpregadoIDProcuraLimpeza;
+    private JScrollPane tableScrollPane;
+
+    private JTable tabelaReservas;
 
     public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados) {
         super(title);
@@ -124,6 +128,20 @@ public class MenuGui extends JFrame{
         GestorDeLimpeza gestorDeLimpeza = new GestorDeLimpeza();
         GestorDeQuartos gestorDeQuartos = new GestorDeQuartos();
         GestorDeReserva gestorDeReserva = new GestorDeReserva();
+
+        DefaultTableModel modelReservas = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaReservas = new JTable(modelReservas);
+        tableScrollPane.getViewport().add(tabelaReservas);
+        modelReservas.addColumn("ID");
+        modelReservas.addColumn("Cliente");
+        modelReservas.addColumn("Empregado");
+        modelReservas.addColumn("Pagamento");
+        modelReservas.addColumn("Preço");
 
         buttonClienteTab.addMouseListener(new MouseAdapter() {
             @Override
@@ -383,6 +401,7 @@ public class MenuGui extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String resultado;
                 try{
+                    limparCamposReservaPanel();
                     String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
 
                     if(clienteNIFInput.isEmpty())
@@ -391,6 +410,12 @@ public class MenuGui extends JFrame{
                     int clienteNIF = Integer.parseInt(clienteNIFInput);
 
                     List<Reserva> reservas = gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF,gestorDeBaseDeDados);
+                    for(Reserva reserva : reservas){
+                        modelReservas.addRow(new Object[]{
+                                reserva.getReservaID(), reserva.getClienteNIF(), reserva.getEmpregadoID(), reserva.getEstadoPagamento(),
+                                reserva.getPrecoAtual()
+                        });
+                    }
                     System.out.println(reservas);
                 }catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
@@ -514,6 +539,7 @@ public class MenuGui extends JFrame{
         dataFinalReservaField.setText("");
         empregadoIDReservaField.setText("");
         clienteNIFReservaProcuraField.setText("");
+        ((DefaultTableModel)tabelaReservas.getModel()).setRowCount(0);
     }
 
     private void limparCamposClientePanel(){
