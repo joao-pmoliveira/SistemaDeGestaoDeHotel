@@ -115,7 +115,9 @@ public class MenuGui extends JFrame{
     private JTable tabelaLimpezas;
     private JTable tabelaEmpregados;
 
-    public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados) {
+    private int cargoOperador;
+
+    public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados, int cargoOperador) {
         super(title);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,6 +134,7 @@ public class MenuGui extends JFrame{
         GestorDeQuartos gestorDeQuartos = new GestorDeQuartos();
         GestorDeReserva gestorDeReserva = new GestorDeReserva();
 
+        this.cargoOperador = cargoOperador;
         DefaultTableModel modelReservas = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -170,6 +173,32 @@ public class MenuGui extends JFrame{
         modelLimpezas.addColumn("Quarto");
         modelLimpezas.addColumn("Empregado");
 
+        switch (cargoOperador){
+            //Rececionista
+            case 1->{
+                buttonClienteTab.setVisible(true);
+                buttonReservaTab.setVisible(true);
+                buttonEmpregadoTab.setVisible(false);
+                buttonLimpezaTab.setVisible(false);
+                buttonFaturacaoTab.setVisible(true);
+            }
+            //Limpezas
+            case 2->{
+                buttonClienteTab.setVisible(false);
+                buttonReservaTab.setVisible(false);
+                buttonEmpregadoTab.setVisible(false);
+                buttonLimpezaTab.setVisible(true);
+                buttonFaturacaoTab.setVisible(false);
+            }
+            //Recursos Humanos
+            case 3->{
+                buttonClienteTab.setVisible(false);
+                buttonReservaTab.setVisible(false);
+                buttonEmpregadoTab.setVisible(true);
+                buttonLimpezaTab.setVisible(false);
+                buttonFaturacaoTab.setVisible(false);
+            }
+        }
 
 
         buttonClienteTab.addMouseListener(new MouseAdapter() {

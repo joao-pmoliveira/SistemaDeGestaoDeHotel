@@ -45,7 +45,9 @@ public class CLI {
 
         boolean logged = false;
         int opcao = -1;
+        int cargoOperador;
         do{
+            cargoOperador = -1;
             if (!logged){
                 try{
                     System.out.print("ID:");
@@ -60,15 +62,15 @@ public class CLI {
                     if(!resultado.isEmpty()){
                         logged = true;
                         System.out.println("Login bem sucessido!");
-                        int operadorID = Integer.parseInt(resultado.get(0));
-                        gestorDeBaseDeDados.setOperadorID(operadorID);
+                         cargoOperador = Integer.parseInt(resultado.get(0));
+                        gestorDeBaseDeDados.setOperadorID(cargoOperador);
                     }
                 }catch (InputMismatchException e){
                     System.out.println("Erro ao ler número");
                 }
                 if(!logged) continue;
             }
-            printMenu();
+            printMenu(cargoOperador);
             System.out.println("Escolha  uma opção: ");
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -77,6 +79,8 @@ public class CLI {
                 //1: consultar ficha de cliente.
                 case 1 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int clienteNIF;
                         System.out.println("Introduza o NIF do cliente: ");
                         clienteNIF = scanner.nextInt();
@@ -93,6 +97,8 @@ public class CLI {
                 //2: registar novo cliente
                 case 2 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int clienteTelefone;
                         System.out.println("Introduza o número de telefone do novo cliente:");
                         clienteTelefone = scanner.nextInt();
@@ -120,6 +126,8 @@ public class CLI {
                 //3: consultar ficha de empregado (NIF)
                 case 3 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 3)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int empregadoNIF;
                         System.out.println("Introduza o NIF do empregado: ");
                         empregadoNIF = scanner.nextInt();
@@ -138,6 +146,8 @@ public class CLI {
                 //4: consultar ficha de empregado (ID)
                 case 4 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 3)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int empregadoID;
                         System.out.println("Introduza o ID do empregado: ");
                         empregadoID = scanner.nextInt();
@@ -155,6 +165,8 @@ public class CLI {
                 //5: registar novo empregado
                 case 5 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 3)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         String empregadoNome;
                         System.out.println("Introduza o nome do novo empregado: ");
                         empregadoNome = scanner.nextLine();
@@ -222,6 +234,8 @@ public class CLI {
                 //6: consultar registos de limpeza (por quarto)
                 case 6 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 2)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int quartoID;
                         System.out.println("Introduza o número do quarto: ");
                         quartoID = scanner.nextInt();
@@ -242,6 +256,8 @@ public class CLI {
                 //7: consultar registos de limpeza (por empregado id)
                 case 7 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 2)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int empregadoID;
                         System.out.println("Introduza o ID do empregado de limpeza: ");
                         empregadoID = scanner.nextInt();
@@ -263,6 +279,8 @@ public class CLI {
                 //8: consultar registos de limpeza (por data)
                 case 8 -> {
                     try {
+                        if (gestorDeBaseDeDados.getOperadorID() != 2)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         LocalDate dataRegisto;
                         System.out.println("Introduza a data do registo: ");
                         System.out.print("Ano: ");
@@ -291,6 +309,8 @@ public class CLI {
                 //9: registar limpeza
                 case 9 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 2)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         LocalDate dataRegisto;
                         System.out.println("Introduza a data do registo: ");
                         System.out.print("Ano: ");
@@ -327,6 +347,8 @@ public class CLI {
                 //10: consultar ficha de quarto (id)
                 case 10 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int quartoID;
                         System.out.println("Introduza o número do quarto: ");
                         quartoID = scanner.nextInt();
@@ -343,6 +365,8 @@ public class CLI {
                 //11: consultar ficha de quarto (layout)
                 case 11 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int layoutID;
                         System.out.println("Introduza o ID do layout: ");
                         layoutID = scanner.nextInt();
@@ -362,6 +386,8 @@ public class CLI {
                 //12: registar novo quarto
                 case 12 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int layoutID;
                         System.out.println("Introduza o ID do layout do novo quarto: ");
                         layoutID = scanner.nextInt();
@@ -379,6 +405,8 @@ public class CLI {
                 //13: consultar reservas de cliente
                 case 13 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int clienteNIF;
                         System.out.println("Introduza o NIF do cliente: ");
                         clienteNIF = scanner.nextInt();
@@ -399,6 +427,8 @@ public class CLI {
                 //14: gerar fatura para reserva
                 case 14 ->{
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         int clienteNIF;
                         System.out.println("Introduza o NIF do cliente: ");
                         clienteNIF = scanner.nextInt();
@@ -436,6 +466,8 @@ public class CLI {
                 //15: registar nova reserva
                 case 15 -> {
                     try{
+                        if (gestorDeBaseDeDados.getOperadorID() != 1)
+                            throw new InvalidParameterException("Não tens acesso a: Consultar Ficha de Cliente");
                         LocalDate dataInicial;
                         System.out.println("Introduza a data inicial da reserva: ");
                         System.out.print("Ano: ");
@@ -538,6 +570,12 @@ public class CLI {
                         System.out.println("ID de Quarto Inválido. Não foi possível ler um dos IDs de quarto introduzidos");
                     }
                 }
+                //99: logout
+                case 99 -> {
+                    gestorDeBaseDeDados.setOperadorID(-1);
+                    cargoOperador = -1;
+                    logged = false;
+                }
             }
 
         }while(opcao != 0);
@@ -545,22 +583,38 @@ public class CLI {
     }
 
 
-    private static void printMenu(){
-        System.out.println("1: Consultar Ficha de Cliente.");
-        System.out.println("2: Registar Novo Cliente.");
-        System.out.println("3: Consultar Ficha de Empregado (NIF).");
-        System.out.println("4: Consultar Ficha de Empregado (ID).");
-        System.out.println("5: Registar Novo Empregado.");
-        System.out.println("6: Consultar Registos de Limpeza (Por Quarto).");
-        System.out.println("7: Consultar Registos de Limpeza (Por Empregado ID).");
-        System.out.println("8: Consultar Registos de Limpeza (Por Data).");
-        System.out.println("9: Registar Limpeza.");
-        System.out.println("10: Consultar Ficha de Quarto (Por ID).");
-        System.out.println("11: Consultar Ficha de Quarto (Por Layout).");
-        System.out.println("12: Registar Novo Quarto");
-        System.out.println("13: Consultar Reserva de Cliente.");
-        System.out.println("14: Gerar Fatura para Reserva.");
-        System.out.println("15: Registar Nova Reserva");
-        System.out.println("0: Sair");
+    private static void printMenu(int cargoOperador){
+        switch (cargoOperador){
+            //Rececionista
+            case 1->{
+                System.out.println("1: Consultar Ficha de Cliente.");
+                System.out.println("2: Registar Novo Cliente.");
+                System.out.println("10: Consultar Ficha de Quarto (Por ID).");
+                System.out.println("11: Consultar Ficha de Quarto (Por Layout).");
+                System.out.println("12: Registar Novo Quarto");
+                System.out.println("13: Consultar Reserva de Cliente.");
+                System.out.println("14: Gerar Fatura para Reserva.");
+                System.out.println("15: Registar Nova Reserva");
+                System.out.println("99: Logout");
+                System.out.println("0: Sair");
+            }
+            //Empregado Limpeza
+            case 2->{
+                System.out.println("6: Consultar Registos de Limpeza (Por Quarto).");
+                System.out.println("7: Consultar Registos de Limpeza (Por Empregado ID).");
+                System.out.println("8: Consultar Registos de Limpeza (Por Data).");
+                System.out.println("9: Registar Limpeza.");
+                System.out.println("99: Logout");
+                System.out.println("0: Sair");
+            }
+            //Recursos Humanos
+            case 3->{
+                System.out.println("3: Consultar Ficha de Empregado (NIF).");
+                System.out.println("4: Consultar Ficha de Empregado (ID).");
+                System.out.println("5: Registar Novo Empregado.");
+                System.out.println("99: Logout");
+                System.out.println("0: Sair");
+            }
+        }
     }
 }

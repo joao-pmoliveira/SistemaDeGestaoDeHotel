@@ -58,12 +58,13 @@ public class GUI extends JFrame{
                 }
 
                 String pass = new String(passwordField.getPassword());
-                String pesquisa = String.format("SELECT (id) FROM empregado WHERE id = %d and palavra_passe = aes_encrypt('%s','%s')", Integer.parseInt(userField.getText()),
+                String pesquisa = String.format("SELECT (cargo_id) FROM empregado WHERE id = %d and palavra_passe = aes_encrypt('%s','%s')", Integer.parseInt(userField.getText()),
                         pass, GestorDeBaseDeDados.getEncryptKey());
                 List<String> resultado = gestorDeBaseDeDados.tryQueryDatabase(pesquisa);
 
                 if(!resultado.isEmpty()) {
-                    JFrame menuGui = new MenuGui("Menu", gestorDeBaseDeDados);
+                    int cargoOperador = Integer.parseInt(resultado.get(0));
+                    JFrame menuGui = new MenuGui("Menu", gestorDeBaseDeDados, cargoOperador);
                     menuGui.setVisible(true);
                     frame.setVisible(false);
                 }else {
