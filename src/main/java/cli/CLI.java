@@ -252,9 +252,8 @@ public class CLI {
                         int dia = scanner.nextInt();
                         scanner.nextLine();
                         dataRegisto = LocalDate.of(ano, mes, dia);
-                        //todo alterar parametro para usar LocalData em vez de String
                         List<RegistoDeLimpeza> registos =
-                                gestorDeLimpeza.procurarRegistosPorData(String.valueOf(dataRegisto), gestorDeBaseDeDados);
+                                gestorDeLimpeza.procurarRegistosPorData(dataRegisto, gestorDeBaseDeDados);
                         for(RegistoDeLimpeza registoDeLimpeza : registos){
                             System.out.println("Empregado: "+registoDeLimpeza.getEmpregadoId()
                                     +", Data:"+registoDeLimpeza.getData()+", Quarto: "+registoDeLimpeza.getQuartoId());

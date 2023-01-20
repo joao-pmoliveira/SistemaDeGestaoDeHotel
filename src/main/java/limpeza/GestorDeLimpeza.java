@@ -11,49 +11,47 @@ import java.util.Locale;
 
 
 public class GestorDeLimpeza {
-
-
-
     /**
      * Esta função é para procurar o número do quarto nos registos de limpeza pretendido pelo utilizador e gerar uma lista
      * @param quartoId : número do quarto registado na base de dados
-     * @param gestorBD : conexão há base de dados
+     * @param gestorDeBaseDeDados : conexão há base de dados
      * @return gera uma lista dos registos de limpeza com o ID(Número de Quarto) pretendido pelo uilizador
      */
-    public ArrayList<RegistoDeLimpeza> procurarRegistosPorQuarto(int quartoId, GestorDeBaseDeDados gestorBD){
-        if (gestorBD==null){
+    public List<RegistoDeLimpeza> procurarRegistosPorQuarto(int quartoId, GestorDeBaseDeDados gestorDeBaseDeDados){
+        if (gestorDeBaseDeDados==null)
             throw new InvalidParameterException("Gestor de base de dados nulo");
-        }
 
-        ArrayList<RegistoDeLimpeza> limpezas = new ArrayList<RegistoDeLimpeza>();
+        List<RegistoDeLimpeza> registosDeLimpeza = new ArrayList<>();
         String queryQuartoId= String.format("Select * From quarto Where id= %d", quartoId);
-        if (gestorBD.tryQueryDatabase(queryQuartoId).isEmpty()){
+        if (gestorDeBaseDeDados.tryQueryDatabase(queryQuartoId).isEmpty())
             throw  new InvalidParameterException("Não existe Quarto associado a esse ID!");
-        }
 
-        String query= String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,layout.nome,\n" +
-                "registo_limpeza.empregado_id,empregado.nome FROM registo_limpeza \n" +
+        String query= String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,\n" +
+                "registo_limpeza.empregado_id FROM registo_limpeza \n" +
                 "INNER JOIN quarto on quarto.id=registo_limpeza.quarto_id \n" +
                 "INNER JOIN layout on layout.id=quarto.layout_id\n" +
                 "INNER JOIN empregado on empregado.id=registo_limpeza.empregado_id\n" +
                 " WHERE quarto_id = %d ",quartoId );
-        List<String> registoslimpeza = gestorBD.tryQueryDatabase(query);
+        List<String> resultadosRegistoDeLimpeza = gestorDeBaseDeDados.tryQueryDatabase(query);
 
-        if(registoslimpeza.isEmpty())
+        if(resultadosRegistoDeLimpeza.isEmpty())
             throw new InvalidParameterException("Não encontrado registo de limpeza para o quarto pedido!");
 
-       for (String ficheiro:registoslimpeza) {
-           String[] registosdaslimpezas = ficheiro.split(",");
-           String[] dataInput=registosdaslimpezas[0].split("-");
-           int ano= Integer.parseInt(dataInput[0]);
-           int mes= Integer.parseInt(dataInput[1]);
-           int dia= Integer.parseInt(dataInput[2]);
+       for (String linha : resultadosRegistoDeLimpeza) {
+           String[] dados = linha.split(",");
+           String[] dataInput = dados[0].split("-");
+           int ano = Integer.parseInt(dataInput[0]);
+           int mes = Integer.parseInt(dataInput[1]);
+           int dia = Integer.parseInt(dataInput[2]);
            LocalDate data=LocalDate.of(ano,mes,dia);
-           RegistoDeLimpeza registo = new RegistoDeLimpeza(data, Integer.parseInt(registosdaslimpezas[1]), Integer.parseInt(registosdaslimpezas[2]));
-           limpezas.add(registo);
-       }
-        return limpezas;
 
+           int quartoID = Integer.parseInt(dados[1]);
+           int empregadoID = Integer.parseInt(dados[2]);
+
+           RegistoDeLimpeza registo = new RegistoDeLimpeza(data, quartoID, empregadoID);
+           registosDeLimpeza.add(registo);
+       }
+        return registosDeLimpeza;
     }
 
     /**
@@ -62,41 +60,42 @@ public class GestorDeLimpeza {
      * @param gestorBD
      * @return retorna uma lista dos registos de limpeza de quarto com o Id do empregado procurado pelo utilizador
      */
-    public ArrayList<RegistoDeLimpeza> procurarRegistosPorEmpregadoId( int empregadoId, GestorDeBaseDeDados gestorBD) {
-        if (gestorBD==null){
+    public List<RegistoDeLimpeza> procurarRegistosPorEmpregadoId( int empregadoId, GestorDeBaseDeDados gestorBD) {
+        if (gestorBD==null)
             throw new InvalidParameterException("Gestor de base de dados nulo");
-        }
 
-        ArrayList<RegistoDeLimpeza> limpezas = new ArrayList<RegistoDeLimpeza>();
+        List<RegistoDeLimpeza> registosDeLimpeza = new ArrayList<>();
 
         String queryEmpregadoId= String.format("Select * From empregado Where id= %d", empregadoId);
-        if (gestorBD.tryQueryDatabase(queryEmpregadoId).isEmpty()){
+        if (gestorBD.tryQueryDatabase(queryEmpregadoId).isEmpty())
             throw  new InvalidParameterException("Não existe Empregado associado a esse ID!");
-        }
 
-        String query = String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,layout.nome,\n" +
-                "registo_limpeza.empregado_id,empregado.nome FROM registo_limpeza \n" +
+        String query = String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,\n" +
+                "registo_limpeza.empregado_id FROM registo_limpeza \n" +
                 "INNER JOIN quarto on quarto.id=registo_limpeza.quarto_id \n" +
                 "INNER JOIN layout on layout.id=quarto.layout_id\n" +
                 "INNER JOIN empregado on empregado.id=registo_limpeza.empregado_id\n" +
                 " WHERE empregado_id = %d ", empregadoId);
-        List<String> registoslimpeza = gestorBD.tryQueryDatabase(query);
+        List<String> resultadosRegistoDeLimpeza = gestorBD.tryQueryDatabase(query);
 
-        if(registoslimpeza.isEmpty())
+        if(resultadosRegistoDeLimpeza.isEmpty())
             throw new InvalidParameterException("Não encontrado registo de limpeza para o empregado pedido!");
 
-        for (String  ficheiro : registoslimpeza){
-            String[] registosdaslimpezas = ficheiro.split(",");
-            String[] dataInput=registosdaslimpezas[0].split("-");
+        for (String  linha : resultadosRegistoDeLimpeza){
+            String[] dados = linha.split(",");
+            String[] dataInput = dados[0].split("-");
             int ano= Integer.parseInt(dataInput[0]);
             int mes= Integer.parseInt(dataInput[1]);
             int dia= Integer.parseInt(dataInput[2]);
             LocalDate data=LocalDate.of(ano,mes,dia);
-            RegistoDeLimpeza registo = new RegistoDeLimpeza(data, Integer.parseInt(registosdaslimpezas[1]), Integer.parseInt(registosdaslimpezas[2]));
-            limpezas.add(registo);
-    }
-        return limpezas;
 
+            int quartoID = Integer.parseInt(dados[1]);
+            int empregadoID = Integer.parseInt(dados[2]);
+
+            RegistoDeLimpeza registo = new RegistoDeLimpeza(data, quartoID, empregadoID);
+            registosDeLimpeza.add(registo);
+        }
+        return registosDeLimpeza;
     }
 
     /**
@@ -106,39 +105,41 @@ public class GestorDeLimpeza {
      * @return gera uma lista dos registos de limpeza da data escolhida pelo utilizador
      */
 
-    public ArrayList<RegistoDeLimpeza> procurarRegistosPorData(String data, GestorDeBaseDeDados gestorBD){
-        if (gestorBD==null){
+    public List<RegistoDeLimpeza> procurarRegistosPorData(LocalDate data, GestorDeBaseDeDados gestorBD){
+        if (gestorBD==null)
             throw new InvalidParameterException("Gestor de base de dados nulo");
-        }
 
-        ArrayList<RegistoDeLimpeza> limpezas = new ArrayList<RegistoDeLimpeza>();
+        List<RegistoDeLimpeza> registosDeLimpeza = new ArrayList<>();
 
-        String query= String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,layout.nome,\n" +
-                "registo_limpeza.empregado_id,empregado.nome FROM registo_limpeza \n" +
+        String query= String.format("SELECT registo_limpeza.data_hora,registo_limpeza.quarto_id,\n" +
+                "registo_limpeza.empregado_id FROM registo_limpeza \n" +
                 "INNER JOIN quarto on quarto.id=registo_limpeza.quarto_id \n" +
                 "INNER JOIN layout on layout.id=quarto.layout_id\n" +
                 "INNER JOIN empregado on empregado.id=registo_limpeza.empregado_id\n" +
                 " WHERE data_hora = %s",data );
-        List<String> registoslimpeza = gestorBD.tryQueryDatabase(query);
+        List<String> resultadosRegistoDeLimpeza = gestorBD.tryQueryDatabase(query);
 
 
-        if(registoslimpeza.isEmpty())
+        if(resultadosRegistoDeLimpeza.isEmpty())
             throw new InvalidParameterException("Não encontrado registo de limpeza para a data pedida!");
 
-        for (String  ficheiro:registoslimpeza) {
-            String[] registosdaslimpezas =  ficheiro.split(",");
-            String[] dataInput=registosdaslimpezas[0].split("-");
-            int ano= Integer.parseInt(dataInput[0]);
-            int mes= Integer.parseInt(dataInput[1]);
-            int dia= Integer.parseInt(dataInput[2]);
-            LocalDate dataAMS=LocalDate.of(ano,mes,dia);
-            RegistoDeLimpeza registo = new RegistoDeLimpeza(dataAMS, Integer.parseInt(registosdaslimpezas[1]), Integer.parseInt(registosdaslimpezas[2]));
-            limpezas.add(registo);
-        }
-            return limpezas;
+        for (String  linha : resultadosRegistoDeLimpeza) {
+            String[] dados =  linha.split(",");
+            String[] dataInput = dados[0].split("-");
+            int ano = Integer.parseInt(dataInput[0]);
+            int mes = Integer.parseInt(dataInput[1]);
+            int dia = Integer.parseInt(dataInput[2]);
+            LocalDate dataRegisto = LocalDate.of(ano,mes,dia);
 
+            int quartoID = Integer.parseInt(dados[1]);
+            int empregadoID = Integer.parseInt(dados[2]);
 
+            RegistoDeLimpeza registo = new RegistoDeLimpeza(dataRegisto, quartoID, empregadoID);
+            registosDeLimpeza.add(registo);
         }
+
+        return registosDeLimpeza;
+    }
 
 
     /**
@@ -151,35 +152,27 @@ public class GestorDeLimpeza {
      */
     public boolean adicionarRegisto(LocalDate data, int quartoId, int empregadoId, GestorDeBaseDeDados gestorBD){
 
-        if (gestorBD==null){
+        if (gestorBD==null)
             throw new InvalidParameterException("Gestor de base de dados nulo");
-        }
 
         //Verifica se a data introduzida é valida
         if (data == null)
             throw new InvalidParameterException("Data Inválida");
 
         //Verifica se o quarto ID é valido e compara se existe um quarto inserido na base de dados com esse ID
-        int quartovalido=quartoId;
-        String pesquisarquarto = String.format("SELECT quarto.id from quarto WHERE quarto.id = %d",quartovalido);
+        String pesquisarquarto = String.format("SELECT quarto.id from quarto WHERE quarto.id = %d", quartoId);
         List<String> quartosdados = gestorBD.tryQueryDatabase(pesquisarquarto);
         if (!quartosdados.isEmpty())
             throw new InvalidParameterException("Não existe Quarto associado a esse ID!");
 
-
         //Verifica se o empregado ID é valido e compara se existe um empregado inserido na base de dados com esse ID
-        int empregadoValido=empregadoId;
-        String pesquisarempregado = String.format("SELECT empregado.id from empregado WHERE empregado.id = %d",empregadoValido);
+        String pesquisarempregado = String.format("SELECT empregado.id from empregado WHERE empregado.id = %d", empregadoId);
         List<String> emregadodados = gestorBD.tryQueryDatabase(pesquisarempregado);
         if (!emregadodados.isEmpty())
             throw new InvalidParameterException("Não existe Empregado associado a esse ID!");
 
-
-
-
-        String query = String.format
-                (Locale.US,"INSERT INTO registo_limpeza (`data_hora`, `quarto_id`, `empregado_id`)  VALUES ('%s', '%d', '%d')", data, quartovalido, empregadoValido);
-
-            return true;
+        String query = String.format(Locale.US,"INSERT INTO registo_limpeza (`data_hora`, `quarto_id`, `empregado_id`) " +
+                "VALUES ('%s', '%d', '%d')", data, quartoId, empregadoId);
+        return true;
     }
 }
