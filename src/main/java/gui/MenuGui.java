@@ -1,11 +1,14 @@
 package gui;
 
 import basededados.GestorDeBaseDeDados;
+import cliente.Cliente;
 import cliente.GestorDeClientes;
 import empregado.GestorDeEmpregados;
 import limpeza.GestorDeLimpeza;
+import limpeza.RegistoDeLimpeza;
 import quarto.GestorDeQuartos;
 import reserva.GestorDeReserva;
+import reserva.Reserva;
 import utils.GestorDeDatas;
 
 import javax.swing.*;
@@ -15,7 +18,9 @@ import java.security.InvalidParameterException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class MenuGui extends JFrame{
     private JPanel mainPanel;
@@ -97,10 +102,12 @@ public class MenuGui extends JFrame{
     private JLabel dataFinalLabel;
     private JTextField empregadoSalarioEmpregadoField;
     private JLabel salarioLabel;
-    private JButton pesquisarReservaNifButton;
+    private JButton buttonClienteNIFProcuraReserva;
     private JButton buttonClienteNIFProcuraCliente;
     private JButton buttonDataProcuraLimpeza;
     private JButton pesquisarFaturaNIFButton;
+    private JButton buttonQuartoIDProcuraLimpeza;
+    private JButton buttonEmpregadoIDProcuraLimpeza;
 
     public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados) {
         super(title);
@@ -361,6 +368,133 @@ public class MenuGui extends JFrame{
                     resultado = exception.getMessage();
                 }
                 JOptionPane.showMessageDialog(GUI.frame, resultado);
+            }
+        });
+        buttonClienteNIFProcuraReserva.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado = "";
+                try{
+                    String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
+
+                    if(clienteNIFInput.isEmpty())
+                        throw new InvalidParameterException("Preenche NIF do cliente para procurar!");
+
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+
+                    List<Reserva> reservas = gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF,gestorDeBaseDeDados);
+                    System.out.println(reservas);
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                }
+            }
+
+
+        });
+        buttonClienteNIFProcuraCliente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado = "";
+                try{
+                    String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
+
+                    if(clienteNIFInput.isEmpty())
+                        throw new InvalidParameterException("Preenche NIF do cliente para procurar!");
+
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+
+                    Cliente cliente = gestorDeClientes.procurarClientePorNIF(clienteNIF, gestorDeBaseDeDados);
+                    System.out.println(cliente);
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonQuartoIDProcuraLimpeza.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado = "";
+                try{
+                    String quartoIDInput = quartoIDLimpezaProcuraField.getText().trim();
+
+                    if(quartoIDInput.isEmpty())
+                        throw new InvalidParameterException("Preenche ID do quarto para procurar!");
+
+                    int quartoID = Integer.parseInt(quartoIDInput);
+
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorQuarto(quartoID, gestorDeBaseDeDados);
+                    for (RegistoDeLimpeza registo : registosDeLimpeza){
+                        System.out.println(registo);
+                    }
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonEmpregadoIDProcuraLimpeza.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado = "";
+                try{
+                    String empregadoIDInput = empregadoIDLimpezaProcuraField.getText().trim();
+
+                    if(empregadoIDInput.isEmpty())
+                        throw new InvalidParameterException("Preenche ID do quarto para procurar!");
+
+                    int empregadoID = Integer.parseInt(empregadoIDInput);
+
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorEmpregadoId(empregadoID, gestorDeBaseDeDados);
+                    for (RegistoDeLimpeza registo : registosDeLimpeza){
+                        System.out.println(registo);
+                    }
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonDataProcuraLimpeza.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado = "";
+                try{
+                    String dataInput = dataLimpezaProcuraField.getText().trim();
+
+                    if(dataInput.isEmpty())
+                        throw new InvalidParameterException("Preenche ID do quarto para procurar!");
+
+                    String[] dataComponentes = dataInput.split("-");
+                    int ano = Integer.parseInt(dataComponentes[0]);
+                    int mes = Integer.parseInt(dataComponentes[1]);
+                    int dia = Integer.parseInt(dataComponentes[2]);
+                    LocalDate data = LocalDate.of(ano,mes,dia);
+
+
+
+                    List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorData(data.toString(), gestorDeBaseDeDados);
+                    for (RegistoDeLimpeza registo : registosDeLimpeza){
+                        System.out.println(registo);
+                    }
+                }catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
             }
         });
     }
