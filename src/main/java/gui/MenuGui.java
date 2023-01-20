@@ -1,12 +1,14 @@
 package gui;
 
 import basededados.GestorDeBaseDeDados;
-import cli.cliente.Cliente;
-import cli.cliente.GestorDeClientes;
+import cliente.Cliente;
+import cliente.GestorDeClientes;
+import empregado.Empregado;
 import empregado.GestorDeEmpregados;
 import limpeza.GestorDeLimpeza;
 import limpeza.RegistoDeLimpeza;
 import quarto.GestorDeQuartos;
+import quarto.Quarto;
 import reserva.GestorDeReserva;
 import reserva.Reserva;
 import utils.GestorDeDatas;
@@ -57,11 +59,9 @@ public class MenuGui extends JFrame{
     private JLabel numeroQuartoLabel;
     private JTextField dataInicialReservaField;
     private JLabel pesquisarReservaNIFLabel;
-    private JTable table4;
     private JTextField reservaIDFaturaProcuraField;
     private JLabel pesquisarFaturaNifLabel;
     private JButton buttonRecuarDeFaturacao;
-    private JTable table5;
     private JTextField empregadoNomeEmpregadoField;
     private JTextField empregadoMoradaEmpregadoField;
     private JTextField empregadoTelefoneEmpregadoField;
@@ -117,19 +117,24 @@ public class MenuGui extends JFrame{
     private JLabel pesquisarEmpregadoNif;
     private JButton buttonQuartosTab;
     private JPanel quartoPanel;
-    private JTextField fieldQuartoQuartoId;
-    private JTable tableQuarto;
-    private JButton buttonQuartoProcuraQuartoId;
-    private JButton buttonQuartoProcuraQuartoNif;
-    private JTextField fieldQuartoProcuraQuartoId;
-    private JTextField fieldQuartoProcuraQuartoNif;
+    private JTextField layoutIDQuartoField;
+    private JButton buttonQuartoIDProcuraQuartoId;
+    private JButton buttonLayoutIDProcuraQuartoNif;
+    private JTextField quartoIDQuartoProcuraField;
+    private JTextField layoutIDQuartoProcuraField;
     private JButton buttonGuardarQuarto;
     private JButton buttonRecuarQuarto;
+    private JScrollPane tableEmpregadosScrollPane;
+    private JScrollPane tableQuartosScrollPane;
+    private JScrollPane tableFaturacaoScrollPane;
+    private JTextField clienteNIFFaturaField;
 
     private JTable tabelaReservas;
     private JTable tabelaClientes;
     private JTable tabelaLimpezas;
     private JTable tabelaEmpregados;
+    private JTable tabelaQuartos;
+    private JTable tabelaFaturacao;
 
     private int cargoOperador;
 
@@ -189,6 +194,52 @@ public class MenuGui extends JFrame{
         modelLimpezas.addColumn("Quarto");
         modelLimpezas.addColumn("Empregado");
 
+        DefaultTableModel modelEmpregados = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaEmpregados = new JTable(modelEmpregados);
+        tableEmpregadosScrollPane.getViewport().add(tabelaEmpregados);
+        modelEmpregados.addColumn("ID");
+        modelEmpregados.addColumn("Nome");
+        modelEmpregados.addColumn("Cargo");
+        modelEmpregados.addColumn("Morada");
+        modelEmpregados.addColumn("Telefone");
+        modelEmpregados.addColumn("NIF");
+        modelEmpregados.addColumn("Salario");
+        modelEmpregados.addColumn("Entrada");
+        modelEmpregados.addColumn("Saída");
+
+        DefaultTableModel modelQuartos = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaQuartos = new JTable(modelQuartos);
+        tableQuartosScrollPane.getViewport().add(tabelaQuartos);
+        modelQuartos.addColumn("ID");
+        modelQuartos.addColumn("Layout ID");
+        modelQuartos.addColumn("Layout");
+        modelQuartos.addColumn("Preço Base");
+        modelQuartos.addColumn("Descrição");
+
+        DefaultTableModel modelFaturacao = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };;
+        tabelaFaturacao = new JTable(modelFaturacao);
+        tableFaturacaoScrollPane.getViewport().add(tabelaFaturacao);
+        modelFaturacao.addColumn("ID");
+        modelFaturacao.addColumn("Cliente");
+        modelFaturacao.addColumn("Empregado");
+        modelFaturacao.addColumn("Fatura");
+        modelFaturacao.addColumn("Montante Final");
+
         switch (cargoOperador){
             //Rececionista
             case 1->{
@@ -197,6 +248,7 @@ public class MenuGui extends JFrame{
                 buttonEmpregadoTab.setVisible(false);
                 buttonLimpezaTab.setVisible(false);
                 buttonFaturacaoTab.setVisible(true);
+                buttonQuartosTab.setVisible(true);
             }
             //Limpezas
             case 2->{
@@ -205,6 +257,7 @@ public class MenuGui extends JFrame{
                 buttonEmpregadoTab.setVisible(false);
                 buttonLimpezaTab.setVisible(true);
                 buttonFaturacaoTab.setVisible(false);
+                buttonQuartosTab.setVisible(false);
             }
             //Recursos Humanos
             case 3->{
@@ -213,6 +266,7 @@ public class MenuGui extends JFrame{
                 buttonEmpregadoTab.setVisible(true);
                 buttonLimpezaTab.setVisible(false);
                 buttonFaturacaoTab.setVisible(false);
+                buttonQuartosTab.setVisible(false);
             }
         }
 
@@ -257,15 +311,6 @@ public class MenuGui extends JFrame{
                 super.mouseClicked(e);
                 menuPanel.setVisible(false);
                 faturacaoPanel.setVisible(true);
-            }
-        });
-        buttonRecuarDeFaturacao.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                limparCamposFaturacaoPanel();
-                faturacaoPanel.setVisible(false);
-                menuPanel.setVisible(true);
             }
         });
         buttonRecuarDeEmpregado.addMouseListener(new MouseAdapter() {
@@ -459,6 +504,7 @@ public class MenuGui extends JFrame{
 
                     gestorDeEmpregados.adicionarEmpregado(empregadoNomeInput, empregadoCargoID, empregadoMoradaInput, empregadoTelefone,
                             empregadoNIF, empregadoSalario, empregadoHoraEntrada, empregadoHoraSaida, empregadoPasswordInput, gestorDeBaseDeDados);
+                    limparCamposEmpregadoPanel();
                     resultado = "Empregado adicionado com sucesso!";
                 } catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
@@ -615,6 +661,190 @@ public class MenuGui extends JFrame{
                 }
             }
         });
+        buttonQuartosTab.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuPanel.setVisible(false);
+                quartoPanel.setVisible(true);
+            }
+        });
+        buttonGuardarQuarto.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String quartoLayoutIDInput = layoutIDQuartoField.getText().trim();
+
+                    if(quartoLayoutIDInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)");
+
+                    int quartoLayoutID = Integer.parseInt(quartoLayoutIDInput);
+                    gestorDeQuartos.adicionarQuarto(quartoLayoutID, gestorDeBaseDeDados);
+                    limparCamposQuartoPanel();
+                    resultado = "Quarto adicionado com sucesso!";
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                } catch (DateTimeException exception){
+                    resultado = "Erro a lidar com as datas" + "\n" + exception.getMessage();
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                }
+                JOptionPane.showMessageDialog(GUI.frame, resultado);
+            }
+        });
+        buttonRecuarQuarto.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limparCamposQuartoPanel();
+                quartoPanel.setVisible(false);
+                menuPanel.setVisible(true);
+            }
+        });
+        buttonQuartoIDProcuraQuartoId.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String quartoIDInput = quartoIDQuartoProcuraField.getText().trim();
+                    if(quartoIDInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)");
+                    int quartoID = Integer.parseInt(quartoIDInput);
+
+                    Quarto quarto = gestorDeQuartos.procurarQuartoPorID(quartoID,gestorDeBaseDeDados);
+                    limparCamposQuartoPanel();
+                    modelQuartos.addRow( new Object[]{
+                            quarto.getQuartoId(), quarto.getLayoutId(), quarto.getLayoutNome(),
+                            quarto.getPrecoBase(), quarto.getLayoutDescricao()
+                    });
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonLayoutIDProcuraQuartoNif.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String layoutIDInput = layoutIDQuartoProcuraField.getText().trim();
+                    if(layoutIDInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)");
+                    int layoutID = Integer.parseInt(layoutIDInput);
+
+                    List<Quarto> quartos = gestorDeQuartos.procurarQuartoPorLayout(layoutID,gestorDeBaseDeDados);
+                    limparCamposQuartoPanel();
+                    for(Quarto quarto : quartos){
+                        modelQuartos.addRow( new Object[]{
+                                quarto.getQuartoId(), quarto.getLayoutId(), quarto.getLayoutNome(),
+                                quarto.getPrecoBase(), quarto.getLayoutDescricao()
+                        });
+                    }
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonEmpregadoIDProcuraEmpregado.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String empregadoIDInput = empregadoIDEmpregadoProcuraField.getText().trim();
+                    if(empregadoIDInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)");
+
+                    int empregadoID = Integer.parseInt(empregadoIDInput);
+
+                    Empregado empregado = gestorDeEmpregados.procurarEmpregadoPorID(empregadoID, gestorDeBaseDeDados);
+                    limparCamposEmpregadoPanel();
+                    modelEmpregados.addRow( new Object[]{
+                            empregado.getId(), empregado.getNome(), empregado.getCargo(), empregado.getMorada(), empregado.getTelefone(),
+                            empregado.getNif(), empregado.getSalario(), empregado.getHoraEntrada(), empregado.getHoraSaida()
+                    });
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonEmpregadoNifProcuraEmpregado.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado;
+                try{
+                    String empregadoNIFInput = empregadoNifEmpregadoProcuraField.getText().trim();
+                    if(empregadoNIFInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)");
+
+                    int empregadoNIF = Integer.parseInt(empregadoNIFInput);
+
+                    Empregado empregado = gestorDeEmpregados.procurarEmpregadoPorNIF(empregadoNIF, gestorDeBaseDeDados);
+                    limparCamposEmpregadoPanel();
+                    modelEmpregados.addRow( new Object[]{
+                            empregado.getId(), empregado.getNome(), empregado.getCargo(), empregado.getMorada(), empregado.getTelefone(),
+                            empregado.getNif(), empregado.getSalario(), empregado.getHoraEntrada(), empregado.getHoraSaida()
+                    });
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonFaturacaoProcuraReservaId.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String resultado = null;
+                try{
+                    String reservaIDInput = reservaIDFaturaProcuraField.getText().trim();
+                    String clienteNIFInput = clienteNIFFaturaField.getText().trim();
+                    if (reservaIDInput.isEmpty() || clienteNIFInput.isEmpty())
+                        throw new InvalidParameterException("Campo(s) Vazio(s)");
+                    int reservaID = Integer.parseInt(reservaIDInput);
+                    int clienteNIF = Integer.parseInt(clienteNIFInput);
+                    List<Reserva> reservas = gestorDeReserva.getReservasPorFaturarPorClienteNif(clienteNIF, gestorDeBaseDeDados);
+                    for (Reserva reserva : reservas){
+                        if(reserva.getReservaID() == reservaID) {
+                            gestorDeReserva.gerarFaturaParaReserva(reserva, gestorDeBaseDeDados);
+                            modelFaturacao.addRow(new Object[]{
+                                    reserva.getReservaID(), reserva.getClienteNIF(), reserva.getEmpregadoID(),
+                                    reserva.getFatura().getFaturaID(), reserva.getFatura().getMontanteFinal()
+                            });
+                            resultado = "Reserva faturada com sucesso!";
+                            break;
+                        }
+                    }
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (NumberFormatException exception){
+                    resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                } catch (InvalidParameterException exception){
+                    resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
+                }
+            }
+        });
+        buttonRecuarDeFaturacao.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limparCamposFaturacaoPanel();
+                faturacaoPanel.setVisible(false);
+                menuPanel.setVisible(true);
+            }
+        });
     }
 
     private void limparCamposReservaPanel(){
@@ -637,6 +867,7 @@ public class MenuGui extends JFrame{
 
     private void limparCamposEmpregadoPanel(){
         empregadoMoradaEmpregadoField.setText("");
+        empregadoCargoIdEmpregadoField.setText("");
         empregadoNIFEmpregadoField.setText("");
         empregadoNomeEmpregadoField.setText("");
         empregadoPasswordEmpregadoField.setText("");
@@ -644,6 +875,7 @@ public class MenuGui extends JFrame{
         empregadoHoraSaidaEmpregadoField.setText("");
         empregadoTelefoneEmpregadoField.setText("");
         empregadoSalarioEmpregadoField.setText("");
+        ((DefaultTableModel)tabelaEmpregados.getModel()).setRowCount(0);
     }
 
     private void limparCamposLimpezaPanel(){
@@ -656,8 +888,17 @@ public class MenuGui extends JFrame{
         ((DefaultTableModel)tabelaLimpezas.getModel()).setRowCount(0);
     }
 
+    private void limparCamposQuartoPanel(){
+        layoutIDQuartoField.setText("");
+        layoutIDQuartoProcuraField.setText("");
+        quartoIDQuartoProcuraField.setText("");
+        ((DefaultTableModel)tabelaQuartos.getModel()).setRowCount(0);
+    }
+
     private void limparCamposFaturacaoPanel(){
-        clienteNIFReservaProcuraField.setText("");
+        clienteNIFFaturaField.setText("");
+        reservaIDFaturaProcuraField.setText("");
+        ((DefaultTableModel)tabelaFaturacao.getModel()).setRowCount(0);
     }
 }
 

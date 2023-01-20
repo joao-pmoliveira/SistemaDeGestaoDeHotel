@@ -1,4 +1,4 @@
-package cli.cliente;
+package cliente;
 
 import basededados.GestorDeBaseDeDados;
 import utils.Validador;
