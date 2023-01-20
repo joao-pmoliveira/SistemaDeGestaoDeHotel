@@ -293,7 +293,7 @@ public class CLI {
                         scanner.nextLine();
 
                         //todo alterar parametro para usar LocalDate em vez de String
-                        boolean resultado = gestorDeLimpeza.adicionarRegisto(String.valueOf(dataRegisto), quartoID, empregadoID, gestorDeBaseDeDados);
+                        boolean resultado = gestorDeLimpeza.adicionarRegisto(dataRegisto, quartoID, empregadoID, gestorDeBaseDeDados);
                         System.out.println("Registo adicionado: "+resultado);
                     } catch (InputMismatchException e){
                         scanner.nextLine();

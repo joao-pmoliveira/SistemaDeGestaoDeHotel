@@ -310,7 +310,7 @@ public class MenuGui extends JFrame{
                     int quartoID = Integer.parseInt(quartoIDLimpezaField.getText().trim());
                     int empregadoID = Integer.parseInt(empregadoIDLimpezaField.getText().trim());
 
-                    gestorDeLimpeza.adicionarRegisto(dataRegisto.toString(), quartoID, empregadoID, gestorDeBaseDeDados);
+                    gestorDeLimpeza.adicionarRegisto(dataRegisto, quartoID, empregadoID, gestorDeBaseDeDados);
                     resultado = "Registo adicionado com sucesso!";
                 } catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
@@ -389,8 +389,10 @@ public class MenuGui extends JFrame{
                     System.out.println(reservas);
                 }catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
                 } catch (InvalidParameterException exception){
                     resultado = exception.getMessage();
+                    JOptionPane.showMessageDialog(GUI.frame, resultado);
                 }
             }
 
