@@ -15,6 +15,10 @@ public class Quarto {
         this.layoutDescricao = layoutDescricao;
     }
 
+    /**
+     *
+     * @return Cada um retorna a variavel correspondente
+     */
     public int getQuartoId(){return quartoId;}
     public int getLayoutId(){return layoutId;}
     public float getPrecoBase(){return precoBase;}
