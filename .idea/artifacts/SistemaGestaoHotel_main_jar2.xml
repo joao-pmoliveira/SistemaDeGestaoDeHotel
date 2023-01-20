@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SistemaGestaoHotel.main:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/SistemaGestaoHotel_main_jar2</output-path>
+    <root id="archive" name="SistemaGestaoHotel.main.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="SistemaGestaoHotel.main" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/mysql/mysql-connector-java/8.0.30/b26dd6e4e917d3d4726c34d09d2fd67df7c1dd37/mysql-connector-java-8.0.30.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/3.19.4/748e4e0b9e4fa6b9b1fe65690aa04a9db56cfc4d/protobuf-java-3.19.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

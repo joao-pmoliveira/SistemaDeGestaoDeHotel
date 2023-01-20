@@ -827,6 +827,7 @@ public class MenuGui extends JFrame{
                             break;
                         }
                     }
+                    if(resultado==null) resultado = "Não foi encontrada reserva por fatura";
                     JOptionPane.showMessageDialog(GUI.frame, resultado);
                 } catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();

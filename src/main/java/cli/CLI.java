@@ -579,9 +579,7 @@ public class CLI {
             }
 
         }while(opcao != 0);
-
     }
-
 
     private static void printMenu(int cargoOperador){
         switch (cargoOperador){
