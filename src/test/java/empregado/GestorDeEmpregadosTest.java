@@ -56,7 +56,7 @@ class GestorDeEmpregadosTest {
     }
 
     @Test
-    void procurarClientePorClienteNifInvalidoTest(){
+    void procurarEmpregadoPorClienteNifInvalidoTest(){
         int clienteNif = 21321;
         String expectedMessage = "Não encontrado cliente para o nif fornecido";
         Exception exception = assertThrows(InvalidParameterException.class,
@@ -65,7 +65,7 @@ class GestorDeEmpregadosTest {
     }
 
     @Test
-    void procurarClientePorClienteIdInvalidoTest(){
+    void procurarEmpregadoPorClienteIdInvalidoTest(){
         int clienteId = 654;
         String expectedMessage = "Não econtrado cliente para o ID fornecido";
         Exception exception = assertThrows(InvalidParameterException.class,
