@@ -1,8 +1,8 @@
 package gui;
 
 import basededados.GestorDeBaseDeDados;
-import cliente.Cliente;
-import cliente.GestorDeClientes;
+import cli.cliente.Cliente;
+import cli.cliente.GestorDeClientes;
 import empregado.GestorDeEmpregados;
 import limpeza.GestorDeLimpeza;
 import limpeza.RegistoDeLimpeza;
@@ -36,7 +36,6 @@ public class MenuGui extends JFrame{
     private JPanel empregadoPanel;
     private JPanel faturacaoPanel;
     private JButton buttonReservaTab;
-    private JTable table2;
     private JTextField clienteNomeClienteField;
     private JLabel nomeLabel;
     private JTextField clienteTelefoneClienteField;
@@ -80,7 +79,6 @@ public class MenuGui extends JFrame{
     private JLabel horaEntradaLabel;
     private JLabel horaSaidaLabel;
     private JLabel passwordLabel;
-    private JTable table6;
     private JTextField empregadoIDLimpezaField;
     private JTextField quartoIDLimpezaField;
     private JTextField dataLimpezaField;
@@ -108,9 +106,14 @@ public class MenuGui extends JFrame{
     private JButton pesquisarFaturaNIFButton;
     private JButton buttonQuartoIDProcuraLimpeza;
     private JButton buttonEmpregadoIDProcuraLimpeza;
-    private JScrollPane tableScrollPane;
+    private JScrollPane tableReservasScrollPane;
+    private JScrollPane tableClientesScrollPane;
+    private JScrollPane tableLimpezasScrollPane;
 
     private JTable tabelaReservas;
+    private JTable tabelaClientes;
+    private JTable tabelaLimpezas;
+    private JTable tabelaEmpregados;
 
     public MenuGui(String title, GestorDeBaseDeDados gestorDeBaseDeDados) {
         super(title);
@@ -136,12 +139,38 @@ public class MenuGui extends JFrame{
             }
         };
         tabelaReservas = new JTable(modelReservas);
-        tableScrollPane.getViewport().add(tabelaReservas);
+        tableReservasScrollPane.getViewport().add(tabelaReservas);
         modelReservas.addColumn("ID");
         modelReservas.addColumn("Cliente");
         modelReservas.addColumn("Empregado");
         modelReservas.addColumn("Pagamento");
         modelReservas.addColumn("Preço");
+
+        DefaultTableModel modelClientes = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaClientes = new JTable(modelClientes);
+        tableClientesScrollPane.getViewport().add(tabelaClientes);
+        modelClientes.addColumn("NIF");
+        modelClientes.addColumn("Nome");
+        modelClientes.addColumn("Telefone");
+
+        DefaultTableModel modelLimpezas = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tabelaLimpezas = new JTable(modelLimpezas);
+        tableLimpezasScrollPane.getViewport().add(tabelaLimpezas);
+        modelLimpezas.addColumn("Data");
+        modelLimpezas.addColumn("Quarto");
+        modelLimpezas.addColumn("Empregado");
+
+
 
         buttonClienteTab.addMouseListener(new MouseAdapter() {
             @Override
@@ -401,15 +430,14 @@ public class MenuGui extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String resultado;
                 try{
-                    limparCamposReservaPanel();
                     String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
 
                     if(clienteNIFInput.isEmpty())
                         throw new InvalidParameterException("Preenche NIF do cliente para procurar!");
-
                     int clienteNIF = Integer.parseInt(clienteNIFInput);
 
                     List<Reserva> reservas = gestorDeReserva.getTodasReservasPorClienteNIF(clienteNIF,gestorDeBaseDeDados);
+                    limparCamposReservaPanel();
                     for(Reserva reserva : reservas){
                         modelReservas.addRow(new Object[]{
                                 reserva.getReservaID(), reserva.getClienteNIF(), reserva.getEmpregadoID(), reserva.getEstadoPagamento(),
@@ -433,7 +461,7 @@ public class MenuGui extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String resultado;
                 try{
-                    String clienteNIFInput = clienteNIFReservaProcuraField.getText().trim();
+                    String clienteNIFInput = clienteNIFClienteProcuraField.getText().trim();
 
                     if(clienteNIFInput.isEmpty())
                         throw new InvalidParameterException("Preenche NIF do cliente para procurar!");
@@ -441,7 +469,10 @@ public class MenuGui extends JFrame{
                     int clienteNIF = Integer.parseInt(clienteNIFInput);
 
                     Cliente cliente = gestorDeClientes.procurarClientePorNIF(clienteNIF, gestorDeBaseDeDados);
-                    System.out.println(cliente);
+                    limparCamposClientePanel();
+                    modelClientes.addRow(new Object[]{
+                            cliente.getNIF(), cliente.getNome(), cliente.getTelefone()
+                    });
                 }catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
                     JOptionPane.showMessageDialog(GUI.frame, resultado);
@@ -464,8 +495,11 @@ public class MenuGui extends JFrame{
                     int quartoID = Integer.parseInt(quartoIDInput);
 
                     List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorQuarto(quartoID, gestorDeBaseDeDados);
+                    limparCamposLimpezaPanel();
                     for (RegistoDeLimpeza registo : registosDeLimpeza){
-                        System.out.println(registo);
+                        modelLimpezas.addRow(new Object[]{
+                                registo.getData(), registo.getQuartoId(), registo.getEmpregadoId()
+                        });
                     }
                 }catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
@@ -489,8 +523,11 @@ public class MenuGui extends JFrame{
                     int empregadoID = Integer.parseInt(empregadoIDInput);
 
                     List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorEmpregadoId(empregadoID, gestorDeBaseDeDados);
+                    limparCamposLimpezaPanel();
                     for (RegistoDeLimpeza registo : registosDeLimpeza){
-                        System.out.println(registo);
+                        modelLimpezas.addRow(new Object[]{
+                                registo.getData(), registo.getQuartoId(), registo.getEmpregadoId()
+                        });
                     }
                 }catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
@@ -518,8 +555,11 @@ public class MenuGui extends JFrame{
                     LocalDate data = LocalDate.of(ano,mes,dia);
 
                     List<RegistoDeLimpeza> registosDeLimpeza = gestorDeLimpeza.procurarRegistosPorData(data, gestorDeBaseDeDados);
+                    limparCamposLimpezaPanel();
                     for (RegistoDeLimpeza registo : registosDeLimpeza){
-                        System.out.println(registo);
+                        modelLimpezas.addRow(new Object[]{
+                                registo.getData(), registo.getQuartoId(), registo.getEmpregadoId()
+                        });
                     }
                 }catch (NumberFormatException exception){
                     resultado = "Erro no parsing" + "\n" + exception.getMessage();
@@ -547,6 +587,7 @@ public class MenuGui extends JFrame{
         clienteNomeClienteField.setText("");
         clienteTelefoneClienteField.setText("");
         clienteNIFClienteProcuraField.setText("");
+        ((DefaultTableModel)tabelaClientes.getModel()).setRowCount(0);
     }
 
     private void limparCamposEmpregadoPanel(){
@@ -567,6 +608,7 @@ public class MenuGui extends JFrame{
         dataLimpezaProcuraField.setText("");
         empregadoIDLimpezaProcuraField.setText("");
         quartoIDLimpezaProcuraField.setText("");
+        ((DefaultTableModel)tabelaLimpezas.getModel()).setRowCount(0);
     }
 
     private void limparCamposFaturacaoPanel(){

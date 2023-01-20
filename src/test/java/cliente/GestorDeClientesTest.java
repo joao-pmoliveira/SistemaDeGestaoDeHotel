@@ -2,6 +2,8 @@ package cliente;
 
 import basededados.GestorDeBaseDeDados;
 import basededados.ValidadorDeLogin;
+import cli.cliente.Cliente;
+import cli.cliente.GestorDeClientes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
