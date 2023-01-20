@@ -10,6 +10,7 @@ import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,7 +50,7 @@ class GestorDeLimpezaTest {
         assertEquals(expectedMessage,exception.getMessage());
 
         exception = assertThrows(InvalidParameterException.class,
-                ()->gestorDeLimpeza.procurarRegistosPorData("0000-00-00",null));
+                ()->gestorDeLimpeza.procurarRegistosPorData(null,null));
         assertEquals(expectedMessage,exception.getMessage());
 
     }
@@ -79,7 +80,7 @@ class GestorDeLimpezaTest {
     void procurarQuartoValidoTest(){
         LocalDate data=LocalDate.of(2022,12,19);
         RegistoDeLimpeza registoDeLimpezaEsperado = new RegistoDeLimpeza(data,1,1);
-        ArrayList<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorQuarto(1, gestorDeBaseDeDados);
+        List<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorQuarto(1, gestorDeBaseDeDados);
         assertEquals(1, registos.size());
         RegistoDeLimpeza registoDeLimpezaReal=registos.get(0);
         assertEquals(registoDeLimpezaEsperado.getQuartoId(), registoDeLimpezaReal.getQuartoId());
@@ -110,7 +111,7 @@ class GestorDeLimpezaTest {
     void procurarEmpregadoValidoTest(){
         LocalDate data=LocalDate.of(2022,12,19);
         RegistoDeLimpeza registoDeLimpezaEsperado = new RegistoDeLimpeza(data,1,1);
-        ArrayList<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorEmpregadoId(1, gestorDeBaseDeDados);
+        List<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorEmpregadoId(1, gestorDeBaseDeDados);
 
         assertEquals(1, registos.size());
         RegistoDeLimpeza registoDeLimpezaReal=registos.get(0);
@@ -124,7 +125,7 @@ class GestorDeLimpezaTest {
         String expectedMessage = "Não encontrado registo de limpeza para a data pedida!";
 
         Exception exceptionDataNula = assertThrows(InvalidParameterException.class,
-                ()-> gestorDeLimpeza.procurarRegistosPorData("0000-00-00", gestorDeBaseDeDados));
+                ()-> gestorDeLimpeza.procurarRegistosPorData(null, gestorDeBaseDeDados));
         assertEquals(expectedMessage, exceptionDataNula.getMessage());
 
     }
@@ -132,9 +133,9 @@ class GestorDeLimpezaTest {
 
     @Test
     void procurarDataValidaTest(){
-        LocalDate data=LocalDate.of(2022,12,19);
+        LocalDate data = LocalDate.of(2022,12,19);
         RegistoDeLimpeza registoDeLimpezaEsperado = new RegistoDeLimpeza(data,1,1);
-        ArrayList<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorData("2022-12-19", gestorDeBaseDeDados);
+        List<RegistoDeLimpeza> registos =gestorDeLimpeza.procurarRegistosPorData(data, gestorDeBaseDeDados);
 
         assertEquals(1, registos.size());
         RegistoDeLimpeza registoDeLimpezaReal=registos.get(0);
